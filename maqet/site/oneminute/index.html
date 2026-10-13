@@ -1,0 +1,842 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The 1 Minute Film Festival</title>
+<meta name="description" content="24 hours. 60 seconds. Make a film of 60 seconds or less Nov 14–15 and watch it screen Sunday night. Judges give prizes to the top films. Free to register. Hosted by MAQET.">
+<meta property="og:title" content="The 1 Minute Film Festival · hosted by MAQET">
+<meta property="og:description" content="Make it in 24 hours. Keep it to 60 seconds or less. Every film submitted on time screens Sunday Nov 15 at 7PM.">
+<meta name="theme-color" content="#C23A0B">
+<link rel="canonical" href="https://maqet.org/oneminute/">
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta property="og:url" content="https://maqet.org/oneminute/">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Permanent+Marker&display=swap">
+<style>
+/* Layout: a production call sheet scribbled on in marker. Ruled header grid holding the three-line hook, then registration, rules, the weekend, prizes and a sign-off. */
+:root {
+  --frame: #C23A0B;
+  --paper: #FFFFFF;
+  --ink: #111111;
+  --faint: #6E6460;
+  --hairline: #CFC8C4;
+  --green: #0F9A6C;
+  --magenta: #E3157D;
+  --highlight: #FFF400;
+  --lime: #1BFF3E;
+  --aqua: #84F5EF;
+  --pen: #1A27E0;
+
+  --display: "Anton", Impact, "Arial Narrow", sans-serif;
+  --mono: "Courier Prime", "Courier New", Courier, monospace;
+  --marker: "Permanent Marker", "Marker Felt", "Comic Sans MS", cursive;
+  color-scheme: light;
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--frame);
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 1.05rem;
+  line-height: 1.5;
+  padding-inline: clamp(10px, 2.4vw, 36px);
+  padding-block: clamp(10px, 2.4vw, 36px);
+}
+.sheet {
+  background: var(--paper);
+  max-width: 1120px;
+  margin: 0 auto;
+  padding-inline: clamp(16px, 4vw, 52px);
+  padding-block: clamp(18px, 3vw, 36px) 32px;
+  overflow-x: clip;
+}
+a { color: inherit; }
+a:focus-visible, button:focus-visible { outline: 3px dashed var(--pen); outline-offset: 4px; }
+mark { background: linear-gradient(transparent 12%, var(--highlight) 12% 88%, transparent 88%); color: inherit; padding-inline: .15em; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+.k { margin: 0; font-size: .72rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--faint); }
+.v { margin: 0 0 .7rem; font-weight: 700; line-height: 1.3; }
+.v:last-child { margin-bottom: 0; }
+
+/* shared marker doodles */
+.word { position: relative; display: inline-block; }
+.doodle { position: absolute; overflow: visible; pointer-events: none; }
+.doodle path { fill: none; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1; animation: draw .6s ease-out both; }
+@keyframes draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+@keyframes pop { from { opacity: 0; scale: .5; } }
+@keyframes fadein { from { opacity: 0; } }
+.doodle--circle { inset: -.2em -.34em -.12em -.3em; width: calc(100% + .64em); height: calc(100% + .32em); }
+.doodle--circle path { stroke: var(--magenta); stroke-width: 4; animation-delay: .25s; }
+.doodle--squiggle { left: 0; bottom: -.12em; height: .26em; width: calc(100% - .2em); }
+.doodle--squiggle path { stroke: var(--pen); stroke-width: 3.5; animation-delay: .75s; }
+.doodle--loop { inset: -.22em -.3em -.14em -.32em; width: calc(100% + .62em); height: calc(100% + .36em); }
+.doodle--loop path { stroke: var(--magenta); stroke-width: 5; animation-delay: .25s; }
+.arrow-sm { width: 1.8em; height: .9em; flex: none; overflow: visible; }
+.arrow-sm path { fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+
+/* ── header grid: rules come from the 3px gaps ── */
+.head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr) minmax(0, 1fr);
+  grid-template-areas:
+    "prod title times"
+    "hook hook  hook"
+    "run  run   run";
+  gap: 3px;
+  background: var(--ink);
+  border: 3px solid var(--ink);
+}
+.cell { background: var(--paper); padding: 1rem 1.1rem; min-width: 0; }
+.c-prod { grid-area: prod; }
+.c-times { grid-area: times; }
+.c-title { grid-area: title; display: grid; justify-items: center; align-content: center; text-align: center; gap: .5rem; }
+.doc-label { margin: 0; padding: .15em .7em; border: 2px solid var(--ink); font-weight: 700; font-size: .9rem; letter-spacing: .3em; text-transform: uppercase; }
+h1 { margin: 0; font-family: var(--display); font-weight: 400; font-size: clamp(2rem, 4.4vw, 3.3rem); line-height: .95; text-transform: uppercase; color: var(--green); text-shadow: .045em .04em 0 var(--magenta); text-wrap: balance; }
+.dates { margin: 0; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+.tminus { display: grid; gap: .1rem; justify-items: center; }
+.tminus .k { color: var(--ink); }
+.tm { font-family: var(--display); font-size: clamp(1.7rem, 3.2vw, 2.2rem); line-height: 1; font-variant-numeric: tabular-nums; background: var(--ink); color: var(--lime); padding: .12em .4em .16em; }
+
+/* the hook */
+.hook { grid-area: hook; display: grid; grid-template-columns: max-content minmax(0, 1fr); align-items: center; column-gap: clamp(1.5rem, 4vw, 3.5rem); padding: clamp(1.3rem, 3vw, 2.1rem) clamp(1rem, 3vw, 2.2rem) clamp(1.4rem, 3vw, 2rem); }
+.lines { margin: 0; display: grid; gap: .14em; font-family: var(--display); font-weight: 400; font-size: clamp(2.6rem, 6.2vw, 5.1rem); line-height: 1; text-transform: uppercase; }
+.line { display: block; }
+.hl {
+  background: linear-gradient(transparent 52%, var(--highlight) 52% 94%, transparent 94%) no-repeat left / 100% 100%;
+  -webkit-box-decoration-break: clone; box-decoration-break: clone;
+  animation: swipe .55s ease-out 1.15s both;
+}
+@keyframes swipe { from { background-size: 0% 100%; } }
+
+.sub { margin: 0; font-size: clamp(1.05rem, 1.8vw, 1.2rem); max-width: 46ch; }
+
+/* runtime check */
+.c-run { grid-area: run; display: flex; flex-wrap: wrap; align-items: center; gap: .8rem 1.4rem; padding-block: .85rem; }
+.rec { color: var(--faint); }
+.rec.on { color: var(--magenta); }
+.rec.on::before { content: "● "; animation: blink 1s steps(2, start) infinite; }
+@keyframes blink { to { visibility: hidden; } }
+.rt-tc { margin: 0; justify-self: start; font-family: var(--display); font-size: clamp(2rem, 3.6vw, 2.6rem); line-height: 1; font-variant-numeric: tabular-nums; background: var(--ink); color: var(--paper); padding: .14em .4em .18em; }
+.rt-bar { flex: 1 1 10rem; height: 10px; border: 2px solid var(--ink); }
+.rt-bar span { display: block; height: 100%; width: 0; background: var(--magenta); }
+.outline-btn { justify-self: start; background: var(--paper); border: 2px solid var(--ink); color: var(--ink); font-family: var(--mono); font-weight: 700; font-size: .9rem; letter-spacing: .06em; text-transform: uppercase; padding: .5em .9em; cursor: pointer; }
+.outline-btn:hover { background: var(--ink); color: var(--paper); }
+
+/* ── blocks ── */
+.block { margin-top: clamp(2.8rem, 6vw, 4rem); }
+.block-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: .3rem 1.5rem; border-bottom: 3px solid var(--ink); padding-bottom: .35rem; }
+.block-head h2 { margin: 0; font-size: 1.05rem; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; }
+.block-head p { margin: 0; font-size: .9rem; color: var(--faint); }
+
+/* buttons */
+.btn {
+  display: inline-block;
+  background: var(--ink); color: var(--paper);
+  font-family: var(--display); font-size: 1.45rem; letter-spacing: .04em; text-transform: uppercase; text-decoration: none;
+  padding: .5em 1.15em .55em;
+  border: 0;
+  box-shadow: 5px 5px 0 var(--magenta);
+  cursor: pointer;
+  transition: translate .15s ease, box-shadow .15s ease;
+}
+.btn:hover { translate: -2px -2px; box-shadow: 7px 7px 0 var(--magenta); }
+.btn:disabled { opacity: .6; cursor: progress; translate: none; }
+
+/* ── Register: click here, with a worm of an arrow ── */
+.rsvp-start {
+  width: 100%;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-areas: "big arrow box";
+  align-items: center; gap: 1rem 1.6rem;
+  margin-top: 1.6rem; padding: .6rem 0 1rem;
+  background: none; border: 0; color: var(--ink); font: inherit; text-align: left; cursor: pointer;
+}
+.rsvp-start:focus-visible { outline: none; }
+.rsvp-start:focus-visible .ch-box { outline: 3px dashed var(--pen); outline-offset: 7px; }
+.ch-big { grid-area: big; font-family: var(--marker); font-size: clamp(2.4rem, 5vw, 3.8rem); line-height: 1; color: var(--magenta); rotate: -4deg; white-space: nowrap; }
+.ch-big span { display: inline-block; animation: wave 2.6s ease-in-out infinite; animation-delay: calc(var(--i) * .09s); }
+@keyframes wave { 0%, 55%, 100% { translate: 0 0; } 25% { translate: 0 -.1em; } }
+.ch-arrow { grid-area: arrow; width: 100%; height: auto; overflow: visible; }
+.ch-arrow path { fill: none; stroke: var(--ink); stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; }
+.ch-worm { stroke-dasharray: 16 9; animation: crawl 1.4s linear infinite; }
+@keyframes crawl { to { stroke-dashoffset: -25; } }
+.ch-arrow--wide { max-width: 360px; justify-self: center; }
+.ch-arrow--tall { display: none; width: 70px; }
+.rsvp-start:hover .ch-worm { animation-duration: .7s; }
+.ch-box {
+  grid-area: box; position: relative;
+  display: grid; justify-items: center; gap: .25rem;
+  background: var(--lime);
+  border: 3px solid var(--ink);
+  box-shadow: 7px 7px 0 var(--ink);
+  padding: 1.1rem 1.8rem 1.1rem;
+  rotate: 1.5deg;
+  transition: rotate .2s ease, translate .2s ease, box-shadow .2s ease;
+}
+.rsvp-start:hover .ch-box { rotate: 0deg; translate: -2px -2px; box-shadow: 9px 9px 0 var(--ink); }
+.ch-rsvp { font-family: var(--display); font-size: clamp(2.6rem, 5.4vw, 4.2rem); line-height: 1; text-transform: uppercase; }
+.ch-count { font-weight: 700; font-size: .85rem; letter-spacing: .08em; text-transform: uppercase; }
+.ch-tag { position: absolute; top: -1.05rem; right: -.9rem; padding: .15em .5em; background: var(--paper); border: 3px solid var(--magenta); color: var(--magenta); font-family: var(--display); font-size: 1rem; letter-spacing: .04em; text-transform: uppercase; white-space: nowrap; rotate: 6deg; }
+
+/* RSVP: the five questions */
+.rsvp-form, .rsvp-done {
+  margin-top: 1.6rem; max-width: 50rem;
+  background: var(--paper);
+  border: 3px solid var(--ink);
+  box-shadow: 7px 7px 0 var(--ink);
+  padding: 1.1rem clamp(1rem, 4vw, 2rem) 1.5rem;
+}
+.q-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: .5rem 1rem; padding-bottom: .6rem; border-bottom: 2px solid var(--ink); }
+.q-head .k { color: var(--ink); }
+.q-preview { margin: 0; font-size: .72rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; background: var(--highlight); padding: .15em .5em; }
+.q-frames { display: flex; gap: 5px; }
+.q-frames span { width: 26px; height: 16px; border: 2px solid var(--ink); transition: background .2s ease; }
+.q-frames span.on { background: var(--magenta); }
+.q { border: 0; margin: 0; padding: 1.1rem 0 0; min-width: 0; display: grid; gap: .55rem; }
+.q-title { padding: 0 0 .3rem; font-family: var(--display); font-size: clamp(2rem, 4.6vw, 3.1rem); line-height: 1; text-transform: uppercase; }
+.q-help { margin: 0; color: var(--faint); font-size: .95rem; }
+.q .k { margin-top: .5rem; }
+.line-input {
+  width: 100%; min-width: 0;
+  border: 0; border-bottom: 2px dotted var(--faint);
+  background: transparent;
+  font-family: var(--marker); font-size: clamp(1.4rem, 3vw, 1.8rem); line-height: 1.25; color: var(--pen);
+  padding: .15rem .25rem;
+}
+.line-input::placeholder { color: var(--hairline); }
+.line-input:focus { outline: none; border-bottom: 2px solid var(--pen); background: var(--highlight); }
+.line-input--area { min-height: 4.6em; resize: vertical; border: 2px dotted var(--faint); line-height: 1.3; }
+.q .q-sub { margin-top: 1.2rem; color: var(--ink); }
+.checks { display: flex; flex-wrap: wrap; gap: .8rem 1.7rem; margin-top: .3rem; }
+.opts { display: grid; gap: .9rem; justify-items: start; margin-top: .3rem; }
+.check { position: relative; display: inline-flex; flex-wrap: wrap; align-items: center; gap: .3rem .55rem; font-weight: 700; font-size: .95rem; letter-spacing: .06em; text-transform: uppercase; cursor: pointer; }
+.check input { position: absolute; inset: 0; opacity: 0; margin: 0; cursor: pointer; }
+.box { position: relative; width: 1.2rem; height: 1.2rem; border: 2px solid var(--ink); flex: none; }
+.box::after {
+  content: ""; position: absolute; inset: -55% -35% -10% -15%;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M3 13 C6 15 8 18 9.5 20 C13 12 17 6 22.5 2' fill='none' stroke='%231A27E0' stroke-width='3.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat center / contain;
+  opacity: 0; scale: .4;
+  transition: opacity .12s ease, scale .2s cubic-bezier(.2, 1.6, .4, 1);
+}
+.check input:checked + .box::after { opacity: 1; scale: 1; }
+.check input:checked ~ .check-label { background: linear-gradient(transparent 15%, var(--highlight) 15% 85%, transparent 85%); }
+.check input:focus-visible + .box { outline: 3px dashed var(--pen); outline-offset: 3px; }
+.opt-hint { font-family: var(--marker); font-weight: 400; font-size: 1.02rem; letter-spacing: 0; text-transform: none; color: var(--pen); }
+.opt-hint--win { color: var(--magenta); }
+.q-error { margin: .9rem 0 0; min-height: 1.3em; font-family: var(--marker); font-size: 1.15rem; color: var(--magenta); }
+.q-nav { display: flex; align-items: center; gap: 1rem; margin-top: .5rem; }
+.q-nav .btn { margin-left: auto; }
+
+.rsvp-done { display: grid; gap: .6rem; justify-items: start; }
+.rsvp-done:focus { outline: none; }
+.done-stamp { margin: .3rem 0 0; padding: .1em .5em; border: 5px solid var(--magenta); color: var(--magenta); font-family: var(--display); font-size: clamp(1.8rem, 4.5vw, 2.8rem); line-height: 1.1; text-transform: uppercase; rotate: -4deg; animation: stamp .3s cubic-bezier(.2, 1.6, .4, 1); }
+@keyframes stamp { from { scale: 1.8; opacity: 0; } }
+.done-name { margin: .5rem 0 0; font-family: var(--marker); font-size: 2rem; line-height: 1.1; color: var(--pen); }
+.done-msg { margin: 0; font-size: 1.1rem; max-width: 52ch; }
+.done-note { margin: 0 0 .4rem; font-size: .9rem; color: var(--faint); max-width: 60ch; }
+
+/* ── prizes ── */
+.prizes { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 3px; background: var(--ink); border: 3px solid var(--ink); margin-top: 1.3rem; }
+.prize { background: var(--paper); padding: 1.2rem 1.3rem 1.4rem; display: grid; align-content: start; gap: .5rem; min-width: 0; }
+.prize--main { background: var(--highlight); }
+.prize .k { color: var(--ink); }
+.prize-line { margin: .2rem 0 0; font-family: var(--display); font-size: clamp(2.4rem, 5.4vw, 4.2rem); line-height: 1.02; text-transform: uppercase; }
+.prize-line--sm { font-size: clamp(1.9rem, 3.6vw, 2.8rem); color: var(--magenta); }
+.prize .doodle path { animation: none; stroke-dasharray: none; }
+.redacted { display: grid; gap: .45rem; margin: .3rem 0 .2rem; }
+.redacted span { display: block; height: 1.05rem; background: var(--ink); }
+.redacted span:nth-child(1) { width: 78%; }
+.redacted span:nth-child(2) { width: 58%; }
+.redacted span:nth-child(3) { width: 70%; }
+.hints { list-style: none; margin: 1.9rem 0 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.4rem; }
+.hint { background: var(--note); padding: .9rem 1.1rem 1.15rem; rotate: var(--tilt); box-shadow: 4px 5px 0 var(--hairline); line-height: 1.4; transition: rotate .2s ease; }
+.hint:hover { rotate: 0deg; }
+.hint b { display: block; margin-bottom: .25rem; font-family: var(--marker); font-weight: 400; font-size: 1.3rem; color: var(--pen); }
+.hint:nth-child(1) { --note: var(--aqua); --tilt: -2deg; }
+.hint:nth-child(2) { --note: var(--highlight); --tilt: 1.5deg; }
+.hint:nth-child(3) { --note: var(--lime); --tilt: -1deg; }
+
+/* ── rules ── */
+.musts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.4rem 2.5rem; margin-top: 1.4rem; }
+.must { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 1rem; align-items: start; }
+.must-num { display: grid; place-items: center; width: 3.2rem; height: 3.2rem; border: 3px solid var(--magenta); border-radius: 50% 46% 52% 48%; rotate: -8deg; font-family: var(--display); font-size: 1.9rem; line-height: 1; }
+.must p { margin: 0; }
+.must strong { display: block; font-family: var(--display); font-weight: 400; font-size: clamp(1.6rem, 3vw, 2.1rem); line-height: 1.05; text-transform: uppercase; }
+.must sup, .footnote sup { color: var(--magenta); font-size: .8em; }
+.footnote { margin: 1.6rem 0 0; padding-top: .9rem; border-top: 1px solid var(--hairline); max-width: 70ch; font-size: .98rem; }
+
+/* schedule */
+.sched { width: 100%; border-collapse: collapse; margin-top: .2rem; }
+.sched th { text-align: left; font-size: .72rem; letter-spacing: .14em; text-transform: uppercase; color: var(--faint); padding: .6rem .7rem .4rem 0; border-bottom: 1px solid var(--hairline); }
+.sched td { padding: .75rem .7rem .75rem 0; border-bottom: 1px solid var(--hairline); vertical-align: top; }
+.sched td:first-child { font-family: var(--display); font-size: 1.5rem; line-height: 1; width: 3rem; }
+.sched td:nth-child(2) { font-weight: 700; white-space: nowrap; width: 12rem; }
+.sched td:last-child { width: 11rem; }
+.sched tr.premiere td { background: var(--highlight); }
+.sched tr.premiere td:first-child { padding-left: .4rem; }
+.cal { margin: 1rem 0 0; font-size: .88rem; display: flex; flex-wrap: wrap; gap: .2rem .9rem; }
+.cal a { text-decoration-thickness: 2px; text-underline-offset: 3px; }
+
+/* sign-off */
+.signoff { margin-top: clamp(3rem, 7vw, 4.4rem); border: 3px solid var(--ink); background: var(--lime); padding: clamp(1.5rem, 4vw, 2.6rem); display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 1.4rem 2rem; align-items: center; }
+.signoff .k { color: var(--ink); }
+.signoff h2 { margin: .25rem 0 0; font-family: var(--display); font-weight: 400; font-size: clamp(2.4rem, 6vw, 4.2rem); line-height: .98; text-transform: uppercase; }
+.guarantee { display: inline-block; margin-left: .15em; padding: .05em .3em; border: 4px solid var(--magenta); color: var(--magenta); font-size: .42em; letter-spacing: .04em; vertical-align: middle; rotate: -8deg; }
+.signoff-note { margin: .5rem 0 0; font-family: var(--marker); font-size: 1.25rem; color: var(--pen); rotate: -2deg; width: fit-content; }
+.signoff-cta { display: grid; justify-items: center; gap: .6rem; }
+.signoff-cta p { margin: 0; font-size: .9rem; }
+
+.foot { margin-top: 2rem; padding-top: .9rem; border-top: 1px solid var(--hairline); display: flex; flex-wrap: wrap; justify-content: space-between; gap: .4rem 2rem; font-size: .82rem; color: var(--faint); }
+.foot p { margin: 0; }
+
+/* ── responsive ── */
+@media (max-width: 860px) {
+  .head {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-areas:
+      "title title"
+      "hook  hook"
+      "prod  times"
+      "run   run";
+  }
+  .hints { grid-template-columns: minmax(0, 1fr); max-width: 34rem; }
+}
+@media (max-width: 640px) {
+  .head {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "title" "hook" "times" "run" "prod";
+  }
+  .lines { font-size: 10.4vw; }
+  .hook { display: block; }
+  .hook .sub { margin-top: 1.3rem; }
+  .rsvp-start { grid-template-columns: minmax(0, 1fr); grid-template-areas: "big" "arrow" "box"; justify-items: center; text-align: center; }
+  .ch-tag { right: -.4rem; }
+  .ch-arrow--wide { display: none; }
+  .ch-arrow--tall { display: block; }
+  .prizes, .musts { grid-template-columns: minmax(0, 1fr); }
+  .sched thead { display: none; }
+  .sched, .sched tbody, .sched td { display: block; width: auto !important; }
+  .sched tr { display: grid; grid-template-columns: 2.4rem minmax(0, 1fr); border-bottom: 1px solid var(--hairline); padding-block: .6rem; }
+  .sched td { border: 0; padding: .05rem 0; white-space: normal !important; }
+  .sched td:first-child { grid-row: span 3; }
+  .sched td:last-child::before { content: "Location: "; color: var(--faint); }
+  .sched tr.premiere { background: var(--highlight); }
+  .signoff { grid-template-columns: minmax(0, 1fr); }
+  .signoff-cta { justify-items: start; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .doodle path, .hl, .rec.on::before, .ch-big span, .ch-worm, .done-stamp { animation: none; }
+  .btn, .box::after, .ch-box, .hint, .q-frames span { transition: none; }
+}
+</style>
+</head>
+<body>
+<main class="sheet">
+
+  <header class="head">
+    <div class="cell c-prod">
+      <p class="k">Production</p>
+      <p class="v">Your film <span style="font-weight:400">(title TBD)</span></p>
+      <p class="k">Presented by</p>
+      <p class="v">MAQET</p>
+      <p class="k">Runtime</p>
+      <p class="v">60 seconds or less</p>
+      <p class="k">Crew</p>
+      <p class="v">Any size (3+ to be prize eligible)</p>
+      <p class="k">Format</p>
+      <p class="v">Any camera, any genre, any format</p>
+    </div>
+
+    <div class="cell c-title">
+      <p class="doc-label">Call sheet</p>
+      <h1>The 1 Minute Film Festival</h1>
+      <p class="dates">Nov 14–15, 2026</p>
+      <div class="tminus">
+        <p class="k" id="tm-label">Crew call in</p>
+        <span class="tm" id="tm">00:00:00:00</span>
+      </div>
+    </div>
+
+    <div class="cell c-times">
+      <p class="k">Crew call</p>
+      <p class="v"><mark>Sat Nov 14 · 11:00 AM</mark><br>Tompkins Square Park</p>
+      <p class="k">Delivery</p>
+      <p class="v">Sun Nov 15 · 11:00 AM</p>
+      <p class="k">Premiere</p>
+      <p class="v">Sun Nov 15 · 7:00 PM<br>Location TBD</p>
+      <p class="k">Sunrise · Sunset</p>
+      <p class="v">Sat 6:41 AM · 4:39 PM<br>Sun 6:43 AM · 4:38 PM</p>
+    </div>
+
+    <div class="cell hook">
+      <p class="lines">
+        <span class="line"><span class="word">24 hours.<svg class="doodle doodle--loop" viewBox="0 0 375 100" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M290 9 C200 -2 60 4 18 32 C-6 50 16 86 90 93 C180 101 320 97 356 74 C382 56 372 22 300 10 C270 6 240 6 214 8"/></svg></span></span>
+        <span class="line"><span class="word">60 seconds.<svg class="doodle doodle--squiggle" viewBox="0 0 300 20" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M2 12 Q20 2 38 12 T74 12 T110 12 T146 12 T182 12 T218 12 T254 12 T290 10"/></svg></span></span>
+        <span class="line"><span class="hl">One screening.</span></span>
+      </p>
+      <p class="sub">Write, shoot and edit a film of 60 seconds or less between 11AM Saturday and 11AM Sunday. All works submitted on time will be screened together at LOCATION TBD on Sunday, 7PM.</p>
+    </div>
+
+    <div class="cell c-run">
+      <p class="k"><span class="rec" id="v-rec">Runtime check</span></p>
+      <p class="rt-tc" id="v-tc">00:01:00:00</p>
+      <div class="rt-bar" aria-hidden="true"><span id="v-fill"></span></div>
+      <button class="outline-btn" id="v-play" type="button">▶ Feel 60 seconds</button>
+    </div>
+  </header>
+
+  <section class="block" id="rsvp" aria-labelledby="rsvp-title">
+    <div class="block-head"><h2 id="rsvp-title">Register</h2><p>Solo or as a group</p></div>
+
+    <button class="rsvp-start" id="rsvp-open" type="button" aria-label="Register now. Spots are limited.">
+      <span class="ch-big" aria-hidden="true"><span style="--i:0">c</span><span style="--i:1">l</span><span style="--i:2">i</span><span style="--i:3">c</span><span style="--i:4">k</span><span style="--i:5">&nbsp;</span><span style="--i:6">h</span><span style="--i:7">e</span><span style="--i:8">r</span><span style="--i:9">e</span></span>
+      <svg class="ch-arrow ch-arrow--wide" viewBox="0 0 320 120" aria-hidden="true">
+        <path class="ch-worm" d="M8 62 C28 32 48 32 68 62 S108 92 128 62 S168 32 188 62 S228 92 248 62 S282 40 300 58"/>
+        <path d="M300 58 L297 38 M300 58 L280 55"/>
+      </svg>
+      <svg class="ch-arrow ch-arrow--tall" viewBox="0 0 120 170" aria-hidden="true">
+        <path class="ch-worm" d="M60 6 C32 24 32 44 60 62 S88 100 60 118 S40 140 60 162"/>
+        <path d="M60 162 L57.5 142 M60 162 L40.5 157.6"/>
+      </svg>
+      <span class="ch-box">
+        <span class="ch-tag">Spots are limited</span>
+        <span class="ch-rsvp">Register now</span>
+        <span class="ch-count">6 quick steps</span>
+      </span>
+    </button>
+
+    <!-- Choice values must match google-form/create-rsvp-form.gs exactly. -->
+    <form class="rsvp-form" id="rsvp-form" hidden novalidate>
+      <div class="q-head">
+        <p class="k">Step <span id="q-num">1</span> of <span id="q-total">6</span></p>
+        <p class="q-preview" id="q-preview" hidden>Preview · not connected to Google Forms yet</p>
+        <div class="q-frames" aria-hidden="true"><span class="on"></span><span></span><span></span><span></span><span></span><span></span></div>
+      </div>
+
+      <fieldset class="q">
+        <legend class="q-title">What's your name?</legend>
+        <label class="sr-only" for="r-name">Your name</label>
+        <input class="line-input" id="r-name" name="name" autocomplete="name" placeholder="for the call sheet">
+      </fieldset>
+
+      <fieldset class="q" hidden>
+        <legend class="q-title">How do we reach you?</legend>
+        <label class="k" for="r-email">Email</label>
+        <input class="line-input" id="r-email" name="email" type="email" autocomplete="email" inputmode="email">
+        <label class="k" for="r-phone">Phone <span class="opt-hint">optional · for texts during the 24 hours</span></label>
+        <input class="line-input" id="r-phone" name="phone" type="tel" autocomplete="tel">
+        <label class="k" for="r-link">Link to your work <span class="opt-hint">optional · YouTube, Vimeo, Instagram, website…</span></label>
+        <input class="line-input" id="r-link" name="workLink" type="url" inputmode="url" autocomplete="url" placeholder="so we can promote your work">
+      </fieldset>
+
+      <fieldset class="q" hidden>
+        <legend class="q-title">What do you do?</legend>
+        <p class="q-help">Check everything that applies.</p>
+        <div class="checks">
+          <label class="check"><input type="checkbox" name="roles" value="Director"><span class="box"></span><span class="check-label">Director</span></label>
+          <label class="check"><input type="checkbox" name="roles" value="Writer"><span class="box"></span><span class="check-label">Writer</span></label>
+          <label class="check"><input type="checkbox" name="roles" value="Editor"><span class="box"></span><span class="check-label">Editor</span></label>
+          <label class="check"><input type="checkbox" name="roles" value="Camera / DOP"><span class="box"></span><span class="check-label">Camera / DOP</span></label>
+          <label class="check"><input type="checkbox" name="roles" value="Sound"><span class="box"></span><span class="check-label">Sound</span></label>
+          <label class="check"><input type="checkbox" name="roles" value="Actor"><span class="box"></span><span class="check-label">Actor</span></label>
+          <label class="check"><input type="checkbox" name="roles" value="Producer"><span class="box"></span><span class="check-label">Producer</span></label>
+          <label class="check"><input type="checkbox" name="roles" value="Never made a film"><span class="box"></span><span class="check-label">Never made a film</span></label>
+        </div>
+        <p class="k q-sub" id="exp-label">Movie-making experience</p>
+        <div class="checks" role="radiogroup" aria-labelledby="exp-label">
+          <label class="check"><input type="radio" name="experience" value="Hobby"><span class="box"></span><span class="check-label">Hobby</span></label>
+          <label class="check"><input type="radio" name="experience" value="Independent"><span class="box"></span><span class="check-label">Independent</span></label>
+          <label class="check"><input type="radio" name="experience" value="Pro"><span class="box"></span><span class="check-label">Pro</span></label>
+        </div>
+      </fieldset>
+
+      <fieldset class="q" hidden>
+        <legend class="q-title">Who's on your team?</legend>
+        <div class="opts">
+          <label class="check"><input type="radio" name="team" value="Just me. Find me a team."><span class="box"></span><span class="check-label">Just me</span><span class="opt-hint">teams are made at the park</span></label>
+          <label class="check"><input type="radio" name="team" value="2 of us"><span class="box"></span><span class="check-label">2 of us</span><span class="opt-hint">find a third to be prize eligible</span></label>
+          <label class="check"><input type="radio" name="team" value="3 or more (award eligible)"><span class="box"></span><span class="check-label">3 or more</span><span class="opt-hint opt-hint--win">prize eligible!</span></label>
+        </div>
+        <div class="q" id="team-name" hidden>
+          <label class="k" for="r-team">Team name <span class="opt-hint">optional</span></label>
+          <input class="line-input" id="r-team" name="teamName" autocomplete="off">
+        </div>
+        <p class="k q-sub">What can you bring? <span class="opt-hint">optional · helps us match crews</span></p>
+        <div class="checks">
+          <label class="check"><input type="checkbox" name="gear" value="Camera"><span class="box"></span><span class="check-label">Camera</span></label>
+          <label class="check"><input type="checkbox" name="gear" value="Mics / sound gear"><span class="box"></span><span class="check-label">Mics / sound gear</span></label>
+          <label class="check"><input type="checkbox" name="gear" value="Lights"><span class="box"></span><span class="check-label">Lights</span></label>
+          <label class="check"><input type="checkbox" name="gear" value="Laptop with editing software"><span class="box"></span><span class="check-label">Editing laptop</span></label>
+          <label class="check"><input type="checkbox" name="gear" value="Just my brilliant self"><span class="box"></span><span class="check-label">Just my brilliant self</span></label>
+        </div>
+      </fieldset>
+
+      <fieldset class="q" hidden>
+        <legend class="q-title">What drives you to make movies?</legend>
+        <label class="sr-only" for="r-drives">What drives you to make movies?</label>
+        <textarea class="line-input line-input--area" id="r-drives" name="drives" rows="3" placeholder="a sentence is plenty"></textarea>
+        <p class="k q-sub" id="heard-label">How did you hear about this?</p>
+        <div class="checks" role="radiogroup" aria-labelledby="heard-label">
+          <label class="check"><input type="radio" name="heard" value="Poster"><span class="box"></span><span class="check-label">Poster</span></label>
+          <label class="check"><input type="radio" name="heard" value="Social media"><span class="box"></span><span class="check-label">Social media</span></label>
+          <label class="check"><input type="radio" name="heard" value="A friend"><span class="box"></span><span class="check-label">A friend</span></label>
+          <label class="check"><input type="radio" name="heard" value="Artists Talking Together at Nook"><span class="box"></span><span class="check-label">Artists Talking Together at Nook</span></label>
+        </div>
+      </fieldset>
+
+      <fieldset class="q" hidden>
+        <legend class="q-title">Just for fun</legend>
+        <p class="q-help">Optional, but we're curious.</p>
+        <label class="k" for="r-eight">A movie you think is an 8/10</label>
+        <input class="line-input" id="r-eight" name="eightTen" autocomplete="off">
+        <label class="k" for="r-least">Your least favorite movie</label>
+        <input class="line-input" id="r-least" name="leastFavorite" autocomplete="off">
+      </fieldset>
+
+      <p class="q-error" id="q-error" role="alert"></p>
+      <div class="q-nav">
+        <button class="outline-btn" id="q-back" type="button" hidden>← Back</button>
+        <button class="btn" id="q-next" type="submit">Next →</button>
+      </div>
+    </form>
+
+    <div class="rsvp-done" id="rsvp-done" hidden tabindex="-1">
+      <p class="done-stamp">You're on the call sheet!</p>
+      <p class="done-name" id="done-name"></p>
+      <p class="done-msg" id="done-msg"></p>
+      <p class="done-note" id="done-note"></p>
+      <button class="outline-btn" id="rsvp-again" type="button">Register someone else</button>
+    </div>
+  </section>
+
+  <section class="block" id="rules" aria-labelledby="rules-title">
+    <div class="block-head"><h2 id="rules-title">The rules</h2><p>Short and sweet</p></div>
+    <div class="musts">
+      <div class="must"><span class="must-num">1</span><p><strong>Meet at Tompkins Square Park.<sup>*</sup></strong>11AM on Saturday, Nov 14. Teams are made and the prompt is handed out.</p></div>
+      <div class="must"><span class="must-num">2</span><p><strong>All creative activity done within 24 hours.</strong>Write, shoot and edit between 11AM Saturday and 11AM Sunday.</p></div>
+      <div class="must"><span class="must-num">3</span><p><strong>Submit your work by 11AM the next day.</strong>Sunday, Nov 15. 60 seconds or less.</p></div>
+      <div class="must"><span class="must-num">4</span><p><strong>Come to the screening and enjoy everyone's work!</strong>Sunday, Nov 15 at 7PM. Location TBD.</p></div>
+    </div>
+    <p class="footnote"><sup>*</sup> Only teams with at least 3 crew members, with a film that at least loosely follows the prompt, will be prize eligible. <mark>Submissions that don't meet these criteria will still be screened!!!</mark></p>
+
+  </section>
+
+  <section class="block" id="when" aria-labelledby="when-title">
+    <div class="block-head"><h2 id="when-title">The weekend</h2><p>Sat Nov 14 → Sun Nov 15</p></div>
+    <table class="sched">
+      <thead><tr><th>Sc.</th><th>Time</th><th>What happens</th><th>Location</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Sat 11:00 AM</td><td>Meet up. Teams are made and the prompt is handed out. Clock starts.</td><td data-slot="prompt-location">TBA</td></tr>
+        <tr><td>2</td><td>Sun 11:00 AM</td><td>Final cut due. 60 seconds or less.</td><td>–</td></tr>
+        <tr class="premiere"><td>3</td><td>Sun 7:00 PM</td><td>All works submitted on time screen together.</td><td>TBD</td></tr>
+      </tbody>
+    </table>
+    <p class="cal"><span>Add to Google Calendar:</span>
+      <a data-cal="reveal" href="#when" target="_blank" rel="noopener">Crew call</a>
+      <a data-cal="screening" href="#when" target="_blank" rel="noopener">Premiere</a>
+    </p>
+  </section>
+
+  <section class="block" id="prizes" aria-labelledby="prizes-title">
+    <div class="block-head"><h2 id="prizes-title">Prizes &amp; judging</h2><p>More soon</p></div>
+    <div class="prizes">
+      <div class="prize prize--main">
+        <p class="k">Prizes</p>
+        <p class="prize-line">For the <span class="word">top films<svg class="doodle doodle--loop" viewBox="0 0 375 100" preserveAspectRatio="none" aria-hidden="true"><path d="M290 9 C200 -2 60 4 18 32 C-6 50 16 86 90 93 C180 101 320 97 356 74 C382 56 372 22 300 10 C270 6 240 6 214 8"/></svg></span></p>
+        <p>Picked by our judges. More details soon.</p>
+      </div>
+      <div class="prize">
+        <p class="k">Judges</p>
+        <p class="redacted" aria-hidden="true"><span></span><span></span><span></span></p>
+        <p class="prize-line prize-line--sm">Revealed soon!</p>
+      </div>
+    </div>
+    <ul class="hints">
+      <li class="hint"><b>psst. hint:</b>Only teams of 3 or more can win. Coming solo? Teams are made at Tompkins Square Park, so you won't be alone for long.</li>
+      <li class="hint"><b>hint #2:</b>To be prize eligible, your film has to at least loosely follow the prompt. Loosely counts!</li>
+      <li class="hint"><b>hint #3:</b>Show up, and bring your whole crew! Be at Tompkins Square Park by 11AM Saturday. The prompt is handed out and teams are made right there, so set two alarms.</li>
+    </ul>
+  </section>
+
+  <section class="signoff" aria-labelledby="signoff-title">
+    <div>
+      <p class="k">Make it official</p>
+      <h2 id="signoff-title">Your film. On screen. For free. <span class="guarantee">[guaranteed]</span></h2>
+      <p class="signoff-note">Sun Nov 15 · 7PM · location TBD</p>
+    </div>
+    <div class="signoff-cta">
+      <a class="btn" data-rsvp href="#rsvp">Register now</a>
+      <p>(it's free!)</p>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <p>The 1 Minute Film Festival · Hosted by <a href="/">MAQET Collective</a></p>
+    <p id="contact" hidden></p>
+  </footer>
+
+</main>
+
+<script src="/oneminute/config.js"></script>
+<script>
+// Settings (form link, RSVP fields, times, contact) live in config.js.
+const FESTIVAL = window.FESTIVAL;
+const $ = (id) => document.getElementById(id);
+const pad = (n) => String(n).padStart(2, "0");
+
+if (FESTIVAL.promptLocation) {
+  document.querySelectorAll('[data-slot="prompt-location"]').forEach((el) => { el.textContent = FESTIVAL.promptLocation; });
+}
+
+if (FESTIVAL.contactEmail || FESTIVAL.instagramUrl) {
+  const bits = [];
+  if (FESTIVAL.contactEmail) bits.push(`Any questions? Email <a href="mailto:${FESTIVAL.contactEmail}">${FESTIVAL.contactEmail}</a>`);
+  if (FESTIVAL.instagramUrl) bits.push(`<a href="${FESTIVAL.instagramUrl}" target="_blank" rel="noopener">Instagram</a>`);
+  $("contact").innerHTML = bits.join(" · ");
+  $("contact").hidden = false;
+}
+
+// T-minus: crew call → delivery → premiere
+const phases = [
+  { at: Date.parse(FESTIVAL.promptReveal),  label: "Crew call in" },
+  { at: Date.parse(FESTIVAL.submissionDue), label: "Delivery in" },
+  { at: Date.parse(FESTIVAL.screening),     label: "Premiere in" },
+];
+function tick() {
+  const now = Date.now();
+  const phase = phases.find((p) => now < p.at);
+  if (!phase) {
+    const live = now < Date.parse(FESTIVAL.screening) + 4 * 3600e3;
+    $("tm-label").textContent = live ? "Now screening" : "That's a wrap";
+    $("tm").textContent = live ? "Rolling" : "Fin";
+    return;
+  }
+  let s = Math.floor((phase.at - now) / 1000);
+  const d = Math.floor(s / 86400); s -= d * 86400;
+  const h = Math.floor(s / 3600);  s -= h * 3600;
+  const m = Math.floor(s / 60);    s -= m * 60;
+  $("tm-label").textContent = `${phase.label} (days:hrs:min:sec)`;
+  $("tm").textContent = `${pad(d)}:${pad(h)}:${pad(m)}:${pad(s)}`;
+}
+tick();
+setInterval(tick, 1000);
+
+// Runtime check: counts real timecode at 24 frames per second
+(function runtimeCheck() {
+  const tc = (sec) => {
+    const f = Math.floor((sec % 1) * 24);
+    const s = Math.floor(sec);
+    return `00:${pad(Math.floor(s / 60))}:${pad(s % 60)}:${pad(f)}`;
+  };
+  let startedAt = 0;
+  let raf = 0;
+  const play = $("v-play");
+  const rec = $("v-rec");
+
+  function frame(now) {
+    const t = Math.min(60, (now - startedAt) / 1000);
+    $("v-tc").textContent = tc(t);
+    $("v-fill").style.width = `${(t / 60) * 100}%`;
+    if (t < 60) { raf = requestAnimationFrame(frame); return; }
+    stop();
+  }
+  function stop() {
+    cancelAnimationFrame(raf);
+    raf = 0;
+    rec.textContent = "Runtime check";
+    rec.classList.remove("on");
+    play.textContent = "▶ Play it again";
+  }
+  play.addEventListener("click", () => {
+    if (raf) { stop(); return; }
+    startedAt = performance.now();
+    rec.textContent = "Rec";
+    rec.classList.add("on");
+    play.textContent = "■ Cut";
+    raf = requestAnimationFrame(frame);
+  });
+})();
+
+// RSVP: five questions on the page, posted to the Google Form in the background
+(function rsvp() {
+  const R = FESTIVAL.rsvp || {};
+  const connected = Boolean(R.action && R.fields && R.fields.name);
+  const SOLO = "Just me. Find me a team.";
+  const ELIGIBLE = "3 or more (award eligible)";
+  const form = $("rsvp-form");
+  const steps = [...form.querySelectorAll("fieldset.q")];
+  const frames = [...form.querySelectorAll(".q-frames span")];
+  const next = $("q-next");
+  const back = $("q-back");
+  const error = $("q-error");
+  let step = 0;
+
+  $("q-preview").hidden = connected;
+  $("q-total").textContent = steps.length;
+
+  const checked = (name) => [...form.querySelectorAll(`input[name="${name}"]:checked`)].map((i) => i.value);
+
+  function show(i) {
+    step = i;
+    steps.forEach((s, j) => { s.hidden = j !== i; });
+    frames.forEach((f, j) => f.classList.toggle("on", j <= i));
+    $("q-num").textContent = i + 1;
+    back.hidden = i === 0;
+    next.textContent = i === steps.length - 1 ? "Register" : "Next →";
+    error.textContent = "";
+    const first = steps[i].querySelector("input, textarea");
+    if (first) first.focus({ preventScroll: true });
+  }
+
+  function open() {
+    if (!connected && FESTIVAL.formUrl) {
+      window.open(FESTIVAL.formUrl, "_blank", "noopener");
+      return;
+    }
+    if (!form.hidden || !$("rsvp-done").hidden) return;
+    $("rsvp-open").hidden = true;
+    form.hidden = false;
+    show(0);
+  }
+
+  function problem(i) {
+    if (i === 0 && !$("r-name").value.trim()) return "We need a name for the call sheet.";
+    if (i === 1) {
+      const email = $("r-email").value.trim();
+      if (!email) return "Add an email so we can reach you.";
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return "That email doesn't look right. Check it and try again.";
+    }
+    if (i === 2) {
+      if (!checked("roles").length) return "Check at least one role. “Never made a film” counts.";
+      if (!checked("experience").length) return "Pick your movie-making experience. Hobby is great.";
+    }
+    if (i === 3 && !checked("team").length) return "Pick one. Solo is totally fine.";
+    if (i === 4) {
+      if (!$("r-drives").value.trim()) return "Tell us what drives you. A sentence is plenty.";
+      if (!checked("heard").length) return "Let us know how you heard about this.";
+    }
+    return "";
+  }
+
+  function post(data) {
+    const body = new URLSearchParams();
+    const add = (key, value) => { if (R.fields[key] && value) body.append(R.fields[key], value); };
+    add("name", data.name);
+    add("email", data.email);
+    add("phone", data.phone);
+    add("workLink", data.workLink);
+    data.roles.forEach((v) => add("roles", v));
+    add("experience", data.experience);
+    add("team", data.team);
+    add("teamName", data.teamName);
+    data.gear.forEach((v) => add("gear", v));
+    add("drives", data.drives);
+    add("heard", data.heard);
+    add("eightTen", data.eightTen);
+    add("leastFavorite", data.leastFavorite);
+    // Google doesn't let other sites read its reply, so a network error is the only failure we can see.
+    return fetch(R.action, { method: "POST", mode: "no-cors", body });
+  }
+
+  function finish(data, sent) {
+    form.hidden = true;
+    const done = $("rsvp-done");
+    done.hidden = false;
+    $("done-name").textContent = data.teamName ? `${data.name} · ${data.teamName}` : data.name;
+    $("done-msg").textContent =
+      data.team === ELIGIBLE ? "Prize eligible, as long as your film at least loosely follows the prompt. See you at Tompkins Square Park, 11AM Saturday." :
+      data.team === SOLO     ? "Teams are made at Tompkins Square Park, 11AM Saturday. Every film submitted on time screens." :
+                               "Find one more teammate and you're prize eligible. Either way, every film submitted on time screens.";
+    $("done-note").textContent = sent
+      ? `We'll send a confirmation to ${data.email}.`
+      : "Preview only: this form isn't connected to Google Forms yet, so nothing was sent.";
+    done.focus();
+  }
+
+  form.querySelectorAll('input[name="team"]').forEach((radio) => {
+    radio.addEventListener("change", () => { $("team-name").hidden = checked("team")[0] === SOLO; });
+  });
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const issue = problem(step);
+    if (issue) { error.textContent = issue; return; }
+    if (step < steps.length - 1) { show(step + 1); return; }
+
+    const team = checked("team")[0];
+    const data = {
+      name: $("r-name").value.trim(),
+      email: $("r-email").value.trim(),
+      phone: $("r-phone").value.trim(),
+      workLink: $("r-link").value.trim(),
+      roles: checked("roles"),
+      experience: checked("experience")[0],
+      team,
+      teamName: team === SOLO ? "" : $("r-team").value.trim(),
+      gear: checked("gear"),
+      drives: $("r-drives").value.trim(),
+      heard: checked("heard")[0],
+      eightTen: $("r-eight").value.trim(),
+      leastFavorite: $("r-least").value.trim(),
+    };
+    if (!connected) { finish(data, false); return; }
+
+    next.disabled = true;
+    next.textContent = "Sending…";
+    try {
+      await post(data);
+    } catch (e) {
+      error.textContent = "Couldn't send your registration. Check your connection and try again.";
+      next.disabled = false;
+      next.textContent = "Register";
+      return;
+    }
+    next.disabled = false;
+    finish(data, true);
+  });
+
+  back.addEventListener("click", () => show(step - 1));
+  $("rsvp-open").addEventListener("click", open);
+  document.querySelectorAll("[data-rsvp]").forEach((a) => a.addEventListener("click", open));
+  $("rsvp-again").addEventListener("click", () => {
+    form.reset();
+    $("team-name").hidden = true;
+    $("rsvp-done").hidden = true;
+    form.hidden = false;
+    show(0);
+  });
+})();
+
+// Google Calendar links
+const gcal = (title, start, minutes, location) => {
+  const stamp = (d) => d.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
+  const s = new Date(start);
+  const e = new Date(s.getTime() + minutes * 60000);
+  const params = new URLSearchParams({
+    action: "TEMPLATE",
+    text: title,
+    dates: `${stamp(s)}/${stamp(e)}`,
+    details: "The 1 Minute Film Festival, hosted by MAQET. Make a film of one minute or less in 24 hours.",
+    location: location || "",
+  });
+  return `https://calendar.google.com/calendar/render?${params}`;
+};
+const calEvents = {
+  reveal:    gcal("1 Minute Film Festival: prompt reveal", FESTIVAL.promptReveal, 60, FESTIVAL.promptLocation),
+  screening: gcal("1 Minute Film Festival: screenings (location TBD)", FESTIVAL.screening, 120),
+};
+document.querySelectorAll("[data-cal]").forEach((a) => { a.href = calEvents[a.dataset.cal]; });
+</script>
+</body>
+</html>

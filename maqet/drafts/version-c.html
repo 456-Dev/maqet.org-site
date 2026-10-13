@@ -1,0 +1,392 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The 1 Minute Film Festival</title>
+<meta name="description" content="Your call sheet for The 1 Minute Film Festival: crew call Sat Nov 7, 11AM. Delivery Sun 11AM. Premiere Sun 7PM at Star Bar. $400 in prizes.">
+<meta property="og:title" content="The 1 Minute Film Festival · Call Sheet">
+<meta property="og:description" content="Crew call Sat Nov 7, 11AM. Delivery Sun 11AM. Every film premieres at Star Bar, Sun 7PM.">
+<meta name="theme-color" content="#C23A0B">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Permanent+Marker&display=swap">
+<style>
+/* Layout: a production call sheet on white paper inside the flyer's orange frame. Ruled boxes and tables in Courier; whatever the visitor writes goes on in marker. */
+:root {
+  --frame: #C23A0B;
+  --paper: #FFFFFF;
+  --ink: #111111;
+  --faint: #6E6460;
+  --rule: #111111;
+  --hairline: #CFC8C4;
+  --green: #0F9A6C;
+  --magenta: #E3157D;
+  --highlight: #FFF400;
+  --lime: #1BFF3E;
+  --pen: #1A27E0;
+
+  --display: "Anton", Impact, "Arial Narrow", sans-serif;
+  --mono: "Courier Prime", "Courier New", Courier, monospace;
+  --marker: "Permanent Marker", "Marker Felt", "Comic Sans MS", cursive;
+  color-scheme: light;
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--frame);
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 1.05rem;
+  line-height: 1.5;
+  padding-inline: clamp(10px, 2.4vw, 36px);
+  padding-block: clamp(10px, 2.4vw, 36px);
+}
+.sheet {
+  background: var(--paper);
+  max-width: 1100px;
+  margin: 0 auto;
+  padding-inline: clamp(16px, 4vw, 52px);
+  padding-block: clamp(18px, 3vw, 36px) 32px;
+  overflow-x: clip;
+}
+a { color: inherit; }
+a:focus-visible, button:focus-visible { outline: 3px dashed var(--pen); outline-offset: 4px; }
+mark { background: linear-gradient(transparent 12%, var(--highlight) 12% 88%, transparent 88%); color: inherit; padding-inline: .15em; }
+.k { margin: 0; font-size: .72rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--faint); }
+.v { margin: 0 0 .7rem; font-weight: 700; line-height: 1.3; }
+.v:last-child { margin-bottom: 0; }
+
+/* header grid */
+.head { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr) minmax(0, 1fr); border: 3px solid var(--rule); }
+.cell { padding: 1rem 1.1rem; min-width: 0; }
+.cell + .cell { border-left: 3px solid var(--rule); }
+.cell--title { display: grid; justify-items: center; align-content: center; text-align: center; gap: .5rem; }
+.doc-label { margin: 0; padding: .15em .7em; border: 2px solid var(--ink); font-weight: 700; font-size: .9rem; letter-spacing: .3em; text-transform: uppercase; }
+h1 { margin: 0; font-family: var(--display); font-weight: 400; font-size: clamp(2.3rem, 5.4vw, 4rem); line-height: .95; text-transform: uppercase; color: var(--green); text-shadow: .045em .04em 0 var(--magenta); text-wrap: balance; }
+.dates { margin: 0; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+.tminus { margin: .2rem 0 0; display: grid; gap: .1rem; justify-items: center; }
+.tminus .k { color: var(--ink); }
+.tm { font-family: var(--display); font-size: clamp(1.8rem, 3.6vw, 2.4rem); line-height: 1; font-variant-numeric: tabular-nums; background: var(--ink); color: var(--lime); padding: .12em .4em .16em; }
+
+.logline { margin: 1.6rem 0 0; font-size: clamp(1.15rem, 2.2vw, 1.4rem); line-height: 1.45; max-width: 60ch; }
+
+/* blocks */
+.block { margin-top: clamp(2.4rem, 5vw, 3.4rem); }
+.block-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: .3rem 1.5rem; border-bottom: 3px solid var(--rule); padding-bottom: .35rem; margin-bottom: .2rem; }
+.block-head h2 { margin: 0; font-size: 1.05rem; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; }
+.block-head p { margin: 0; font-size: .9rem; color: var(--faint); }
+
+/* schedule */
+.sched { width: 100%; border-collapse: collapse; }
+.sched th { text-align: left; font-size: .72rem; letter-spacing: .14em; text-transform: uppercase; color: var(--faint); padding: .6rem .7rem .4rem 0; border-bottom: 1px solid var(--hairline); }
+.sched td { padding: .75rem .7rem .75rem 0; border-bottom: 1px solid var(--hairline); vertical-align: top; }
+.sched td:first-child { font-family: var(--display); font-size: 1.5rem; line-height: 1; width: 3rem; }
+.sched td:nth-child(2) { font-weight: 700; white-space: nowrap; width: 13rem; }
+.sched td:last-child { width: 12rem; }
+.sched tr.premiere td { background: var(--highlight); }
+.sched tr.premiere td:first-child { padding-left: .4rem; }
+
+/* crew */
+.crew { position: relative; }
+.crew-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 2.5rem; }
+.crew-row { display: grid; grid-template-columns: 8.5rem minmax(0, 1fr); align-items: end; gap: .8rem; padding-block: .55rem .2rem; border-bottom: 1px solid var(--hairline); }
+.crew-role { font-weight: 700; font-size: .85rem; letter-spacing: .1em; text-transform: uppercase; padding-bottom: .35rem; }
+.crew-name {
+  width: 100%; min-width: 0;
+  border: 0; border-bottom: 2px dotted var(--faint);
+  background: transparent;
+  font-family: var(--marker); font-size: 1.45rem; line-height: 1.2; color: var(--pen);
+  padding: .1rem .2rem;
+}
+.crew-name::placeholder { color: var(--hairline); }
+.crew-name:focus { outline: none; border-bottom: 2px solid var(--pen); background: var(--highlight); }
+.crew-foot { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1rem 2rem; margin-top: 1.2rem; }
+.crew-status { margin: 0; font-weight: 700; font-size: 1.1rem; max-width: 46ch; }
+.crew-privacy { margin: .6rem 0 0; font-size: .82rem; color: var(--faint); }
+.stamp {
+  position: absolute; top: 2.8rem; right: 1rem;
+  padding: .1em .5em;
+  border: 5px solid var(--magenta); color: var(--magenta);
+  font-family: var(--display); font-size: clamp(1.8rem, 4vw, 2.6rem); letter-spacing: .04em; text-transform: uppercase; line-height: 1.1;
+  rotate: -12deg;
+  opacity: .9;
+  pointer-events: none;
+  animation: stamp .3s cubic-bezier(.2, 1.6, .4, 1);
+}
+@keyframes stamp { from { scale: 1.8; opacity: 0; } }
+
+/* notes */
+.notes { margin: .8rem 0 0; padding-left: 1.8rem; display: grid; gap: .55rem; max-width: 70ch; }
+.notes li::marker { font-weight: 700; }
+
+/* buttons */
+.btn {
+  display: inline-block;
+  background: var(--ink); color: var(--paper);
+  font-family: var(--display); font-size: 1.45rem; letter-spacing: .04em; text-transform: uppercase; text-decoration: none;
+  padding: .5em 1.15em .55em;
+  box-shadow: 5px 5px 0 var(--magenta);
+  transition: translate .15s ease, box-shadow .15s ease;
+}
+.btn:hover { translate: -2px -2px; box-shadow: 7px 7px 0 var(--magenta); }
+.btn[aria-disabled="true"] { background: var(--hairline); color: var(--faint); box-shadow: none; translate: none; cursor: default; }
+
+/* sign-off */
+.signoff { margin-top: clamp(2.6rem, 6vw, 3.8rem); border: 3px solid var(--rule); padding: clamp(1.4rem, 4vw, 2.4rem); display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 1.4rem 2rem; align-items: center; background: var(--lime); }
+.signoff h2 { margin: .2rem 0 0; font-family: var(--display); font-weight: 400; font-size: clamp(2rem, 5vw, 3.2rem); line-height: 1; text-transform: uppercase; }
+.signoff .k { color: var(--ink); }
+.cal { margin: .9rem 0 0; font-size: .88rem; display: flex; flex-wrap: wrap; gap: .2rem .9rem; }
+.cal a { text-decoration-thickness: 2px; text-underline-offset: 3px; }
+
+.foot { margin-top: 2rem; padding-top: .9rem; border-top: 1px solid var(--hairline); display: flex; flex-wrap: wrap; justify-content: space-between; gap: .4rem 2rem; font-size: .82rem; color: var(--faint); }
+.foot p { margin: 0; }
+
+@media (max-width: 860px) {
+  .head { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .cell--title { grid-column: 1 / -1; grid-row: 1; border-bottom: 3px solid var(--rule); }
+  .cell + .cell { border-left: 0; }
+  .cell:last-child { border-left: 3px solid var(--rule); }
+  .crew-grid { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 640px) {
+  .head { grid-template-columns: minmax(0, 1fr); }
+  .cell:last-child { border-left: 0; border-top: 3px solid var(--rule); }
+  .sched thead { display: none; }
+  .sched, .sched tbody, .sched td { display: block; width: auto !important; }
+  .sched tr { display: grid; grid-template-columns: 2.4rem minmax(0, 1fr); border-bottom: 1px solid var(--hairline); padding-block: .6rem; }
+  .sched td { border: 0; padding: .05rem 0; white-space: normal !important; }
+  .sched td:first-child { grid-row: span 3; }
+  .sched td:last-child::before { content: "Location: "; color: var(--faint); }
+  .sched tr.premiere { background: var(--highlight); }
+  .crew-row { grid-template-columns: 6.6rem minmax(0, 1fr); }
+  .signoff { grid-template-columns: minmax(0, 1fr); }
+  .stamp { top: 2.4rem; right: .2rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .stamp { animation: none; }
+  .btn { transition: none; }
+}
+</style>
+</head>
+<body>
+<main class="sheet">
+
+  <header class="head">
+    <div class="cell">
+      <p class="k">Production</p>
+      <p class="v">Your film <span style="font-weight:400">(title TBD)</span></p>
+      <p class="k">Presented by</p>
+      <p class="v">MAQET</p>
+      <p class="k">Runtime</p>
+      <p class="v">60 seconds</p>
+      <p class="k">Format</p>
+      <p class="v">Any camera · any genre</p>
+    </div>
+    <div class="cell cell--title">
+      <p class="doc-label">Call sheet</p>
+      <h1>The 1 Minute Film Festival</h1>
+      <p class="dates">Nov 7–8, 2026</p>
+      <div class="tminus">
+        <p class="k" id="tm-label">Crew call in</p>
+        <span class="tm" id="tm">00:00:00:00</span>
+      </div>
+    </div>
+    <div class="cell">
+      <p class="k">Crew call</p>
+      <p class="v"><mark>Sat Nov 7 · 11:00 AM</mark></p>
+      <p class="k">Delivery</p>
+      <p class="v">Sun Nov 8 · 11:00 AM</p>
+      <p class="k">Premiere</p>
+      <p class="v">Sun Nov 8 · 7:00 PM<br>Star Bar</p>
+      <p class="k">Sunset</p>
+      <p class="v">Early. It's November.</p>
+    </div>
+  </header>
+
+  <p class="logline">You get 24 hours to write, shoot and edit a 60-second film. Due Sunday morning, <mark>on screen Sunday night</mark>. Every finished film plays.</p>
+
+  <section class="block" aria-labelledby="sched-title">
+    <div class="block-head"><h2 id="sched-title">Schedule</h2><p>Sat Nov 7 → Sun Nov 8</p></div>
+    <table class="sched">
+      <thead><tr><th>Sc.</th><th>Time</th><th>Description</th><th>Location</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Sat 11:00 AM</td><td>Prompt reveal. Everyone gets it in person. Clock starts.</td><td data-slot="prompt-location">TBA</td></tr>
+        <tr><td>2</td><td>Sat 11 AM → Sun 11 AM</td><td>Write, shoot and edit your 60-second film.</td><td>Wherever you shoot</td></tr>
+        <tr><td>3</td><td>Sun 11:00 AM</td><td>Delivery. Final cut due. Clock stops.</td><td>–</td></tr>
+        <tr class="premiere"><td>4</td><td>Sun 7:00 PM</td><td>Premiere. Every film screens together. Expert panel picks the winners.</td><td>Star Bar</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="block crew" aria-labelledby="crew-title">
+    <div class="block-head"><h2 id="crew-title">Crew</h2><p>Put yourself on the sheet. Teams need 3 or more.</p></div>
+    <div class="crew-grid">
+      <label class="crew-row"><span class="crew-role">Director</span><input class="crew-name" id="crew-director" autocomplete="off" spellcheck="false" placeholder="you?"></label>
+      <label class="crew-row"><span class="crew-role">Writer</span><input class="crew-name" id="crew-writer" autocomplete="off" spellcheck="false"></label>
+      <label class="crew-row"><span class="crew-role">Camera / DOP</span><input class="crew-name" id="crew-camera" autocomplete="off" spellcheck="false"></label>
+      <label class="crew-row"><span class="crew-role">Sound</span><input class="crew-name" id="crew-sound" autocomplete="off" spellcheck="false"></label>
+      <label class="crew-row"><span class="crew-role">Editor</span><input class="crew-name" id="crew-editor" autocomplete="off" spellcheck="false"></label>
+      <label class="crew-row"><span class="crew-role">Cast</span><input class="crew-name" id="crew-cast" autocomplete="off" spellcheck="false"></label>
+    </div>
+    <div class="crew-foot">
+      <p class="crew-status" id="crew-status" aria-live="polite">Write your name on any line.</p>
+      <a class="btn" data-register id="crew-cta" href="#register">Register</a>
+    </div>
+    <p class="crew-privacy">Names stay on this page. The registration form is where you make it official.</p>
+    <div class="stamp" id="stamp" hidden aria-hidden="true">Team ready</div>
+  </section>
+
+  <section class="block" aria-labelledby="notes-title">
+    <div class="block-head"><h2 id="notes-title">General notes</h2></div>
+    <ol class="notes">
+      <li><mark>Every finished film screens</mark> at Star Bar, Sunday Nov 8 at 7PM.</li>
+      <li>Prizes: <mark>$250</mark> first, $100 second, $50 third. Judged by an expert panel.</li>
+      <li>Any camera, including the one in your pocket. Any genre.</li>
+      <li>Runtime is 60 seconds. All writing, shooting and editing happens inside the 24 hours.</li>
+      <li>No team? Register solo and we'll help connect you with one.</li>
+    </ol>
+  </section>
+
+  <section class="signoff" id="register" aria-labelledby="register-title">
+    <div>
+      <p class="k">Make it official</p>
+      <h2 id="register-title">Register before spots fill up</h2>
+      <p class="cal"><span>Add to Google Calendar:</span>
+        <a data-cal="reveal" href="#register" target="_blank" rel="noopener">Crew call</a>
+        <a data-cal="screening" href="#register" target="_blank" rel="noopener">Premiere</a>
+      </p>
+    </div>
+    <a class="btn" data-register id="final-cta" href="#register">Register</a>
+  </section>
+
+  <footer class="foot">
+    <p>The 1 Minute Film Festival · Hosted by MAQET</p>
+    <p id="contact" hidden></p>
+  </footer>
+
+</main>
+
+<script src="config.js"></script>
+<script>
+// Settings (form link, times, contact) live in config.js.
+const FESTIVAL = window.FESTIVAL;
+const $ = (id) => document.getElementById(id);
+const pad = (n) => String(n).padStart(2, "0");
+
+// Register buttons go straight to the Google Form once it exists.
+document.querySelectorAll("[data-register]").forEach((a) => {
+  if (FESTIVAL.formUrl) {
+    a.href = FESTIVAL.formUrl;
+    a.target = "_blank";
+    a.rel = "noopener";
+  }
+});
+if (!FESTIVAL.formUrl) {
+  $("final-cta").textContent = "Opens soon";
+  $("final-cta").setAttribute("aria-disabled", "true");
+  $("final-cta").removeAttribute("href");
+}
+
+if (FESTIVAL.promptLocation) {
+  document.querySelectorAll('[data-slot="prompt-location"]').forEach((el) => { el.textContent = FESTIVAL.promptLocation; });
+}
+
+if (FESTIVAL.contactEmail || FESTIVAL.instagramUrl) {
+  const bits = [];
+  if (FESTIVAL.contactEmail) bits.push(`<a href="mailto:${FESTIVAL.contactEmail}">${FESTIVAL.contactEmail}</a>`);
+  if (FESTIVAL.instagramUrl) bits.push(`<a href="${FESTIVAL.instagramUrl}" target="_blank" rel="noopener">Instagram</a>`);
+  $("contact").innerHTML = bits.join(" · ");
+  $("contact").hidden = false;
+}
+
+// T-minus: crew call → delivery → premiere
+const phases = [
+  { at: Date.parse(FESTIVAL.promptReveal),  label: "Crew call in" },
+  { at: Date.parse(FESTIVAL.submissionDue), label: "Delivery in" },
+  { at: Date.parse(FESTIVAL.screening),     label: "Premiere in" },
+];
+function tick() {
+  const now = Date.now();
+  const phase = phases.find((p) => now < p.at);
+  if (!phase) {
+    $("tm-label").textContent = now < Date.parse(FESTIVAL.screening) + 4 * 3600e3 ? "Now screening" : "That's a wrap";
+    $("tm").textContent = "Star Bar";
+    return;
+  }
+  let s = Math.floor((phase.at - now) / 1000);
+  const d = Math.floor(s / 86400); s -= d * 86400;
+  const h = Math.floor(s / 3600);  s -= h * 3600;
+  const m = Math.floor(s / 60);    s -= m * 60;
+  $("tm-label").textContent = `${phase.label} (days:hrs:min:sec)`;
+  $("tm").textContent = `${pad(d)}:${pad(h)}:${pad(m)}:${pad(s)}`;
+}
+tick();
+setInterval(tick, 1000);
+
+// Crew lines: names are kept in this browser only
+const crewInputs = [...document.querySelectorAll(".crew-name")];
+const STORE = "mff-crew";
+try {
+  const saved = JSON.parse(localStorage.getItem(STORE) || "{}");
+  crewInputs.forEach((input) => { if (saved[input.id]) input.value = saved[input.id]; });
+} catch (e) { /* storage unavailable */ }
+
+let wasTeam = false;
+function updateCrew() {
+  const n = crewInputs.filter((i) => i.value.trim()).length;
+  const status = $("crew-status");
+  const cta = $("crew-cta");
+  if (n === 0) {
+    status.textContent = "Write your name on any line.";
+    cta.textContent = "Register";
+  } else if (n === 1) {
+    status.textContent = "Just you? Register solo and we'll help connect you with a team.";
+    cta.textContent = "Register solo";
+  } else if (n === 2) {
+    status.textContent = "Two down. One more and you're a team.";
+    cta.textContent = "Register";
+  } else {
+    status.textContent = `${n} names on the sheet. That's a team.`;
+    cta.textContent = "Register your team";
+  }
+  const isTeam = n >= 3;
+  if (isTeam !== wasTeam) $("stamp").hidden = !isTeam;
+  wasTeam = isTeam;
+}
+crewInputs.forEach((input) => input.addEventListener("input", () => {
+  updateCrew();
+  try {
+    const data = {};
+    crewInputs.forEach((i) => { if (i.value.trim()) data[i.id] = i.value; });
+    localStorage.setItem(STORE, JSON.stringify(data));
+  } catch (e) { /* storage unavailable */ }
+}));
+updateCrew();
+
+// Google Calendar links
+const gcal = (title, start, minutes, location) => {
+  const stamp = (d) => d.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
+  const s = new Date(start);
+  const e = new Date(s.getTime() + minutes * 60000);
+  const params = new URLSearchParams({
+    action: "TEMPLATE",
+    text: title,
+    dates: `${stamp(s)}/${stamp(e)}`,
+    details: "The 1 Minute Film Festival, hosted by MAQET. Write, shoot and edit a 60-second film in 24 hours.",
+    location: location || "",
+  });
+  return `https://calendar.google.com/calendar/render?${params}`;
+};
+const calEvents = {
+  reveal:    gcal("1 Minute Film Festival: prompt reveal", FESTIVAL.promptReveal, 60, FESTIVAL.promptLocation),
+  screening: gcal("1 Minute Film Festival: screening", FESTIVAL.screening, 120, "Star Bar"),
+};
+document.querySelectorAll("[data-cal]").forEach((a) => { a.href = calEvents[a.dataset.cal]; });
+</script>
+</body>
+</html>

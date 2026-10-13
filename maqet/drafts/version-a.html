@@ -1,0 +1,883 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The 1 Minute Film Festival</title>
+<meta name="description" content="Write, shoot and edit a 60-second short film in 24 hours. Hosted by MAQET, Nov 7–8. Every film screens together at Star Bar, Sunday 7PM. $250 top prize.">
+<meta property="og:title" content="The 1 Minute Film Festival · hosted by MAQET">
+<meta property="og:description" content="24 hours. 60 seconds. Any camera, any genre. Screening Sunday Nov 8, 7PM at Star Bar. $250 / $100 / $50 prizes.">
+<meta name="theme-color" content="#C23A0B">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Courier+Prime:wght@400;700&family=IM+Fell+English:ital@0;1&display=swap">
+<style>
+/* Layout: the flyer as a scrolling page. A thick orange frame around white paper; every block is a strip of cut, colored paper, tilted a degree or two and stacked down the sheet. */
+:root {
+  --frame: #C23A0B;
+  --paper: #FFFFFF;
+  --ink: #0B0B0B;
+  --green: #0F9A6C;
+  --magenta: #E3157D;
+  --mustard: #CDBF00;
+  --navy: #0B2DA3;
+  --blue: #0B10A6;
+  --brick: #980C0C;
+  --aqua: #84F5EF;
+  --lemon: #FFF400;
+  --butter: #FFEE5C;
+  --cobalt: #1A27E0;
+  --lime: #1BFF3E;
+  --olive: #A07B12;
+  --bulb: #FFE9A6;
+  --arrow: #EEF2F8;
+  --arrow-edge: #D2291B;
+
+  --display: "Anton", Impact, "Arial Narrow", sans-serif;
+  --serif: "IM Fell English", "Iowan Old Style", Palatino, Georgia, serif;
+  --mono: "Courier Prime", "Courier New", Courier, monospace;
+
+  --step-0: 1.2rem;
+  --step-1: clamp(1.35rem, 2.4vw, 1.65rem);
+  --step-2: clamp(1.55rem, 3.4vw, 2.4rem);
+  --step-3: clamp(2.1rem, 5.6vw, 3.9rem);
+  --step-4: clamp(2.7rem, 8.4vw, 6.6rem);
+  color-scheme: light;
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--frame);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: var(--step-0);
+  line-height: 1.45;
+  padding-inline: clamp(10px, 2.4vw, 36px);
+  padding-block: clamp(10px, 2.4vw, 36px);
+}
+.paper {
+  background: var(--paper);
+  max-width: 1240px;
+  margin: 0 auto;
+  padding-inline: clamp(16px, 4.5vw, 64px);
+  padding-block: 18px 40px;
+  overflow-x: clip;
+}
+a { color: inherit; }
+h1, h2, h3 { text-wrap: balance; }
+
+/* ── top bar ─────────────────────────────── */
+.topbar {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+  gap: .6rem 1.5rem;
+  padding-block: .2rem 1.4rem;
+  font-family: var(--mono); font-size: .88rem; text-transform: uppercase; letter-spacing: .06em;
+}
+.topbar nav { display: flex; flex-wrap: wrap; align-items: center; gap: .3rem 1.1rem; }
+.topbar a { text-decoration: none; }
+.topbar a:hover { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 3px; }
+.brand { font-weight: 700; }
+.nav-cta { background: var(--ink); color: var(--paper); padding: .2em .6em; }
+a:focus-visible, .btn:focus-visible { outline: 3px dashed var(--navy); outline-offset: 4px; }
+
+/* ── hero ────────────────────────────────── */
+.hero { display: flex; flex-direction: column; align-items: flex-start; gap: 1.3rem; }
+.title {
+  margin: 0;
+  font-family: var(--display); font-weight: 400;
+  font-size: var(--step-4); line-height: .95;
+  text-transform: uppercase;
+  color: var(--green);
+  text-shadow: .045em .04em 0 var(--magenta);
+}
+.byline {
+  align-self: flex-end;
+  display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 0 .5em;
+  margin: -.6rem 0 0;
+  font-family: var(--display); font-size: var(--step-3); line-height: 1;
+  text-transform: uppercase;
+  text-shadow: .05em .045em 0 var(--magenta);
+}
+.byline .host { color: var(--mustard); }
+.byline .dates { color: var(--navy); }
+
+.strip {
+  width: fit-content; max-width: 100%;
+  margin: 0;
+  padding: .4em .85em .5em;
+  font-size: var(--step-2); line-height: 1.12;
+  rotate: var(--tilt, -1.5deg);
+  clip-path: polygon(0 7%, 38% 2%, 71% 6%, 100% 0, 99.2% 93%, 64% 100%, 30% 95%, .6% 100%);
+  text-wrap: balance;
+}
+.strip--brick { background: var(--brick); color: var(--aqua); }
+.strip--blue { background: var(--blue); color: var(--butter); text-transform: uppercase; letter-spacing: .02em; align-self: flex-end; }
+
+.call {
+  width: 100%;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) minmax(260px, 340px);
+  align-items: center;
+  gap: 1rem 2rem;
+  margin-top: .8rem;
+}
+.are-you { font-size: var(--step-2); line-height: 1.15; }
+.are-you p { margin: 0 0 .15em; }
+.are-you ul { list-style: none; margin: 0; padding: 0; }
+.are-you li::before { content: "–"; }
+
+.marquee { width: 100%; max-width: 420px; height: auto; justify-self: center; rotate: -30deg; overflow: visible; }
+.marquee path { fill: var(--arrow); stroke: var(--arrow-edge); stroke-width: 18; stroke-linejoin: miter; }
+.bulbs { filter: drop-shadow(0 0 3px var(--bulb)); }
+.bulbs circle {
+  fill: var(--bulb); stroke: var(--brick); stroke-width: 1.2;
+  animation: chase .9s linear infinite;
+  animation-delay: calc((var(--k) - 3) * .3s);
+}
+@keyframes chase { 0%, 32% { opacity: 1; } 34%, 100% { opacity: .3; } }
+
+.reg-tile {
+  display: grid; justify-items: center; gap: .55rem;
+  text-align: center;
+  background: var(--lime); color: var(--brick);
+  border: 16px solid var(--olive);
+  padding: 1.1rem 1rem 1.2rem;
+  rotate: -3deg;
+}
+.cd-label { font-family: var(--mono); font-weight: 700; font-size: .85rem; letter-spacing: .1em; text-transform: uppercase; margin: 0; }
+.cd {
+  display: flex; align-items: flex-start; gap: .08em;
+  background: var(--ink); color: var(--paper);
+  padding: .28em .4em .32em;
+  font-family: var(--display); font-size: clamp(2rem, 3.6vw, 2.6rem); line-height: 1;
+}
+.cd-unit { display: grid; justify-items: center; gap: .2rem; }
+.cd-unit b { font-weight: 400; display: inline-block; width: 1.12em; text-align: center; font-variant-numeric: tabular-nums; }
+.cd-unit i { font-style: normal; font-family: var(--mono); font-size: .68rem; letter-spacing: .1em; text-transform: uppercase; opacity: .8; }
+.cd-sep { opacity: .55; }
+.cd-done { font-family: var(--display); font-size: clamp(1.6rem, 3vw, 2.1rem); line-height: 1.05; text-transform: uppercase; margin: 0; color: var(--ink); }
+.tile-cta {
+  font-family: var(--display); font-size: clamp(2rem, 3.8vw, 2.7rem); line-height: 1;
+  text-transform: uppercase; text-decoration: none;
+  color: var(--brick);
+}
+.tile-cta:hover { text-decoration: underline; text-decoration-thickness: 3px; text-underline-offset: 4px; }
+.tile-sub { margin: -.35rem 0 0; font-size: 1.15rem; color: var(--ink); }
+
+/* ── sections ────────────────────────────── */
+.section { margin-top: clamp(3.5rem, 8vw, 6rem); }
+.cut {
+  width: fit-content; max-width: 100%;
+  margin: 0 0 1.4rem;
+  padding: .1em .5em .22em;
+  background: var(--ink); color: var(--paper);
+  font-family: var(--serif); font-weight: 400;
+  font-size: var(--step-3); line-height: 1.05;
+  rotate: var(--tilt, -1deg);
+  clip-path: polygon(0 4%, 55% 0, 100% 6%, 98.5% 100%, 46% 93%, 1% 100%);
+}
+.lede { font-size: var(--step-1); max-width: 42ch; margin: 0 0 1.8rem; }
+
+/* film strip timeline */
+.filmstrip {
+  list-style: none; margin: 0;
+  padding: 40px 16px;
+  background: var(--ink);
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px;
+  position: relative;
+  rotate: -.6deg;
+}
+.filmstrip::before, .filmstrip::after {
+  content: ""; position: absolute; inset-inline: 8px; height: 14px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='14'%3E%3Crect x='6' y='1' width='16' height='12' rx='3' fill='%23ffffff'/%3E%3C/svg%3E") repeat-x left center / 28px 14px;
+}
+.filmstrip::before { top: 13px; }
+.filmstrip::after { bottom: 13px; }
+.frame { padding: 1.1rem 1.1rem 1.3rem; display: grid; align-content: start; gap: .5rem; min-width: 0; }
+.slug { margin: 0; font-family: var(--mono); font-weight: 700; font-size: .85rem; letter-spacing: .06em; text-transform: uppercase; }
+.frame h3 { margin: 0; font-family: var(--display); font-weight: 400; font-size: clamp(1.6rem, 2.4vw, 2rem); line-height: 1; text-transform: uppercase; }
+.frame p:not(.slug) { margin: 0; }
+.frame--lemon { background: var(--lemon); color: var(--cobalt); }
+.frame--brick { background: var(--brick); color: var(--aqua); }
+.frame--blue { background: var(--blue); color: var(--butter); }
+.frame--lime { background: var(--lime); color: var(--brick); }
+
+/* two ways in */
+.ways { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: 1rem 1.6rem; }
+.way {
+  background: var(--lemon); color: var(--cobalt);
+  padding: 1.4rem 1.6rem 1.6rem;
+  rotate: var(--tilt);
+  clip-path: polygon(0 3%, 60% 0, 100% 4%, 98.6% 100%, 40% 96%, 1% 100%);
+}
+.way h3 { margin: .25rem 0 .6rem; font-family: var(--serif); font-weight: 400; font-size: var(--step-2); line-height: 1.1; }
+.way p { margin: 0; }
+.kicker { margin: 0; font-family: var(--mono); font-weight: 700; font-size: .85rem; letter-spacing: .08em; text-transform: uppercase; }
+.or { margin: 0; font-family: var(--serif); font-size: var(--step-3); color: var(--cobalt); line-height: 1; }
+
+/* prizes */
+.tickets { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.25rem; }
+.ticket {
+  --notch: 15px;
+  display: grid; grid-template-columns: minmax(0, 1fr) auto;
+  min-height: 9.5rem;
+  rotate: var(--tilt);
+  -webkit-mask:
+    radial-gradient(circle var(--notch) at 0 50%, #0000 98%, #000) left / 51% 100% no-repeat,
+    radial-gradient(circle var(--notch) at 100% 50%, #0000 98%, #000) right / 51% 100% no-repeat;
+  mask:
+    radial-gradient(circle var(--notch) at 0 50%, #0000 98%, #000) left / 51% 100% no-repeat,
+    radial-gradient(circle var(--notch) at 100% 50%, #0000 98%, #000) right / 51% 100% no-repeat;
+}
+.ticket-main { padding: 1rem 1rem 1.1rem 1.8rem; display: grid; align-content: center; gap: .15rem; min-width: 0; }
+.ticket-place { margin: 0; font-family: var(--mono); font-weight: 700; font-size: .85rem; letter-spacing: .1em; text-transform: uppercase; }
+.ticket-amount { margin: 0; font-family: var(--display); font-size: clamp(3.2rem, 6vw, 4.6rem); line-height: 1; }
+.ticket-stub { display: grid; place-items: center; border-inline-start: 3px dashed currentColor; padding: .8rem 1.5rem .8rem .9rem; }
+.ticket-stub span { writing-mode: vertical-rl; transform: rotate(180deg); font-family: var(--mono); font-weight: 700; font-size: .8rem; letter-spacing: .14em; text-transform: uppercase; }
+.ticket--1 { background: var(--lemon); color: var(--brick); }
+.ticket--2 { background: var(--blue); color: var(--butter); }
+.ticket--3 { background: var(--brick); color: var(--aqua); }
+.judges { margin: 1.6rem 0 0; font-size: var(--step-1); }
+
+/* rules */
+.rules { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 2rem 3.5rem; align-items: start; }
+.black-strips { display: grid; gap: .9rem; justify-items: start; }
+.black-strips span {
+  background: var(--ink); color: var(--paper);
+  font-size: var(--step-2); line-height: 1.1;
+  padding: .1em .45em .2em;
+  rotate: var(--tilt);
+  clip-path: polygon(0 6%, 50% 0, 100% 8%, 98% 100%, 45% 92%, 1% 100%);
+}
+.rule-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 1rem; }
+.rule-list li { position: relative; padding-left: 1.4rem; max-width: 54ch; }
+.rule-list li::before { content: "–"; position: absolute; left: 0; }
+.rule-list strong { font-family: var(--display); font-weight: 400; text-transform: uppercase; letter-spacing: .01em; color: var(--brick); }
+
+/* faq */
+.faq { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.6rem 3rem; margin: 0; }
+.faq div { border-top: 3px solid var(--ink); padding-top: .8rem; min-width: 0; }
+.faq dt { font-size: var(--step-1); font-style: italic; line-height: 1.2; }
+.faq dd { margin: .45rem 0 0; max-width: 56ch; }
+
+/* register */
+.register { display: grid; gap: 1.6rem; justify-items: center; }
+.reg-panel {
+  width: 100%; max-width: 46rem;
+  display: grid; justify-items: center; gap: .8rem;
+  text-align: center;
+  background: var(--lime); color: var(--brick);
+  border: clamp(14px, 2.4vw, 22px) solid var(--olive);
+  padding: 2rem clamp(1rem, 4vw, 3rem) 2.3rem;
+  rotate: -1deg;
+}
+.reg-panel h2 { margin: 0; font-family: var(--display); font-weight: 400; font-size: var(--step-3); line-height: 1; text-transform: uppercase; }
+.reg-panel p { margin: 0; color: var(--ink); max-width: 40ch; }
+.reg-panel .tile-sub { margin-top: -.3rem; }
+.btn {
+  display: inline-block; margin-top: .4rem;
+  background: var(--brick); color: var(--paper);
+  font-family: var(--display); font-size: 1.45rem; letter-spacing: .03em; text-transform: uppercase; text-decoration: none;
+  padding: .55em 1.2em .6em;
+  box-shadow: 5px 5px 0 var(--ink);
+  transition: translate .15s ease, box-shadow .15s ease;
+}
+.btn:hover { translate: -2px -2px; box-shadow: 7px 7px 0 var(--ink); }
+.reg-pending { font-family: var(--mono); font-weight: 700; font-size: .95rem; letter-spacing: .04em; text-transform: uppercase; background: var(--ink); color: var(--lime) !important; padding: .5em .9em; }
+.form-embed { width: 100%; max-width: 46rem; background: var(--paper); border: 3px solid var(--ink); }
+.form-embed iframe { display: block; width: 100%; height: 1600px; border: 0; }
+
+/* footer */
+.foot {
+  margin-top: clamp(3.5rem, 8vw, 5rem);
+  padding-top: 1.2rem;
+  border-top: 3px solid var(--ink);
+  display: flex; flex-wrap: wrap; justify-content: space-between; gap: .6rem 2rem;
+  font-family: var(--mono); font-size: .9rem;
+}
+.foot p { margin: 0; }
+.foot strong { font-weight: 700; text-transform: uppercase; letter-spacing: .06em; }
+
+/* paper straightens when you touch it; the marquee speeds up near the register tile */
+.strip, .cut, .way, .ticket, .black-strips span, .reg-tile { transition: rotate .25s ease, translate .25s ease; }
+.strip:hover, .cut:hover, .way:hover, .ticket:hover, .black-strips span:hover { rotate: 0deg; }
+.reg-tile:hover { rotate: -1deg; translate: 0 -3px; }
+.call:has(.reg-tile:hover) .bulbs circle { animation-duration: .45s; }
+
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+/* 24-hour planner: an editing timeline you scrub */
+.plan { margin-top: 2.8rem; display: grid; gap: 1rem; }
+.plan-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: .3rem 1.5rem; }
+.plan-head h3 { margin: 0; font-family: var(--serif); font-weight: 400; font-size: var(--step-2); line-height: 1.1; }
+.plan-head p { margin: 0; font-family: var(--mono); font-size: .88rem; }
+.nle { background: var(--ink); color: var(--paper); padding: 1.1rem clamp(.9rem, 2.5vw, 1.5rem) 1.3rem; display: grid; gap: 1.1rem; }
+.nle-readout { display: grid; grid-template-columns: minmax(11rem, auto) minmax(0, 1fr); gap: .6rem 2rem; align-items: start; min-height: 5.2rem; }
+.nle-clock { margin: 0; font-family: var(--display); font-size: clamp(2rem, 4.4vw, 2.9rem); line-height: 1; color: var(--lemon); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.nle-meta { margin: .4rem 0 0; font-family: var(--mono); font-size: .8rem; letter-spacing: .08em; text-transform: uppercase; color: var(--paper); opacity: .75; }
+.nle-phase { margin: 0; font-family: var(--display); font-size: 1.5rem; line-height: 1; text-transform: uppercase; color: var(--aqua); }
+.nle-tip { margin: .35rem 0 0; max-width: 52ch; }
+.nle-live { display: inline-block; margin-left: .5rem; padding: .05em .4em; background: var(--magenta); color: var(--paper); font-family: var(--mono); font-size: .75rem; letter-spacing: .1em; vertical-align: middle; }
+.nle-timeline { position: relative; padding-top: 1.5rem; }
+.nle-ruler { position: absolute; top: 0; left: 0; right: 0; height: 1.2rem; }
+.nle-ruler span { position: absolute; translate: -50% 0; font-family: var(--mono); font-size: .72rem; color: var(--paper); opacity: .7; white-space: nowrap; }
+.nle-ruler span:first-child { translate: 0 0; }
+.nle-ruler span:last-child { translate: -100% 0; }
+.nle-track { position: relative; height: 3.2rem; }
+.clip {
+  position: absolute; top: 0; bottom: 0;
+  display: flex; align-items: center; padding-inline: .45rem;
+  font-family: var(--display); font-size: .95rem; text-transform: uppercase;
+  overflow: hidden; white-space: nowrap;
+  border-inline-end: 2px solid var(--ink);
+}
+.clip--write { background: var(--lemon); color: var(--cobalt); }
+.clip--shoot { background: var(--brick); color: var(--aqua); }
+.clip--edit { background: var(--blue); color: var(--butter); }
+.clip--sleep { background: repeating-linear-gradient(-45deg, var(--ink) 0 6px, var(--olive) 6px 8px); color: var(--paper); }
+.clip--polish { background: var(--lime); color: var(--brick); }
+.clip--deliver { background: var(--magenta); color: var(--paper); }
+.nle-playhead { position: absolute; top: 1.2rem; bottom: -.35rem; left: 0; width: 3px; translate: -50% 0; background: var(--paper); pointer-events: none; }
+.nle-playhead::before { content: ""; position: absolute; top: 0; left: 50%; translate: -50% 0; width: 15px; height: 12px; background: var(--paper); clip-path: polygon(0 0, 100% 0, 100% 55%, 50% 100%, 0 55%); }
+.nle-range { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: ew-resize; }
+.nle-timeline:has(.nle-range:focus-visible) { outline: 3px dashed var(--lemon); outline-offset: 6px; }
+.cal { margin: 1.6rem 0 0; font-family: var(--mono); font-size: .9rem; display: flex; flex-wrap: wrap; gap: .3rem .9rem; align-items: baseline; }
+.cal span { font-weight: 700; text-transform: uppercase; letter-spacing: .06em; }
+.cal a { text-decoration-thickness: 2px; text-underline-offset: 3px; }
+
+/* practice prompt: a clapperboard you spin */
+.slate { max-width: 54rem; rotate: -.7deg; }
+.slate-stick {
+  height: 2.6rem;
+  background: repeating-linear-gradient(-55deg, var(--ink) 0 26px, var(--paper) 26px 52px);
+  border: 4px solid var(--ink);
+  transform-origin: 0 100%;
+  rotate: -3deg;
+  transition: rotate .1s ease-in;
+}
+.slate.open .slate-stick { rotate: -17deg; transition-duration: .18s; transition-timing-function: ease-out; }
+.slate-body { background: var(--ink); color: var(--paper); padding: 1.1rem clamp(1rem, 3vw, 1.8rem) 1.4rem; }
+.reels { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin: 0; border: 2px solid var(--paper); }
+.reel { padding: .7rem .9rem .8rem; border: 1px solid var(--paper); min-width: 0; }
+.reel--line { grid-column: 1 / -1; }
+.reel dt { font-family: var(--mono); font-size: .76rem; letter-spacing: .14em; text-transform: uppercase; opacity: .75; }
+.reel dd { margin: .25rem 0 0; font-size: var(--step-1); line-height: 1.2; }
+.reel:nth-child(1) dd { color: var(--lemon); }
+.reel:nth-child(2) dd { color: var(--aqua); }
+.reel:nth-child(3) dd { color: var(--lime); }
+.reel:nth-child(4) dd { color: var(--butter); font-style: italic; }
+.slate-foot { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1rem; margin-top: 1.2rem; }
+.slate-take { margin: 0; font-family: var(--mono); font-size: .9rem; letter-spacing: .12em; text-transform: uppercase; }
+.btn--light { background: var(--lime); color: var(--ink); box-shadow: 5px 5px 0 var(--magenta); border: 0; cursor: pointer; }
+.btn--light:hover { box-shadow: 7px 7px 0 var(--magenta); }
+
+/* ── responsive ──────────────────────────── */
+@media (max-width: 1000px) {
+  .filmstrip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 860px) {
+  .call { grid-template-columns: minmax(0, 1fr); justify-items: center; }
+  .are-you { justify-self: start; }
+  .are-you ul { columns: 2; column-gap: 1.6rem; }
+  .marquee { max-width: 190px; rotate: 72deg; margin-block: 3.2rem 2.6rem; }
+  .reg-tile { width: 100%; max-width: 360px; }
+}
+@media (max-width: 760px) {
+  .ways, .rules, .faq { grid-template-columns: minmax(0, 1fr); }
+  .or { justify-self: center; }
+  .tickets { grid-template-columns: minmax(0, 1fr); max-width: 26rem; }
+  .filmstrip { grid-template-columns: minmax(0, 1fr); padding: 14px 40px; rotate: 0deg; }
+  .filmstrip::before, .filmstrip::after {
+    inset-inline: auto; inset-block: 8px; width: 14px; height: auto;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='28'%3E%3Crect x='1' y='6' width='12' height='16' rx='3' fill='%23ffffff'/%3E%3C/svg%3E") repeat-y center top / 14px 28px;
+  }
+  .filmstrip::before { left: 13px; top: 8px; }
+  .filmstrip::after { right: 13px; bottom: 8px; }
+  .nle-readout { grid-template-columns: minmax(0, 1fr); min-height: 9.5rem; }
+  .nle-ruler .odd { display: none; }
+  .clip { font-size: .72rem; padding-inline: .25rem; }
+  .reels { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 600px) {
+  .nav-optional { display: none; }
+  .title { font-size: 15vw; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .bulbs circle { animation: none; }
+  .btn, .strip, .cut, .way, .ticket, .black-strips span, .reg-tile, .slate-stick { transition: none; }
+}
+</style>
+</head>
+<body>
+<main class="paper" id="top">
+
+  <header class="topbar">
+    <span class="brand">MAQET presents</span>
+    <nav aria-label="Sections">
+      <a href="#how">How it works</a>
+      <a class="nav-optional" href="#warmup">Warm up</a>
+      <a class="nav-optional" href="#join">Join</a>
+      <a href="#prizes">Prizes</a>
+      <a class="nav-optional" href="#rules">Rules</a>
+      <a class="nav-optional" href="#faq">FAQ</a>
+      <a class="nav-cta" href="#register">Register</a>
+    </nav>
+  </header>
+
+  <section class="hero" aria-labelledby="festival-title">
+    <h1 class="title" id="festival-title">The 1 Minute Film Festival</h1>
+    <p class="byline"><span class="host">Hosted by MAQET</span> <span class="dates">Nov 7–8</span></p>
+    <p class="strip strip--brick" style="--tilt:-2deg">The Challenge: Write, Shoot and Edit a 60&nbsp;second short film within 24&nbsp;hours</p>
+    <p class="strip strip--blue" style="--tilt:1.4deg">All works will be screened together @ Star Bar @ 7PM · Sunday</p>
+
+    <div class="call">
+      <div class="are-you">
+        <p>Are you a:</p>
+        <ul>
+          <li>Writer?</li>
+          <li>Director?</li>
+          <li>Editor?</li>
+          <li>DOP?</li>
+          <li>Sound?</li>
+          <li>Actor?</li>
+        </ul>
+      </div>
+
+      <svg class="marquee" viewBox="0 0 400 160" aria-hidden="true">
+        <path id="arrow-shape" d="M0 45 H250 L226 4 L398 80 L226 156 L250 115 H0 L40 80 Z"/>
+        <g class="bulbs" id="bulbs"></g>
+      </svg>
+
+      <div class="reg-tile">
+        <p class="cd-label" id="cd-label">Prompt drops in</p>
+        <div class="cd" id="cd" role="timer" aria-labelledby="cd-label">
+          <span class="cd-unit"><b id="cd-d">--</b><i>days</i></span><span class="cd-sep">:</span>
+          <span class="cd-unit"><b id="cd-h">--</b><i>hrs</i></span><span class="cd-sep">:</span>
+          <span class="cd-unit"><b id="cd-m">--</b><i>min</i></span><span class="cd-sep">:</span>
+          <span class="cd-unit"><b id="cd-s">--</b><i>sec</i></span>
+        </div>
+        <p class="cd-done" id="cd-done" hidden></p>
+        <a class="tile-cta" href="#register">Register now!</a>
+        <p class="tile-sub">(before spots fill up)</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="how" aria-labelledby="how-title">
+    <h2 class="cut" id="how-title" style="--tilt:-1.4deg">how it works</h2>
+    <p class="lede">One prompt, 24 hours, 60 seconds of film. Here's the weekend, start to finish.</p>
+    <ol class="filmstrip">
+      <li class="frame frame--lemon">
+        <p class="slug">Sat Nov 7 · 11:00 AM</p>
+        <h3>The prompt drops</h3>
+        <p>Shared with everyone, in person. <span data-slot="prompt-location">Location to be announced.</span> The 24-hour clock starts.</p>
+      </li>
+      <li class="frame frame--brick">
+        <p class="slug">Sat → Sun · 24 hrs</p>
+        <h3>Write. Shoot. Edit.</h3>
+        <p>Any camera, any genre. Script it, film it and cut it before the clock runs out. Sleep optional.</p>
+      </li>
+      <li class="frame frame--blue">
+        <p class="slug">Sun Nov 8 · 11:00 AM</p>
+        <h3>Final cut due</h3>
+        <p>Submit your finished 60-second film. The clock stops.</p>
+      </li>
+      <li class="frame frame--lime">
+        <p class="slug">INT. Star Bar · 7:00 PM</p>
+        <h3>Screening night</h3>
+        <p>Sunday, Nov 8. Every film screens together, and our expert panel picks the winners.</p>
+      </li>
+    </ol>
+
+    <div class="plan">
+      <div class="plan-head">
+        <h3>Scrub through your 24 hours</h3>
+        <p>Drag the playhead. One way to split the time; your team, your call.</p>
+      </div>
+      <div class="nle">
+        <div class="nle-readout">
+          <div>
+            <p class="nle-clock" id="nle-clock">Sat 11:00 AM</p>
+            <p class="nle-meta" id="nle-meta">00:00 in · 24:00 left</p>
+          </div>
+          <div aria-live="polite">
+            <p class="nle-phase"><span id="nle-phase">Write</span><span class="nle-live" id="nle-live" hidden>Live</span></p>
+            <p class="nle-tip" id="nle-tip">Break down the prompt, lock a script and make a shot list. A page of script runs about a minute.</p>
+          </div>
+        </div>
+        <div class="nle-timeline">
+          <div class="nle-ruler" id="nle-ruler" aria-hidden="true"></div>
+          <div class="nle-track" id="nle-track" aria-hidden="true"></div>
+          <div class="nle-playhead" id="nle-playhead" aria-hidden="true"></div>
+          <input class="nle-range" id="nle-range" type="range" min="0" max="24" step="0.25" value="0" aria-label="Hour of the 24-hour challenge">
+        </div>
+      </div>
+    </div>
+
+    <p class="cal"><span>Add to Google Calendar:</span>
+      <a data-cal="reveal" href="#how" target="_blank" rel="noopener">Prompt reveal</a>
+      <a data-cal="due" href="#how" target="_blank" rel="noopener">Final cut due</a>
+      <a data-cal="screening" href="#how" target="_blank" rel="noopener">Screening</a>
+    </p>
+  </section>
+
+  <section class="section" id="warmup" aria-labelledby="warmup-title">
+    <h2 class="cut" id="warmup-title" style="--tilt:1.2deg">warm up</h2>
+    <p class="lede">The real prompt drops in person on Saturday. Until then, practice on one of these.</p>
+    <div class="slate" id="slate">
+      <div class="slate-stick" aria-hidden="true"></div>
+      <div class="slate-body">
+        <dl class="reels">
+          <div class="reel"><dt>Genre</dt><dd id="reel-genre">Film noir</dd></div>
+          <div class="reel"><dt>Character</dt><dd id="reel-character">a wedding DJ</dd></div>
+          <div class="reel"><dt>Prop</dt><dd id="reel-prop">a rubber duck</dd></div>
+          <div class="reel reel--line"><dt>Line of dialogue</dt><dd id="reel-line">“Is it still running?”</dd></div>
+        </dl>
+        <div class="slate-foot">
+          <p class="slate-take">Practice prompt · Take <span id="take">1</span></p>
+          <button class="btn btn--light" id="spin" type="button">Spin a new prompt</button>
+        </div>
+        <p class="sr-only" id="spin-status" aria-live="polite"></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="join" aria-labelledby="join-title">
+    <h2 class="cut" id="join-title" style="--tilt:1deg">two ways in</h2>
+    <div class="ways">
+      <article class="way" style="--tilt:-1.2deg">
+        <p class="kicker">Got a crew?</p>
+        <h3>Join as a team</h3>
+        <p>Teams need at least 3 people. One person registers the whole team and lists everyone on the form.</p>
+      </article>
+      <p class="or">OR</p>
+      <article class="way" style="--tilt:1.3deg">
+        <p class="kicker">Flying solo?</p>
+        <h3>Register solo &amp; we'll help connect you with a team</h3>
+        <p>Writers, directors, editors, camera people, sound recordists, actors, producers, composers: tell us what you do and we'll help you find your crew.</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="section" id="prizes" aria-labelledby="prizes-title">
+    <h2 class="cut" id="prizes-title" style="--tilt:-.8deg">the prizes</h2>
+    <div class="tickets">
+      <article class="ticket ticket--1" style="--tilt:-1.5deg">
+        <div class="ticket-main">
+          <p class="ticket-place">1st place</p>
+          <p class="ticket-amount">$250</p>
+        </div>
+        <div class="ticket-stub"><span>Admit one</span></div>
+      </article>
+      <article class="ticket ticket--2" style="--tilt:.8deg">
+        <div class="ticket-main">
+          <p class="ticket-place">2nd place</p>
+          <p class="ticket-amount">$100</p>
+        </div>
+        <div class="ticket-stub"><span>Admit one</span></div>
+      </article>
+      <article class="ticket ticket--3" style="--tilt:-.6deg">
+        <div class="ticket-main">
+          <p class="ticket-place">3rd place</p>
+          <p class="ticket-amount">$50</p>
+        </div>
+        <div class="ticket-stub"><span>Admit one</span></div>
+      </article>
+    </div>
+    <p class="judges">Every film is judged by an expert panel.</p>
+  </section>
+
+  <section class="section" id="rules" aria-labelledby="rules-title">
+    <h2 class="cut" id="rules-title" style="--tilt:1.2deg">the rules</h2>
+    <div class="rules">
+      <div class="black-strips" aria-label="The short version">
+        <span style="--tilt:-2deg">any camera</span>
+        <span style="--tilt:1.5deg">any genre</span>
+        <span style="--tilt:-1deg">anything 60 seconds</span>
+      </div>
+      <ul class="rule-list">
+        <li><strong>60 seconds.</strong> Your film runs one minute.</li>
+        <li><strong>Use the prompt.</strong> It's revealed in person at 11:00 AM on Saturday, Nov 7.</li>
+        <li><strong>Make it in the window.</strong> All writing, shooting and editing happens between 11:00 AM Saturday and 11:00 AM Sunday.</li>
+        <li><strong>Teams of 3 or more.</strong> No team yet? Register solo and we'll help connect you with one.</li>
+        <li><strong>Submit by 11:00 AM Sunday.</strong> Final submissions close Sunday, Nov 8 at 11:00 AM.</li>
+        <li><strong>Everything screens.</strong> All works play together at Star Bar on Sunday at 7PM.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section" id="faq" aria-labelledby="faq-title">
+    <h2 class="cut" id="faq-title" style="--tilt:-1.2deg">questions</h2>
+    <dl class="faq">
+      <div>
+        <dt>Do I need a team to sign up?</dt>
+        <dd>No. Register solo and we'll help connect you with a team. Teams need at least 3 people.</dd>
+      </div>
+      <div>
+        <dt>What can I shoot on?</dt>
+        <dd>Any camera. Phone, DSLR, camcorder or cinema camera: if it records video, it counts.</dd>
+      </div>
+      <div>
+        <dt>Where do we get the prompt?</dt>
+        <dd>In person at 11:00 AM on Saturday, Nov 7. <span data-slot="prompt-location">Location to be announced.</span></dd>
+      </div>
+      <div>
+        <dt>Can we start before the prompt?</dt>
+        <dd>Get your team and gear ready ahead of time. The writing, shooting and editing all happen after the prompt drops.</dd>
+      </div>
+      <div>
+        <dt>Who picks the winners?</dt>
+        <dd>An expert panel. First place takes $250, second $100 and third $50.</dd>
+      </div>
+      <div>
+        <dt>When and where is the screening?</dt>
+        <dd>Sunday, Nov 8 at 7PM at Star Bar. Every finished film screens together.</dd>
+      </div>
+    </dl>
+  </section>
+
+  <section class="section register" id="register" aria-labelledby="register-title">
+    <div class="reg-panel">
+      <h2 id="register-title">Register NOW!</h2>
+      <p class="tile-sub">(before spots fill up)</p>
+      <p>One form for teams and solo filmmakers. Writers, directors, editors, camera, sound, actors: everyone signs up here.</p>
+      <a class="btn" id="form-link" href="#register" target="_blank" rel="noopener" hidden>Open the registration form</a>
+      <p class="reg-pending" id="form-pending">Registration form opens soon</p>
+    </div>
+    <div class="form-embed" id="form-embed" hidden></div>
+  </section>
+
+  <footer class="foot">
+    <p><strong>The 1 Minute Film Festival</strong> · Hosted by MAQET · Nov 7–8, 2026</p>
+    <p>Screening Sunday 7PM at Star Bar</p>
+    <p id="contact" hidden>Questions? <span id="contact-email"></span><span id="contact-sep" hidden> · </span><a id="contact-ig" href="#" target="_blank" rel="noopener" hidden>Instagram</a></p>
+  </footer>
+
+</main>
+
+<script src="config.js"></script>
+<script>
+// Settings (form link, times, contact) live in config.js.
+const FESTIVAL = window.FESTIVAL;
+const $ = (id) => document.getElementById(id);
+const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+// Prompt location
+if (FESTIVAL.promptLocation) {
+  document.querySelectorAll('[data-slot="prompt-location"]').forEach((el) => {
+    el.textContent = `At ${FESTIVAL.promptLocation}.`;
+  });
+}
+
+// Registration form: button + optional embed
+if (FESTIVAL.formUrl) {
+  $("form-link").href = FESTIVAL.formUrl;
+  $("form-link").hidden = false;
+  $("form-pending").hidden = true;
+  if (FESTIVAL.embedForm && FESTIVAL.formUrl.includes("docs.google.com/forms")) {
+    const url = new URL(FESTIVAL.formUrl);
+    url.searchParams.set("embedded", "true");
+    const frame = document.createElement("iframe");
+    frame.src = url.toString();
+    frame.title = "Registration form";
+    frame.loading = "lazy";
+    $("form-embed").append(frame);
+    $("form-embed").hidden = false;
+  }
+}
+
+// Contact line
+if (FESTIVAL.contactEmail || FESTIVAL.instagramUrl) {
+  $("contact").hidden = false;
+  if (FESTIVAL.contactEmail) {
+    const a = document.createElement("a");
+    a.href = `mailto:${FESTIVAL.contactEmail}`;
+    a.textContent = FESTIVAL.contactEmail;
+    $("contact-email").append(a);
+  }
+  if (FESTIVAL.instagramUrl) {
+    $("contact-ig").href = FESTIVAL.instagramUrl;
+    $("contact-ig").hidden = false;
+    $("contact-sep").hidden = !FESTIVAL.contactEmail;
+  }
+}
+
+// Countdown: prompt reveal → submission deadline → screening
+const phases = [
+  { at: Date.parse(FESTIVAL.promptReveal),  label: "Prompt drops in" },
+  { at: Date.parse(FESTIVAL.submissionDue), label: "Films due in" },
+  { at: Date.parse(FESTIVAL.screening),     label: "Screening starts in" },
+];
+const pad = (n) => String(n).padStart(2, "0");
+
+function tick() {
+  const now = Date.now();
+  const phase = phases.find((p) => now < p.at);
+  if (!phase) {
+    const live = now < Date.parse(FESTIVAL.screening) + 4 * 3600e3;
+    $("cd-label").textContent = live ? "Happening now" : "That's a wrap";
+    $("cd").hidden = true;
+    $("cd-done").hidden = false;
+    $("cd-done").textContent = live ? "Screening at Star Bar" : "See you next year";
+    return;
+  }
+  let s = Math.max(0, Math.floor((phase.at - now) / 1000));
+  const d = Math.floor(s / 86400); s -= d * 86400;
+  const h = Math.floor(s / 3600);  s -= h * 3600;
+  const m = Math.floor(s / 60);    s -= m * 60;
+  $("cd-label").textContent = phase.label;
+  $("cd-d").textContent = pad(d);
+  $("cd-h").textContent = pad(h);
+  $("cd-m").textContent = pad(m);
+  $("cd-s").textContent = pad(s);
+}
+tick();
+setInterval(tick, 1000);
+
+// Marquee bulbs around the arrow
+(function placeBulbs() {
+  const shape = $("arrow-shape");
+  const group = $("bulbs");
+  if (!shape.getTotalLength) return;
+  const len = shape.getTotalLength();
+  const count = Math.round(len / 25);
+  for (let i = 0; i < count; i++) {
+    const p = shape.getPointAtLength((i / count) * len);
+    const c = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+    c.setAttribute("cx", p.x.toFixed(1));
+    c.setAttribute("cy", p.y.toFixed(1));
+    c.setAttribute("r", "5.5");
+    c.style.setProperty("--k", i % 3);
+    group.append(c);
+  }
+})();
+
+// Google Calendar links
+const gcal = (title, start, minutes, location) => {
+  const stamp = (d) => d.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
+  const s = new Date(start);
+  const e = new Date(s.getTime() + minutes * 60000);
+  const params = new URLSearchParams({
+    action: "TEMPLATE",
+    text: title,
+    dates: `${stamp(s)}/${stamp(e)}`,
+    details: "The 1 Minute Film Festival, hosted by MAQET. Write, shoot and edit a 60-second film in 24 hours.",
+    location: location || "",
+  });
+  return `https://calendar.google.com/calendar/render?${params}`;
+};
+const calEvents = {
+  reveal:    gcal("1 Minute Film Festival: prompt reveal", FESTIVAL.promptReveal, 60, FESTIVAL.promptLocation),
+  due:       gcal("1 Minute Film Festival: final cut due", FESTIVAL.submissionDue, 30),
+  screening: gcal("1 Minute Film Festival: screening", FESTIVAL.screening, 120, "Star Bar"),
+};
+document.querySelectorAll("[data-cal]").forEach((a) => { a.href = calEvents[a.dataset.cal]; });
+
+// 24-hour planner
+const PLAN = [
+  { from: 0,  to: 3,  name: "Write",   cls: "write",   tip: "Break down the prompt, lock a script and make a shot list. A page of script runs about a minute." },
+  { from: 3,  to: 11, name: "Shoot",   cls: "shoot",   tip: "Sunset comes early in November, so shoot your daylight scenes first. Record clean sound on set." },
+  { from: 11, to: 16, name: "Edit",    cls: "edit",    tip: "Build the assembly, then cut it down. At 60 seconds, every frame has to earn its place." },
+  { from: 16, to: 20, name: "Sleep",   cls: "sleep",   tip: "Optional, but recommended. Fresh eyes catch what tired ones miss." },
+  { from: 20, to: 23, name: "Polish",  cls: "polish",  tip: "Fine cut, sound mix, color and titles." },
+  { from: 23, to: 24, name: "Deliver", cls: "deliver", tip: "Export and submit before 11:00 AM. Leave time for the upload." },
+];
+(function planner() {
+  const [, hh, mm] = FESTIVAL.promptReveal.match(/T(\d\d):(\d\d)/);
+  const startMin = Number(hh) * 60 + Number(mm);
+  const clockAt = (h, short) => {
+    const total = startMin + Math.round(h * 60);
+    const mins = total % 1440;
+    const hr24 = Math.floor(mins / 60);
+    const hr = hr24 % 12 || 12;
+    const ap = hr24 >= 12 ? "PM" : "AM";
+    if (short) return `${hr}${ap[0]}`;
+    return `${total >= 1440 ? "Sun" : "Sat"} ${hr}:${pad(mins % 60)} ${ap}`;
+  };
+  const hm = (h) => `${pad(Math.floor(h))}:${pad(Math.round((h % 1) * 60))}`;
+
+  for (let h = 0; h <= 24; h += 2) {
+    const tick = document.createElement("span");
+    tick.textContent = clockAt(h, true);
+    tick.style.left = `${(h / 24) * 100}%`;
+    if (h % 4 !== 0) tick.className = "odd";
+    $("nle-ruler").append(tick);
+  }
+  PLAN.forEach((p) => {
+    const clip = document.createElement("div");
+    clip.className = `clip clip--${p.cls}`;
+    clip.style.left = `${(p.from / 24) * 100}%`;
+    clip.style.width = `${((p.to - p.from) / 24) * 100}%`;
+    clip.textContent = p.name;
+    $("nle-track").append(clip);
+  });
+
+  const range = $("nle-range");
+  let live = false;
+  function show() {
+    const h = Number(range.value);
+    const phase = PLAN.find((p) => h < p.to) || PLAN[PLAN.length - 1];
+    $("nle-playhead").style.left = `${(h / 24) * 100}%`;
+    $("nle-clock").textContent = clockAt(h);
+    $("nle-meta").textContent = `${hm(h)} in · ${hm(24 - h)} left`;
+    $("nle-phase").textContent = phase.name;
+    $("nle-tip").textContent = phase.tip;
+    $("nle-live").hidden = !live;
+    range.setAttribute("aria-valuetext", `${clockAt(h)}, ${phase.name}`);
+  }
+  range.addEventListener("input", () => { live = false; show(); });
+
+  // During the real 24 hours, the playhead starts at the current time.
+  const elapsed = (Date.now() - Date.parse(FESTIVAL.promptReveal)) / 3600e3;
+  if (elapsed >= 0 && elapsed < 24) {
+    range.value = Math.floor(elapsed * 4) / 4;
+    live = true;
+  }
+  show();
+})();
+
+// Practice prompt slate
+const DECK = {
+  genre: ["Film noir", "Horror", "Romance", "Western", "Sci-fi", "Mockumentary", "Musical", "Heist", "Silent film", "Nature documentary", "Coming of age", "Fairy tale", "Thriller", "Slapstick"],
+  character: ["a wedding DJ", "a retired magician", "twins who can't stand each other", "a lost tourist", "a night-shift security guard", "a grandmother with a secret", "a barista who sees the future", "a kid detective", "a ghost who's bad at haunting", "a nervous first date", "a lighthouse keeper", "a substitute teacher"],
+  prop: ["a rubber duck", "a set of keys", "a birthday candle", "an umbrella", "a cassette tape", "a lottery ticket", "a houseplant", "a paper map", "a single glove", "a disposable camera", "a fortune cookie", "a snow globe"],
+  line: ["“Is it still running?”", "“You were never supposed to see this.”", "“One more take.”", "“We have sixty seconds.”", "“That's not my coat.”", "“I've been here before.”", "“Don't open it.”", "“Who ordered the pizza?”", "“Act natural.”", "“It's later than you think.”", "“Say that again.”", "“Keep the change.”"],
+};
+const pickFrom = (list, avoid) => {
+  let v;
+  do { v = list[Math.floor(Math.random() * list.length)]; } while (v === avoid && list.length > 1);
+  return v;
+};
+let take = 1;
+$("spin").addEventListener("click", () => {
+  take += 1;
+  $("take").textContent = take;
+  const slate = $("slate");
+  slate.classList.add("open");
+  setTimeout(() => slate.classList.remove("open"), 200);
+
+  const finals = {};
+  Object.keys(DECK).forEach((key, i) => {
+    const el = $(`reel-${key}`);
+    finals[key] = pickFrom(DECK[key], el.textContent);
+    if (reduceMotion) { el.textContent = finals[key]; return; }
+    const stopAt = performance.now() + 380 + i * 200;
+    (function roll() {
+      if (performance.now() < stopAt) {
+        el.textContent = pickFrom(DECK[key]);
+        setTimeout(roll, 65);
+      } else {
+        el.textContent = finals[key];
+      }
+    })();
+  });
+  $("spin-status").textContent =
+    `Take ${take}: ${finals.genre}, featuring ${finals.character}, ${finals.prop}, and the line ${finals.line}`;
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,442 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The 1 Minute Film Festival</title>
+<meta name="description" content="24 hours. 60 seconds. One screening. Make a one-minute film Nov 7–8 and watch it play at Star Bar. $400 in prizes. Hosted by MAQET.">
+<meta property="og:title" content="The 1 Minute Film Festival · hosted by MAQET">
+<meta property="og:description" content="24 hours. 60 seconds. One screening. Every finished film plays at Star Bar, Sunday Nov 8 at 7PM.">
+<meta name="theme-color" content="#C23A0B">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Courier+Prime:wght@400;700&family=IM+Fell+English:ital@0;1&display=swap">
+<style>
+/* Layout: the flyer's orange frame around a black cinema screen. Four beats, trailer-paced: the hook, your role, why, when. */
+:root {
+  --frame: #C23A0B;
+  --screen: #0A0A0A;
+  --panel: #171615;
+  --line: #3A3634;
+  --text: #F4F3EF;
+  --dim: #ADA69F;
+  --green: #18B884;
+  --magenta: #FF2B92;
+  --lemon: #FFF400;
+  --aqua: #84F5EF;
+  --lime: #1BFF3E;
+  --blue: #2F42FF;
+  --ink: #0A0A0A;
+
+  --display: "Anton", Impact, "Arial Narrow", sans-serif;
+  --serif: "IM Fell English", "Iowan Old Style", Palatino, Georgia, serif;
+  --mono: "Courier Prime", "Courier New", Courier, monospace;
+
+  --step-0: 1.2rem;
+  --step-1: clamp(1.3rem, 2.3vw, 1.6rem);
+  --step-2: clamp(1.7rem, 3.6vw, 2.6rem);
+  --step-3: clamp(3rem, 9vw, 7.4rem);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--frame);
+  color: var(--text);
+  font-family: var(--serif);
+  font-size: var(--step-0);
+  line-height: 1.45;
+  padding-inline: clamp(10px, 2.4vw, 36px);
+  padding-block: clamp(10px, 2.4vw, 36px);
+}
+.screen {
+  background: var(--screen);
+  max-width: 1180px;
+  margin: 0 auto;
+  padding-inline: clamp(16px, 5vw, 72px);
+  padding-block: 18px 32px;
+  overflow-x: clip;
+}
+a { color: inherit; }
+h1, h2 { text-wrap: balance; }
+a:focus-visible, button:focus-visible { outline: 3px dashed var(--lemon); outline-offset: 4px; }
+
+/* top bar */
+.topbar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: .5rem 1.5rem; font-family: var(--mono); font-size: .88rem; letter-spacing: .06em; text-transform: uppercase; }
+.topbar b { font-weight: 700; }
+.countdown { color: var(--lemon); font-variant-numeric: tabular-nums; }
+
+/* hero */
+.hero { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 2.5rem 3.5rem; align-items: center; padding-block: clamp(2.2rem, 6vw, 4.5rem) 1rem; }
+.eyebrow { margin: 0 0 1rem; font-family: var(--mono); font-size: .9rem; letter-spacing: .1em; text-transform: uppercase; color: var(--dim); }
+.headline { margin: 0; font-family: var(--display); font-weight: 400; font-size: var(--step-3); line-height: .92; text-transform: uppercase; }
+.headline span { display: block; }
+.headline .l1 { color: var(--lemon); }
+.headline .l2 { color: var(--aqua); }
+.headline .l3 { color: var(--green); text-shadow: .045em .04em 0 var(--magenta); }
+.sub { margin: 1.4rem 0 0; font-size: var(--step-1); max-width: 34ch; }
+.cta-row { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem 1.4rem; margin-top: 1.8rem; }
+.cta-note { margin: 0; color: var(--dim); max-width: 26ch; font-size: 1.05rem; line-height: 1.3; }
+
+.btn {
+  display: inline-block;
+  background: var(--lime); color: var(--ink);
+  font-family: var(--display); font-size: 1.5rem; letter-spacing: .03em; text-transform: uppercase; text-decoration: none;
+  padding: .5em 1.2em .55em;
+  border: 0;
+  box-shadow: 5px 5px 0 var(--magenta);
+  cursor: pointer;
+  transition: translate .15s ease, box-shadow .15s ease;
+}
+.btn:hover { translate: -2px -2px; box-shadow: 7px 7px 0 var(--magenta); }
+.btn[aria-disabled="true"] { background: var(--line); color: var(--dim); box-shadow: none; cursor: default; translate: none; }
+
+/* 60-second viewer */
+.viewer { display: grid; gap: .8rem; }
+.viewer-frame {
+  position: relative;
+  aspect-ratio: 16 / 9; max-width: 100%;
+  background: var(--panel);
+  display: grid; place-content: center; text-align: center; gap: .4rem;
+  padding: 1rem;
+}
+.viewer-frame::before {
+  content: ""; position: absolute; inset: 10px; pointer-events: none;
+  background:
+    linear-gradient(var(--dim), var(--dim)) left top / 30px 2px,
+    linear-gradient(var(--dim), var(--dim)) left top / 2px 30px,
+    linear-gradient(var(--dim), var(--dim)) right top / 30px 2px,
+    linear-gradient(var(--dim), var(--dim)) right top / 2px 30px,
+    linear-gradient(var(--dim), var(--dim)) left bottom / 30px 2px,
+    linear-gradient(var(--dim), var(--dim)) left bottom / 2px 30px,
+    linear-gradient(var(--dim), var(--dim)) right bottom / 30px 2px,
+    linear-gradient(var(--dim), var(--dim)) right bottom / 2px 30px;
+  background-repeat: no-repeat;
+}
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+.viewer-rec { position: absolute; top: 18px; left: 22px; margin: 0; font-family: var(--mono); font-size: .8rem; letter-spacing: .1em; color: var(--dim); }
+.viewer-rec.on { color: var(--magenta); }
+.viewer-rec.on::before { content: "● "; animation: blink 1s steps(2, start) infinite; }
+@keyframes blink { to { visibility: hidden; } }
+.viewer-tc { margin: 0; font-family: var(--mono); font-weight: 700; font-size: clamp(1.8rem, 4vw, 2.6rem); line-height: 1; font-variant-numeric: tabular-nums; color: var(--text); }
+.viewer-caption { margin: 0; font-style: italic; font-size: var(--step-1); color: var(--lemon); min-height: 1.4em; }
+.viewer-bar { height: 6px; background: var(--line); }
+.viewer-bar span { display: block; height: 100%; width: 0; background: var(--magenta); }
+.viewer-play { justify-self: start; background: none; border: 2px solid var(--text); color: var(--text); font-family: var(--mono); font-weight: 700; font-size: .95rem; letter-spacing: .06em; text-transform: uppercase; padding: .55em 1em; cursor: pointer; }
+.viewer-play:hover { background: var(--text); color: var(--screen); }
+
+/* sections */
+.section { margin-top: clamp(4rem, 9vw, 6.5rem); }
+.h2 { margin: 0 0 1.4rem; font-family: var(--serif); font-weight: 400; font-size: var(--step-2); line-height: 1.05; }
+
+/* role picker */
+.chips { display: flex; flex-wrap: wrap; gap: .6rem; margin: 0 0 1.4rem; padding: 0; border: 0; }
+.chip { position: relative; }
+.chip input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
+.chip span {
+  display: inline-block;
+  padding: .35em .85em .4em;
+  border: 2px solid var(--line);
+  font-family: var(--mono); font-weight: 700; font-size: .95rem; letter-spacing: .04em; text-transform: uppercase;
+  color: var(--text);
+  transition: background .15s ease, color .15s ease, border-color .15s ease;
+}
+.chip:hover span { border-color: var(--text); }
+.chip input:checked + span { background: var(--text); color: var(--screen); border-color: var(--text); }
+.chip input:focus-visible + span { outline: 3px dashed var(--lemon); outline-offset: 3px; }
+
+.pitch {
+  --card: var(--lemon); --card-ink: var(--ink);
+  background: var(--card); color: var(--card-ink);
+  padding: clamp(1.4rem, 4vw, 2.6rem) clamp(1.2rem, 4vw, 2.8rem) clamp(1.6rem, 4vw, 2.6rem);
+  display: grid; gap: .8rem; justify-items: start;
+  rotate: -.6deg;
+  clip-path: polygon(0 2%, 60% 0, 100% 3%, 99.4% 100%, 38% 97%, .4% 100%);
+}
+.pitch.swap { animation: swap .28s ease-out; }
+@keyframes swap { from { clip-path: polygon(0 0, 0 0, 0 100%, 0 100%); } }
+.pitch-line { margin: 0; font-family: var(--display); font-size: clamp(2rem, 5vw, 3.6rem); line-height: 1; text-transform: uppercase; max-width: 22ch; }
+.pitch-body { margin: 0; font-size: var(--step-1); max-width: 44ch; }
+.pitch .btn { margin-top: .6rem; background: var(--card-ink); color: var(--card); box-shadow: none; }
+.pitch .btn:hover { box-shadow: none; }
+
+/* reasons */
+.reasons { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2rem 3rem; }
+.reasons li { display: grid; gap: .5rem; align-content: start; min-width: 0; }
+.tag {
+  width: fit-content; max-width: 100%;
+  padding: .1em .5em .18em;
+  font-family: var(--serif); font-weight: 400; font-size: var(--step-1); line-height: 1.15;
+  color: var(--ink);
+  rotate: var(--tilt);
+  clip-path: polygon(0 6%, 50% 0, 100% 8%, 98.6% 100%, 45% 93%, 1% 100%);
+}
+.tag--lemon { background: var(--lemon); --tilt: -1.5deg; }
+.tag--aqua { background: var(--aqua); --tilt: 1deg; }
+.tag--lime { background: var(--lime); --tilt: -.8deg; }
+.tag--magenta { background: var(--magenta); --tilt: 1.4deg; }
+.reasons p { margin: 0; color: var(--text); max-width: 40ch; }
+
+/* weekend */
+.when { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.4rem; position: relative; }
+.when li { border-top: 3px solid var(--text); padding-top: .9rem; display: grid; gap: .3rem; min-width: 0; }
+.when li:last-child { border-top-color: var(--magenta); }
+.when-time { font-family: var(--display); font-size: clamp(1.8rem, 3.4vw, 2.5rem); line-height: 1; text-transform: uppercase; color: var(--lemon); }
+.when li:last-child .when-time { color: var(--magenta); }
+.when-what { font-size: var(--step-1); line-height: 1.25; }
+.cal { margin: 1.6rem 0 0; font-family: var(--mono); font-size: .9rem; color: var(--dim); display: flex; flex-wrap: wrap; gap: .3rem .9rem; }
+.cal a { color: var(--text); text-decoration-thickness: 2px; text-underline-offset: 3px; }
+
+/* closing */
+.final { margin-top: clamp(4.5rem, 10vw, 7rem); padding-block: clamp(2.5rem, 6vw, 4rem); border-top: 3px solid var(--line); display: grid; justify-items: center; text-align: center; gap: 1rem; }
+.final-kicker { margin: 0; font-family: var(--mono); font-size: .9rem; letter-spacing: .1em; text-transform: uppercase; color: var(--dim); }
+.final-line { margin: 0; font-family: var(--display); font-weight: 400; font-size: clamp(3rem, 9vw, 6.4rem); line-height: .95; text-transform: uppercase; color: var(--green); text-shadow: .045em .04em 0 var(--magenta); }
+.final .btn { font-size: 1.8rem; margin-top: .6rem; }
+.final-note { margin: 0; color: var(--dim); }
+
+.foot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .5rem 2rem; padding-top: 1.2rem; border-top: 1px solid var(--line); font-family: var(--mono); font-size: .85rem; color: var(--dim); }
+.foot p { margin: 0; }
+
+@media (max-width: 860px) {
+  .hero { grid-template-columns: minmax(0, 1fr); }
+  .reasons { grid-template-columns: minmax(0, 1fr); gap: 1.6rem; }
+  .when { grid-template-columns: minmax(0, 1fr); }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .btn, .chip span { transition: none; }
+  .pitch.swap { animation: none; }
+  .viewer-rec.on::before { animation: none; }
+}
+</style>
+</head>
+<body>
+<main class="screen">
+
+  <header class="topbar">
+    <b>MAQET presents</b>
+    <span><span id="cd-label">Prompt drops in</span> <span class="countdown" id="cd">32d 00h 00m 00s</span></span>
+  </header>
+
+  <section class="hero" aria-labelledby="headline">
+    <div>
+      <p class="eyebrow">The 1 Minute Film Festival · Nov 7–8</p>
+      <h1 class="headline" id="headline"><span class="l1">24 hours.</span> <span class="l2">60 seconds.</span> <span class="l3">One screening.</span></h1>
+      <p class="sub">Write, shoot and edit a one-minute film between 11AM Saturday and 11AM Sunday. That night at 7PM, it plays at Star Bar with every other film.</p>
+      <div class="cta-row">
+        <a class="btn" data-register href="#register">Register</a>
+        <p class="cta-note">Teams of 3 or more. Solo? We'll help connect you with a team.</p>
+      </div>
+    </div>
+
+    <div class="viewer">
+      <div class="viewer-frame">
+        <p class="viewer-rec" id="v-rec">STBY</p>
+        <p class="viewer-caption" id="v-caption">This is your whole runtime.</p>
+        <p class="viewer-tc" id="v-tc">00:01:00:00</p>
+      </div>
+      <div class="viewer-bar" aria-hidden="true"><span id="v-fill"></span></div>
+      <button class="viewer-play" id="v-play" type="button">▶ Feel 60 seconds</button>
+    </div>
+  </section>
+
+  <section class="section" id="you" aria-labelledby="you-title">
+    <h2 class="h2" id="you-title">What do you do?</h2>
+    <fieldset class="chips">
+      <legend class="sr-only">Your role</legend>
+      <label class="chip"><input type="radio" name="role" value="director" checked><span>Director</span></label>
+      <label class="chip"><input type="radio" name="role" value="writer"><span>Writer</span></label>
+      <label class="chip"><input type="radio" name="role" value="editor"><span>Editor</span></label>
+      <label class="chip"><input type="radio" name="role" value="camera"><span>Camera / DOP</span></label>
+      <label class="chip"><input type="radio" name="role" value="sound"><span>Sound</span></label>
+      <label class="chip"><input type="radio" name="role" value="actor"><span>Actor</span></label>
+      <label class="chip"><input type="radio" name="role" value="new"><span>Never made a film</span></label>
+    </fieldset>
+    <div class="pitch" id="pitch" aria-live="polite">
+      <p class="pitch-line" id="pitch-line">Direct a finished film in 24 hours.</p>
+      <p class="pitch-body" id="pitch-body">Your call, start to finish. Then take a seat at Star Bar and watch it play to a room.</p>
+      <a class="btn" data-register id="pitch-cta" href="#register">Register as a director</a>
+    </div>
+  </section>
+
+  <section class="section" id="why" aria-labelledby="why-title">
+    <h2 class="h2" id="why-title">Why make one</h2>
+    <ul class="reasons">
+      <li><span class="tag tag--lemon">Every film screens.</span><p>No shortlist. Finish it and it plays at Star Bar on Sunday at 7PM.</p></li>
+      <li><span class="tag tag--aqua">$400 in prizes.</span><p>$250, $100 and $50, picked by an expert panel.</p></li>
+      <li><span class="tag tag--lime">You'll finish something.</span><p>A hard deadline beats a someday project. By Monday you have a film to show.</p></li>
+      <li><span class="tag tag--magenta">You don't need a crew.</span><p>Teams are 3 or more. Come solo and we'll help connect you with one.</p></li>
+    </ul>
+  </section>
+
+  <section class="section" id="when" aria-labelledby="when-title">
+    <h2 class="h2" id="when-title">The weekend</h2>
+    <ol class="when">
+      <li><span class="when-time">Sat 11:00 AM</span><span class="when-what">The prompt drops, in person. Clock starts.</span></li>
+      <li><span class="when-time">Sun 11:00 AM</span><span class="when-what">Final cut due. Any camera, any genre, 60 seconds.</span></li>
+      <li><span class="when-time">Sun 7:00 PM</span><span class="when-what">Every film screens at Star Bar.</span></li>
+    </ol>
+    <p class="cal"><span>Add to Google Calendar:</span>
+      <a data-cal="reveal" href="#when" target="_blank" rel="noopener">Prompt reveal</a>
+      <a data-cal="screening" href="#when" target="_blank" rel="noopener">Screening</a>
+    </p>
+  </section>
+
+  <section class="final" id="register" aria-labelledby="final-title">
+    <p class="final-kicker">Sunday, Nov 8 · 7PM · Star Bar</p>
+    <h2 class="final-line" id="final-title">Your film. On screen.</h2>
+    <a class="btn" data-register id="final-cta" href="#register">Register now</a>
+    <p class="final-note" id="final-note">(before spots fill up)</p>
+  </section>
+
+  <footer class="foot">
+    <p>The 1 Minute Film Festival · Hosted by MAQET</p>
+    <p id="contact" hidden></p>
+  </footer>
+
+</main>
+
+<script src="config.js"></script>
+<script>
+// Settings (form link, times, contact) live in config.js.
+const FESTIVAL = window.FESTIVAL;
+const $ = (id) => document.getElementById(id);
+const pad = (n) => String(n).padStart(2, "0");
+
+// Register buttons go straight to the Google Form once it exists.
+document.querySelectorAll("[data-register]").forEach((a) => {
+  if (FESTIVAL.formUrl) {
+    a.href = FESTIVAL.formUrl;
+    a.target = "_blank";
+    a.rel = "noopener";
+  }
+});
+if (!FESTIVAL.formUrl) {
+  $("final-cta").textContent = "Registration opens soon";
+  $("final-cta").setAttribute("aria-disabled", "true");
+  $("final-cta").removeAttribute("href");
+  $("final-note").textContent = "Check back here. Spots are limited.";
+}
+
+// Contact line
+if (FESTIVAL.contactEmail || FESTIVAL.instagramUrl) {
+  const bits = [];
+  if (FESTIVAL.contactEmail) bits.push(`<a href="mailto:${FESTIVAL.contactEmail}">${FESTIVAL.contactEmail}</a>`);
+  if (FESTIVAL.instagramUrl) bits.push(`<a href="${FESTIVAL.instagramUrl}" target="_blank" rel="noopener">Instagram</a>`);
+  $("contact").innerHTML = bits.join(" · ");
+  $("contact").hidden = false;
+}
+
+// Countdown
+const phases = [
+  { at: Date.parse(FESTIVAL.promptReveal),  label: "Prompt drops in" },
+  { at: Date.parse(FESTIVAL.submissionDue), label: "Films due in" },
+  { at: Date.parse(FESTIVAL.screening),     label: "Screening starts in" },
+];
+function tick() {
+  const now = Date.now();
+  const phase = phases.find((p) => now < p.at);
+  if (!phase) {
+    $("cd-label").textContent = now < Date.parse(FESTIVAL.screening) + 4 * 3600e3 ? "Screening now" : "That's a wrap";
+    $("cd").textContent = "";
+    return;
+  }
+  let s = Math.floor((phase.at - now) / 1000);
+  const d = Math.floor(s / 86400); s -= d * 86400;
+  const h = Math.floor(s / 3600);  s -= h * 3600;
+  const m = Math.floor(s / 60);    s -= m * 60;
+  $("cd-label").textContent = phase.label;
+  $("cd").textContent = `${d}d ${pad(h)}h ${pad(m)}m ${pad(s)}s`;
+}
+tick();
+setInterval(tick, 1000);
+
+// 60-second viewer: counts real timecode at 24 frames per second
+(function viewer() {
+  const BEATS = [
+    [0, "Fade in."], [5, "Set it up."], [20, "Something changes."], [40, "Land it."], [55, "Cut to black."],
+  ];
+  const tc = (sec) => {
+    const f = Math.floor((sec % 1) * 24);
+    const s = Math.floor(sec);
+    return `00:${pad(Math.floor(s / 60))}:${pad(s % 60)}:${pad(f)}`;
+  };
+  let startedAt = 0;
+  let raf = 0;
+  const play = $("v-play");
+
+  function frame(now) {
+    const t = Math.min(60, (now - startedAt) / 1000);
+    $("v-tc").textContent = tc(t);
+    $("v-fill").style.width = `${(t / 60) * 100}%`;
+    $("v-caption").textContent = BEATS.filter(([at]) => t >= at).pop()[1];
+    if (t < 60) { raf = requestAnimationFrame(frame); return; }
+    stop("That's it. That's the whole film.");
+  }
+  function stop(caption) {
+    cancelAnimationFrame(raf);
+    raf = 0;
+    $("v-rec").textContent = "STBY";
+    $("v-rec").classList.remove("on");
+    $("v-caption").textContent = caption;
+    play.textContent = "▶ Play it again";
+  }
+  play.addEventListener("click", () => {
+    if (raf) { stop("Cut. Try the full minute."); return; }
+    startedAt = performance.now();
+    $("v-rec").textContent = "REC";
+    $("v-rec").classList.add("on");
+    play.textContent = "■ Stop";
+    raf = requestAnimationFrame(frame);
+  });
+})();
+
+// Role picker: the pitch changes with who's reading
+const PITCH = {
+  director: { line: "Direct a finished film in 24 hours.", body: "Your call, start to finish. Then take a seat at Star Bar and watch it play to a room.", cta: "Register as a director", card: "--lemon" },
+  writer:   { line: "Your script gets made this weekend.", body: "Write it Saturday morning, see it on screen Sunday night. No development, no waiting for a green light.", cta: "Register as a writer", card: "--aqua" },
+  editor:   { line: "60 seconds is won in the edit.", body: "Every team needs someone who can find the film in the footage. You get hours, not weeks, and the room sees the result.", cta: "Register as an editor", card: "--lime" },
+  camera:   { line: "Shoot on anything.", body: "Phone, DSLR, cinema camera: any camera counts. Bring your eye and leave with something new for your reel.", cta: "Register as camera / DOP", card: "--magenta" },
+  sound:    { line: "Every team needs you.", body: "Bad audio sinks a short faster than anything. Clean sound is how a team pulls ahead, and teams know it.", cta: "Register as sound", card: "--aqua" },
+  actor:    { line: "Be on screen by Sunday night.", body: "Get cast, shoot Saturday, and watch yourself at Star Bar the next evening. Plus fresh footage for your reel.", cta: "Register as an actor", card: "--lemon" },
+  new:      { line: "First film? Start here.", body: "Any camera, any genre, just 60 seconds. Come solo and we'll help connect you with a team that knows the ropes.", cta: "Register solo", card: "--lime" },
+};
+document.querySelectorAll('input[name="role"]').forEach((input) => {
+  input.addEventListener("change", () => {
+    const p = PITCH[input.value];
+    const card = $("pitch");
+    $("pitch-line").textContent = p.line;
+    $("pitch-body").textContent = p.body;
+    $("pitch-cta").textContent = p.cta;
+    card.style.setProperty("--card", `var(${p.card})`);
+    card.classList.remove("swap");
+    void card.offsetWidth;
+    card.classList.add("swap");
+  });
+});
+
+// Google Calendar links
+const gcal = (title, start, minutes, location) => {
+  const stamp = (d) => d.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
+  const s = new Date(start);
+  const e = new Date(s.getTime() + minutes * 60000);
+  const params = new URLSearchParams({
+    action: "TEMPLATE",
+    text: title,
+    dates: `${stamp(s)}/${stamp(e)}`,
+    details: "The 1 Minute Film Festival, hosted by MAQET. Write, shoot and edit a 60-second film in 24 hours.",
+    location: location || "",
+  });
+  return `https://calendar.google.com/calendar/render?${params}`;
+};
+const calEvents = {
+  reveal:    gcal("1 Minute Film Festival: prompt reveal", FESTIVAL.promptReveal, 60, FESTIVAL.promptLocation),
+  screening: gcal("1 Minute Film Festival: screening", FESTIVAL.screening, 120, "Star Bar"),
+};
+document.querySelectorAll("[data-cal]").forEach((a) => { a.href = calEvents[a.dataset.cal]; });
+</script>
+</body>
+</html>

@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>MAQET Collective</title>
+<meta name="description" content="MAQET Collective, NYC. Artists Talking Together every Friday at Nook Brooklyn, exhibitions, and The 1 Minute Film Festival.">
+<link rel="canonical" href="https://maqet.org/">
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta property="og:title" content="MAQET Collective · NYC">
+<meta property="og:description" content="Artists Talking Together every Friday at Nook Brooklyn, exhibitions, and The 1 Minute Film Festival.">
+<meta property="og:url" content="https://maqet.org/">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Hanken+Grotesk:wght@400;500;700;900&display=swap">
+<style>
+/* Layout: after the MAQET Cargo site. A fixed masthead that fades on scroll, a hairline rule, then one row per project on a 12-column grid: title, text, image. */
+:root {
+  --paper: #FFFFFF;
+  --ink: rgba(0, 0, 0, 0.85);
+  --grey: rgba(106, 106, 106, 0.85);
+  --rule: rgba(0, 0, 0, 0.75);
+  --star: rgba(228, 24, 180, 0.85);
+  --fest-frame: #C23A0B;
+  --fest-green: #0F9A6C;
+
+  --sans: "Hanken Grotesk", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --poster: "Anton", Impact, "Arial Narrow", sans-serif;
+  --pad: clamp(16px, 4.4vw, 64px);
+  --gap: clamp(8px, 0.95vw, 14px);
+  --text: clamp(16px, 1.45vw, 19px);
+  color-scheme: light;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: var(--text);
+  line-height: 1.22;
+  padding-inline: var(--pad);
+  padding-block: clamp(150px, 18vw, 240px) 56px;
+}
+a { color: inherit; text-decoration: none; }
+a:hover { opacity: .6; }
+a:active { opacity: .7; }
+a:focus-visible { outline: 2px solid var(--star); outline-offset: 4px; }
+p { margin: 0; }
+img { display: block; width: 100%; height: auto; }
+
+/* masthead */
+.mast {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 10;
+  display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem;
+  padding: clamp(18px, 4.4vw, 56px) var(--pad) 0;
+  pointer-events: none;
+}
+.mast a { pointer-events: auto; }
+.logo { margin: 0; font-size: clamp(24px, 3.2vw, 42px); font-weight: 500; line-height: 1; letter-spacing: .3em; }
+.star { display: inline-block; color: var(--star); animation: maqet-star 1.2s ease-in-out infinite; }
+@keyframes maqet-star { 50% { transform: scale(1.5); } }
+.about { width: 4.6em; line-height: 1.2; }
+
+hr { height: 1px; margin: 0; border: 0; background: var(--rule); }
+
+/* project rows */
+.row {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--gap);
+  row-gap: 1.2rem;
+  align-items: start;
+  margin-top: clamp(56px, 8vw, 110px);
+}
+.row:first-of-type { margin-top: clamp(40px, 4.5vw, 56px); }
+.row > * { min-width: 0; }
+.feature-meta { grid-column: 1 / span 5; display: grid; gap: .25rem; }
+.feature-pic { grid-column: 6 / span 6; }
+.show-meta { grid-column: 1 / span 3; }
+.show-text { grid-column: 4 / span 4; display: grid; gap: 1.2em; }
+.show-pic { grid-column: 9 / span 4; }
+.show-pic--narrow { grid-column: 9 / span 2; }
+
+.feature-title { margin: 0 0 1.1rem; font-size: 1.35em; font-weight: 900; letter-spacing: .13em; line-height: 1.15; }
+.show-title { margin: 0; font-size: 1em; font-weight: 700; }
+.grey { color: var(--grey); }
+.small { font-size: .82em; }
+.indent { padding-left: 1.3em; }
+.new { color: var(--star); font-size: .82em; font-weight: 700; letter-spacing: .1em; margin-bottom: .35rem; }
+.rsvp { display: inline-block; margin-top: .9rem; font-weight: 700; letter-spacing: .06em; border-bottom: 2px solid currentColor; }
+
+/* festival poster tile (stands in for the flyer) */
+.fest-tile {
+  grid-column: 6 / span 3;
+  container-type: inline-size;
+  display: grid; align-content: center; justify-items: center; text-align: center;
+  aspect-ratio: 1; max-width: 100%;
+  background: var(--paper);
+  border: clamp(8px, 1.1vw, 14px) solid var(--fest-frame);
+  padding: 6%;
+}
+.fest-tile:hover { opacity: 1; }
+.fest-tile:hover .fest-name { transform: rotate(-2deg) scale(1.03); }
+.fest-name {
+  font-family: var(--poster); font-weight: 400; text-transform: uppercase;
+  font-size: 14cqi; line-height: .95;
+  color: var(--fest-green); text-shadow: .045em .04em 0 var(--star);
+  transition: transform .2s ease;
+}
+.fest-line { margin-top: 4cqi; font-family: var(--poster); font-size: 6.6cqi; line-height: 1.1; letter-spacing: .03em; text-transform: uppercase; color: var(--ink); text-wrap: balance; }
+
+/* footer */
+.foot { margin-top: clamp(80px, 11vw, 140px); display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gap); row-gap: .2rem; }
+.foot dt { grid-column: 1 / span 2; }
+.foot dd { grid-column: 3 / span 6; margin: 0; overflow-wrap: anywhere; }
+
+@media (max-width: 700px) {
+  :root { --text: clamp(17px, 4.6vw, 22px); }
+  .row { grid-template-columns: minmax(0, 1fr); }
+  .feature-meta, .feature-pic, .show-meta, .show-text, .show-pic, .show-pic--narrow, .fest-tile { grid-column: 1 / -1; }
+  .show-pic--narrow { max-width: 60%; }
+  .fest-tile { width: 80%; }
+  .foot { grid-template-columns: 7.5em minmax(0, 1fr); }
+  .foot dt { grid-column: 1; }
+  .foot dd { grid-column: 2; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .star { animation: none; }
+  .fest-name { transition: none; }
+}
+</style>
+</head>
+<body>
+
+<header class="mast">
+  <h1 class="logo" id="logo"><a href="/">M<span class="star">☆</span>QET COLLECTIVE<br>NYC</a></h1>
+  <!-- About page still lives on Cargo until the full migration. -->
+  <a class="about" href="https://maqetcollective.cargo.site/about-us">ABOUT US</a>
+</header>
+
+<main>
+  <hr>
+
+  <section class="row" aria-labelledby="oneminute-title">
+    <div class="feature-meta">
+      <p class="new"><span class="star">☆</span> NEW · NOV 14–15, 2026</p>
+      <h2 class="feature-title" id="oneminute-title"><a href="/oneminute/">THE 1 MINUTE FILM FESTIVAL</a></h2>
+      <p><b>24 Hours to make 60 Seconds of Cinema.</b> Write, shoot and edit a film of 60 seconds or less between 11AM Saturday and 11AM Sunday.</p>
+      <p class="grey small indent">LOCATION TBD<br>Screening Sunday Nov 15, 7PM<br>Judges will give prizes to top films!</p>
+      <p><a class="rsvp" href="/oneminute/">REGISTER SOLO OR AS A GROUP →</a></p>
+    </div>
+    <a class="fest-tile" href="/oneminute/" aria-label="The 1 Minute Film Festival">
+      <span class="fest-name">The 1 Minute Film Festival</span>
+      <span class="fest-line">24 Hours to make 60 Seconds of Cinema</span>
+      <span class="fest-line">Nov 14–15 · Location TBD</span>
+    </a>
+  </section>
+
+  <section class="row" aria-labelledby="att-title">
+    <div class="feature-meta">
+      <!-- Artists Talking Together page still lives on Cargo until the full migration. -->
+      <h2 class="feature-title" id="att-title"><a href="https://maqetcollective.cargo.site/artists-talking-together">ARTISTS TALKING TOGETHER</a></h2>
+      <p><b>EVERY FRIDAY NIGHT</b> 7:00 - 9:00 PM</p>
+      <p class="grey small indent">@ NOOK BROOKLYN<br>𖡡 45 Irving Ave, Unit 1, Brooklyn, NY 11237</p>
+    </div>
+    <div class="feature-pic">
+      <img src="https://freight.cargo.site/w/1500/q/75/i/M3103129830709686025150678739824/Eventbrite-MAQET-Discussion-group-poster.jpg" width="1500" height="750" alt="Artists Talking Together poster: two people talking at a table">
+    </div>
+  </section>
+
+  <section class="row" aria-labelledby="tbta-title">
+    <div class="show-meta">
+      <h2 class="show-title" id="tbta-title">TIME BEFORE/TIME AFTER</h2>
+      <p>2026</p>
+    </div>
+    <div class="show-text">
+      <p>We exist always on a precarious fulcrum between the time that came before and the time that will come after. We struggle to float in a constant, everlasting sea of change while fixed in the isolated point of the present. You are invited to experience each artwork in its singular, precipitous moment. You alone hold this second for yourself; together we hang suspended between time before and time after</p>
+    </div>
+    <div class="show-pic show-pic--narrow">
+      <img src="https://freight.cargo.site/w/1131/q/75/i/S3103221192895184066427283090288/PHOTO-2026-07-17-10-33-01.jpg" width="1131" height="1600" alt="Time Before/Time After exhibition poster" loading="lazy">
+    </div>
+  </section>
+
+  <section class="row" aria-labelledby="doorjambs-title">
+    <div class="show-meta">
+      <h2 class="show-title" id="doorjambs-title">DOORJAMBS: HOME &amp; BORDERS</h2>
+      <p>2026</p>
+    </div>
+    <div class="show-text">
+      <p>DOORJAMBS: Home &amp; Borders explores home as an unstable, evolving concept shaped by citizenship, belonging, displacement, and borders. The exhibition considers home not as a fixed place, but as something continually constructed, questioned, lost, and reclaimed.</p>
+    </div>
+    <div class="show-pic">
+      <img src="https://freight.cargo.site/w/1500/q/75/i/S3103099192936729114651719412592/doorjambs-28.png" width="1500" height="1200" alt="DOORJAMBS: Home &amp; Borders exhibition" loading="lazy">
+    </div>
+  </section>
+
+  <section class="row" aria-labelledby="telephone-title">
+    <div class="show-meta">
+      <h2 class="show-title" id="telephone-title">BROKEN TELEPHONE</h2>
+      <p class="grey small">MAQET x LAST SATURDAYS</p>
+      <p>2026</p>
+    </div>
+    <div class="show-text">
+      <p>The text in “Broken Telephone” is a string of messages sent by a loved one. Receiving the text felt like a physical force.</p>
+    </div>
+    <div class="show-pic">
+      <img src="https://freight.cargo.site/w/1500/q/75/i/T3103119293302281823748670925680/IMG_9929.JPG" width="1500" height="1000" alt="Broken Telephone installation" loading="lazy">
+    </div>
+  </section>
+
+  <section class="row" aria-labelledby="parlor-title">
+    <div class="show-meta">
+      <h2 class="show-title" id="parlor-title">THE PARLOR ROOM</h2>
+      <p class="grey small">MAQET x BUSHWICK OPEN STUDIOS</p>
+      <p>2025</p>
+    </div>
+    <div class="show-text">
+      <p>The home can be a place of comfort, entrapment, introspection, emancipation, and creativity.</p>
+      <p>The works in this show play with these themes and the blurred lines between them.</p>
+    </div>
+    <div class="show-pic">
+      <img src="https://freight.cargo.site/w/1500/q/75/i/P3103151507331073088655106288496/IMG_0140.JPG" width="1500" height="1000" alt="Visitors in The Parlor Room exhibition" loading="lazy">
+    </div>
+  </section>
+
+  <section class="row" aria-labelledby="nowwhat-title">
+    <div class="show-meta">
+      <h2 class="show-title" id="nowwhat-title">¿NOW WHAT?</h2>
+      <p>MAY 2025</p>
+    </div>
+    <div class="show-text">
+      <p>The show that started it all.</p>
+    </div>
+    <div class="show-pic">
+      <img src="https://freight.cargo.site/w/1500/q/75/i/C3103157104276139236943871650672/IMG_8869.jpeg" width="1500" height="1000" alt="¿Now What? exhibition" loading="lazy">
+    </div>
+  </section>
+
+  <dl class="foot">
+    <dt>Instagram</dt>
+    <dd><a href="https://instagram.com/_maqet_" target="_blank" rel="noopener">@_maqet_</a></dd>
+    <dt>Email</dt>
+    <dd><a href="mailto:parsonscommunityexhibition@gmail.com">parsonscommunityexhibition@gmail.com</a></dd>
+  </dl>
+</main>
+
+<script>
+// The masthead fades out over the first 600px of scrolling, like the Cargo site.
+(function () {
+  const logo = document.getElementById("logo");
+  function fade() {
+    const opacity = Math.max(0, 1 - window.scrollY / 600);
+    logo.style.opacity = opacity;
+    logo.style.visibility = opacity === 0 ? "hidden" : "";
+  }
+  window.addEventListener("scroll", fade, { passive: true });
+  fade();
+})();
+</script>
+</body>
+</html>
