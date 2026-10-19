@@ -90,6 +90,7 @@ mark { background: linear-gradient(transparent 12%, var(--highlight) 12% 88%, tr
   grid-template-areas:
     "prod title times"
     "hook hook  hook"
+    "reg  reg   reg"
     "run  run   run";
   gap: 3px;
   background: var(--ink);
@@ -120,6 +121,8 @@ h1 { margin: 0; font-family: var(--display); font-weight: 400; font-size: clamp(
 .sub { margin: 0; font-size: clamp(1.05rem, 1.8vw, 1.2rem); max-width: 46ch; }
 
 /* runtime check */
+.c-reg { grid-area: reg; padding: 1.1rem clamp(1rem, 3vw, 2.2rem) 1.5rem; }
+.c-reg .rsvp-start { margin-top: 1.1rem; }
 .c-run { grid-area: run; display: flex; flex-wrap: wrap; align-items: center; gap: .8rem 1.4rem; padding-block: .85rem; }
 .rec { color: var(--faint); }
 .rec.on { color: var(--magenta); }
@@ -205,6 +208,8 @@ h1 { margin: 0; font-family: var(--display); font-weight: 400; font-size: clamp(
 .q { border: 0; margin: 0; padding: 1.1rem 0 0; min-width: 0; display: grid; gap: .55rem; }
 .q-title { padding: 0 0 .3rem; font-family: var(--display); font-size: clamp(2rem, 4.6vw, 3.1rem); line-height: 1; text-transform: uppercase; }
 .q-help { margin: 0; color: var(--faint); font-size: .95rem; }
+.q-title--long { font-size: clamp(1.6rem, 3.4vw, 2.3rem); }
+.q-note { margin: 0 0 .3rem; padding: .55rem .8rem .6rem; background: var(--highlight); border: 2px solid var(--ink); max-width: 56ch; }
 .q .k { margin-top: .5rem; }
 .line-input {
   width: 100%; min-width: 0;
@@ -233,6 +238,8 @@ h1 { margin: 0; font-family: var(--display); font-weight: 400; font-size: clamp(
 .check input:focus-visible + .box { outline: 3px dashed var(--pen); outline-offset: 3px; }
 .opt-hint { font-family: var(--marker); font-weight: 400; font-size: 1.02rem; letter-spacing: 0; text-transform: none; color: var(--pen); }
 .opt-hint--win { color: var(--magenta); }
+.opts .check { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; column-gap: .55rem; row-gap: .1rem; }
+.opts .check .opt-hint { grid-column: 2; }
 .q-error { margin: .9rem 0 0; min-height: 1.3em; font-family: var(--marker); font-size: 1.15rem; color: var(--magenta); }
 .q-nav { display: flex; align-items: center; gap: 1rem; margin-top: .5rem; }
 .q-nav .btn { margin-left: auto; }
@@ -306,6 +313,7 @@ h1 { margin: 0; font-family: var(--display); font-weight: 400; font-size: clamp(
     grid-template-areas:
       "title title"
       "hook  hook"
+      "reg   reg"
       "prod  times"
       "run   run";
   }
@@ -314,15 +322,27 @@ h1 { margin: 0; font-family: var(--display); font-weight: 400; font-size: clamp(
 @media (max-width: 640px) {
   .head {
     grid-template-columns: minmax(0, 1fr);
-    grid-template-areas: "title" "hook" "times" "run" "prod";
+    grid-template-areas: "title" "hook" "reg" "times" "run" "prod";
   }
+  .cell { padding: .9rem 1rem; }
+  .c-title { gap: .4rem; }
   .lines { font-size: 10.4vw; }
   .hook { display: block; }
-  .hook .sub { margin-top: 1.3rem; }
-  .rsvp-start { grid-template-columns: minmax(0, 1fr); grid-template-areas: "big" "arrow" "box"; justify-items: center; text-align: center; }
+  .hook .sub { margin-top: 1.1rem; font-size: .98rem; }
+  .c-times, .c-prod { display: grid; grid-template-columns: 6rem minmax(0, 1fr); align-items: baseline; gap: .55rem .7rem; }
+  .c-times .v, .c-prod .v { margin: 0; font-size: .9rem; }
+  .c-run { gap: .6rem .9rem; }
+  .c-run > .k { flex-basis: 100%; }
+  .rt-bar { order: 3; flex-basis: 100%; }
+  .c-reg { padding-top: .8rem; }
+  .c-reg .rsvp-start { margin-top: .5rem; padding-top: .2rem; }
+  .rsvp-start { grid-template-columns: minmax(0, 1fr); grid-template-areas: "big" "arrow" "box"; justify-items: center; text-align: center; gap: .4rem; padding-bottom: .6rem; }
+  .ch-big { font-size: 2.1rem; }
+  .ch-box { padding: .9rem 1.4rem 1rem; }
+  .ch-rsvp { font-size: 2.7rem; }
   .ch-tag { right: -.4rem; }
   .ch-arrow--wide { display: none; }
-  .ch-arrow--tall { display: block; }
+  .ch-arrow--tall { display: block; width: 36px; }
   .prizes, .musts { grid-template-columns: minmax(0, 1fr); }
   .sched thead { display: none; }
   .sched, .sched tbody, .sched td { display: block; width: auto !important; }
@@ -344,7 +364,7 @@ h1 { margin: 0; font-family: var(--display); font-weight: 400; font-size: clamp(
 <body>
 <main class="sheet">
 
-  <header class="head">
+  <div class="head">
     <div class="cell c-prod">
       <p class="k">Production</p>
       <p class="v">Your film <span style="font-weight:400">(title TBD)</span></p>
@@ -370,13 +390,13 @@ h1 { margin: 0; font-family: var(--display); font-weight: 400; font-size: clamp(
 
     <div class="cell c-times">
       <p class="k">Crew call</p>
-      <p class="v"><mark>Sat Nov 14 · 11:00 AM</mark><br>Tompkins Square Park</p>
+      <p class="v"><mark>Sat&nbsp;Nov&nbsp;14 · 11:00&nbsp;AM</mark><br>Tompkins Square Park</p>
       <p class="k">Delivery</p>
-      <p class="v">Sun Nov 15 · 11:00 AM</p>
+      <p class="v">Sun&nbsp;Nov&nbsp;15 · 11:00&nbsp;AM</p>
       <p class="k">Premiere</p>
-      <p class="v">Sun Nov 15 · 7:00 PM<br>Location TBD</p>
+      <p class="v">Sun&nbsp;Nov&nbsp;15 · 7:00&nbsp;PM<br>Location TBD</p>
       <p class="k">Sunrise · Sunset</p>
-      <p class="v">Sat 6:41 AM · 4:39 PM<br>Sun 6:43 AM · 4:38 PM</p>
+      <p class="v">Sat 6:41&nbsp;AM · 4:39&nbsp;PM<br>Sun 6:43&nbsp;AM · 4:38&nbsp;PM</p>
     </div>
 
     <div class="cell hook">
@@ -388,137 +408,112 @@ h1 { margin: 0; font-family: var(--display); font-weight: 400; font-size: clamp(
       <p class="sub">Write, shoot and edit a film of 60 seconds or less between 11AM Saturday and 11AM Sunday. All works submitted on time will be screened together at LOCATION TBD on Sunday, 7PM.</p>
     </div>
 
+    <section class="cell c-reg" id="rsvp" aria-labelledby="rsvp-title">
+      <div class="block-head"><h2 id="rsvp-title">Register</h2><p>Everyone registers, solo or on a team</p></div>
+
+      <button class="rsvp-start" id="rsvp-open" type="button" aria-label="Register now. Spots are limited.">
+        <span class="ch-big" aria-hidden="true"><span style="--i:0">c</span><span style="--i:1">l</span><span style="--i:2">i</span><span style="--i:3">c</span><span style="--i:4">k</span><span style="--i:5">&nbsp;</span><span style="--i:6">h</span><span style="--i:7">e</span><span style="--i:8">r</span><span style="--i:9">e</span></span>
+        <svg class="ch-arrow ch-arrow--wide" viewBox="0 0 320 120" aria-hidden="true">
+          <path class="ch-worm" d="M8 62 C28 32 48 32 68 62 S108 92 128 62 S168 32 188 62 S228 92 248 62 S282 40 300 58"/>
+          <path d="M300 58 L297 38 M300 58 L280 55"/>
+        </svg>
+        <svg class="ch-arrow ch-arrow--tall" viewBox="0 0 120 170" aria-hidden="true">
+          <path class="ch-worm" d="M60 6 C32 24 32 44 60 62 S88 100 60 118 S40 140 60 162"/>
+          <path d="M60 162 L57.5 142 M60 162 L40.5 157.6"/>
+        </svg>
+        <span class="ch-box">
+          <span class="ch-tag">Spots are limited</span>
+          <span class="ch-rsvp">Register now</span>
+          <span class="ch-count">4 quick steps</span>
+        </span>
+      </button>
+
+      <!-- Choice values must match google-form/create-rsvp-form.gs exactly. -->
+      <form class="rsvp-form" id="rsvp-form" hidden novalidate>
+        <div class="q-head">
+          <p class="k">Step <span id="q-num">1</span> of <span id="q-total">4</span></p>
+          <p class="q-preview" id="q-preview" hidden>Preview · not connected to Google Forms yet</p>
+          <div class="q-frames" aria-hidden="true"><span class="on"></span><span></span><span></span><span></span></div>
+        </div>
+
+        <fieldset class="q">
+          <legend class="q-title">What's your name?</legend>
+          <label class="sr-only" for="r-name">Your name</label>
+          <input class="line-input" id="r-name" name="name" autocomplete="name" placeholder="for the call sheet">
+        </fieldset>
+
+        <fieldset class="q" hidden>
+          <legend class="q-title">How do we reach you?</legend>
+          <label class="k" for="r-email">Email</label>
+          <input class="line-input" id="r-email" name="email" type="email" autocomplete="email" inputmode="email">
+          <label class="k" for="r-phone">Phone <span class="opt-hint">optional · for texts during the 24 hours</span></label>
+          <input class="line-input" id="r-phone" name="phone" type="tel" autocomplete="tel">
+          <label class="k" for="r-link">Link to your work <span class="opt-hint">optional · YouTube, Vimeo, Instagram, website…</span></label>
+          <input class="line-input" id="r-link" name="workLink" type="url" inputmode="url" autocomplete="url" placeholder="so we can promote your work">
+        </fieldset>
+
+        <fieldset class="q" hidden>
+          <legend class="q-title">What do you do?</legend>
+          <p class="q-help">Check everything that applies.</p>
+          <div class="checks">
+            <label class="check"><input type="checkbox" name="roles" value="Director"><span class="box"></span><span class="check-label">Director</span></label>
+            <label class="check"><input type="checkbox" name="roles" value="Writer"><span class="box"></span><span class="check-label">Writer</span></label>
+            <label class="check"><input type="checkbox" name="roles" value="Editor"><span class="box"></span><span class="check-label">Editor</span></label>
+            <label class="check"><input type="checkbox" name="roles" value="Camera / DOP"><span class="box"></span><span class="check-label">Camera / DOP</span></label>
+            <label class="check"><input type="checkbox" name="roles" value="Sound"><span class="box"></span><span class="check-label">Sound</span></label>
+            <label class="check"><input type="checkbox" name="roles" value="Actor"><span class="box"></span><span class="check-label">Actor</span></label>
+            <label class="check"><input type="checkbox" name="roles" value="Producer"><span class="box"></span><span class="check-label">Producer</span></label>
+            <label class="check"><input type="checkbox" name="roles" value="Never made a film"><span class="box"></span><span class="check-label">Never made a film</span></label>
+          </div>
+          <p class="k q-sub" id="exp-label">Movie-making experience</p>
+          <div class="checks" role="radiogroup" aria-labelledby="exp-label">
+            <label class="check"><input type="radio" name="experience" value="Beginner"><span class="box"></span><span class="check-label">Beginner</span></label>
+            <label class="check"><input type="radio" name="experience" value="Hobbyist"><span class="box"></span><span class="check-label">Hobbyist</span></label>
+            <label class="check"><input type="radio" name="experience" value="Pro"><span class="box"></span><span class="check-label">Pro</span></label>
+          </div>
+        </fieldset>
+
+        <fieldset class="q" hidden>
+          <legend class="q-title q-title--long">If you're a group, has each team member registered?</legend>
+          <p class="q-note"><b>Everyone needs to register</b>, one registration per person. Coming as a team? Each of your teammates fills this out too.</p>
+          <div class="opts">
+            <label class="check"><input type="radio" name="group" value="Yes, everyone on my team has registered"><span class="box"></span><span class="check-label">Yes, everyone's registered</span></label>
+            <label class="check"><input type="radio" name="group" value="Not yet, I'll make sure they do"><span class="box"></span><span class="check-label">Not yet</span><span class="opt-hint">send them this page!</span></label>
+            <label class="check"><input type="radio" name="group" value="I'm coming solo"><span class="box"></span><span class="check-label">I'm coming solo</span><span class="opt-hint">teams are made at the park</span></label>
+          </div>
+          <p class="k q-sub">What can you bring? <span class="opt-hint">optional · helps us match crews</span></p>
+          <div class="checks">
+            <label class="check"><input type="checkbox" name="gear" value="Camera"><span class="box"></span><span class="check-label">Camera</span></label>
+            <label class="check"><input type="checkbox" name="gear" value="Mics / sound gear"><span class="box"></span><span class="check-label">Mics / sound gear</span></label>
+            <label class="check"><input type="checkbox" name="gear" value="Lights"><span class="box"></span><span class="check-label">Lights</span></label>
+            <label class="check"><input type="checkbox" name="gear" value="Laptop with editing software"><span class="box"></span><span class="check-label">Editing laptop</span></label>
+            <label class="check"><input type="checkbox" name="gear" value="Just my brilliant self"><span class="box"></span><span class="check-label">Just my brilliant self</span></label>
+          </div>
+        </fieldset>
+
+        <p class="q-error" id="q-error" role="alert"></p>
+        <div class="q-nav">
+          <button class="outline-btn" id="q-back" type="button" hidden>← Back</button>
+          <button class="btn" id="q-next" type="submit">Next →</button>
+        </div>
+      </form>
+
+      <div class="rsvp-done" id="rsvp-done" hidden tabindex="-1">
+        <p class="done-stamp">You're on the call sheet!</p>
+        <p class="done-name" id="done-name"></p>
+        <p class="done-msg" id="done-msg"></p>
+        <p class="done-note" id="done-note"></p>
+        <button class="outline-btn" id="rsvp-again" type="button">Register someone else</button>
+      </div>
+    </section>
+
     <div class="cell c-run">
       <p class="k"><span class="rec" id="v-rec">Runtime check</span></p>
       <p class="rt-tc" id="v-tc">00:01:00:00</p>
       <div class="rt-bar" aria-hidden="true"><span id="v-fill"></span></div>
       <button class="outline-btn" id="v-play" type="button">▶ Feel 60 seconds</button>
     </div>
-  </header>
-
-  <section class="block" id="rsvp" aria-labelledby="rsvp-title">
-    <div class="block-head"><h2 id="rsvp-title">Register</h2><p>Solo or as a group</p></div>
-
-    <button class="rsvp-start" id="rsvp-open" type="button" aria-label="Register now. Spots are limited.">
-      <span class="ch-big" aria-hidden="true"><span style="--i:0">c</span><span style="--i:1">l</span><span style="--i:2">i</span><span style="--i:3">c</span><span style="--i:4">k</span><span style="--i:5">&nbsp;</span><span style="--i:6">h</span><span style="--i:7">e</span><span style="--i:8">r</span><span style="--i:9">e</span></span>
-      <svg class="ch-arrow ch-arrow--wide" viewBox="0 0 320 120" aria-hidden="true">
-        <path class="ch-worm" d="M8 62 C28 32 48 32 68 62 S108 92 128 62 S168 32 188 62 S228 92 248 62 S282 40 300 58"/>
-        <path d="M300 58 L297 38 M300 58 L280 55"/>
-      </svg>
-      <svg class="ch-arrow ch-arrow--tall" viewBox="0 0 120 170" aria-hidden="true">
-        <path class="ch-worm" d="M60 6 C32 24 32 44 60 62 S88 100 60 118 S40 140 60 162"/>
-        <path d="M60 162 L57.5 142 M60 162 L40.5 157.6"/>
-      </svg>
-      <span class="ch-box">
-        <span class="ch-tag">Spots are limited</span>
-        <span class="ch-rsvp">Register now</span>
-        <span class="ch-count">6 quick steps</span>
-      </span>
-    </button>
-
-    <!-- Choice values must match google-form/create-rsvp-form.gs exactly. -->
-    <form class="rsvp-form" id="rsvp-form" hidden novalidate>
-      <div class="q-head">
-        <p class="k">Step <span id="q-num">1</span> of <span id="q-total">6</span></p>
-        <p class="q-preview" id="q-preview" hidden>Preview · not connected to Google Forms yet</p>
-        <div class="q-frames" aria-hidden="true"><span class="on"></span><span></span><span></span><span></span><span></span><span></span></div>
-      </div>
-
-      <fieldset class="q">
-        <legend class="q-title">What's your name?</legend>
-        <label class="sr-only" for="r-name">Your name</label>
-        <input class="line-input" id="r-name" name="name" autocomplete="name" placeholder="for the call sheet">
-      </fieldset>
-
-      <fieldset class="q" hidden>
-        <legend class="q-title">How do we reach you?</legend>
-        <label class="k" for="r-email">Email</label>
-        <input class="line-input" id="r-email" name="email" type="email" autocomplete="email" inputmode="email">
-        <label class="k" for="r-phone">Phone <span class="opt-hint">optional · for texts during the 24 hours</span></label>
-        <input class="line-input" id="r-phone" name="phone" type="tel" autocomplete="tel">
-        <label class="k" for="r-link">Link to your work <span class="opt-hint">optional · YouTube, Vimeo, Instagram, website…</span></label>
-        <input class="line-input" id="r-link" name="workLink" type="url" inputmode="url" autocomplete="url" placeholder="so we can promote your work">
-      </fieldset>
-
-      <fieldset class="q" hidden>
-        <legend class="q-title">What do you do?</legend>
-        <p class="q-help">Check everything that applies.</p>
-        <div class="checks">
-          <label class="check"><input type="checkbox" name="roles" value="Director"><span class="box"></span><span class="check-label">Director</span></label>
-          <label class="check"><input type="checkbox" name="roles" value="Writer"><span class="box"></span><span class="check-label">Writer</span></label>
-          <label class="check"><input type="checkbox" name="roles" value="Editor"><span class="box"></span><span class="check-label">Editor</span></label>
-          <label class="check"><input type="checkbox" name="roles" value="Camera / DOP"><span class="box"></span><span class="check-label">Camera / DOP</span></label>
-          <label class="check"><input type="checkbox" name="roles" value="Sound"><span class="box"></span><span class="check-label">Sound</span></label>
-          <label class="check"><input type="checkbox" name="roles" value="Actor"><span class="box"></span><span class="check-label">Actor</span></label>
-          <label class="check"><input type="checkbox" name="roles" value="Producer"><span class="box"></span><span class="check-label">Producer</span></label>
-          <label class="check"><input type="checkbox" name="roles" value="Never made a film"><span class="box"></span><span class="check-label">Never made a film</span></label>
-        </div>
-        <p class="k q-sub" id="exp-label">Movie-making experience</p>
-        <div class="checks" role="radiogroup" aria-labelledby="exp-label">
-          <label class="check"><input type="radio" name="experience" value="Hobby"><span class="box"></span><span class="check-label">Hobby</span></label>
-          <label class="check"><input type="radio" name="experience" value="Independent"><span class="box"></span><span class="check-label">Independent</span></label>
-          <label class="check"><input type="radio" name="experience" value="Pro"><span class="box"></span><span class="check-label">Pro</span></label>
-        </div>
-      </fieldset>
-
-      <fieldset class="q" hidden>
-        <legend class="q-title">Who's on your team?</legend>
-        <div class="opts">
-          <label class="check"><input type="radio" name="team" value="Just me. Find me a team."><span class="box"></span><span class="check-label">Just me</span><span class="opt-hint">teams are made at the park</span></label>
-          <label class="check"><input type="radio" name="team" value="2 of us"><span class="box"></span><span class="check-label">2 of us</span><span class="opt-hint">find a third to be prize eligible</span></label>
-          <label class="check"><input type="radio" name="team" value="3 or more (award eligible)"><span class="box"></span><span class="check-label">3 or more</span><span class="opt-hint opt-hint--win">prize eligible!</span></label>
-        </div>
-        <div class="q" id="team-name" hidden>
-          <label class="k" for="r-team">Team name <span class="opt-hint">optional</span></label>
-          <input class="line-input" id="r-team" name="teamName" autocomplete="off">
-        </div>
-        <p class="k q-sub">What can you bring? <span class="opt-hint">optional · helps us match crews</span></p>
-        <div class="checks">
-          <label class="check"><input type="checkbox" name="gear" value="Camera"><span class="box"></span><span class="check-label">Camera</span></label>
-          <label class="check"><input type="checkbox" name="gear" value="Mics / sound gear"><span class="box"></span><span class="check-label">Mics / sound gear</span></label>
-          <label class="check"><input type="checkbox" name="gear" value="Lights"><span class="box"></span><span class="check-label">Lights</span></label>
-          <label class="check"><input type="checkbox" name="gear" value="Laptop with editing software"><span class="box"></span><span class="check-label">Editing laptop</span></label>
-          <label class="check"><input type="checkbox" name="gear" value="Just my brilliant self"><span class="box"></span><span class="check-label">Just my brilliant self</span></label>
-        </div>
-      </fieldset>
-
-      <fieldset class="q" hidden>
-        <legend class="q-title">What drives you to make movies?</legend>
-        <label class="sr-only" for="r-drives">What drives you to make movies?</label>
-        <textarea class="line-input line-input--area" id="r-drives" name="drives" rows="3" placeholder="a sentence is plenty"></textarea>
-        <p class="k q-sub" id="heard-label">How did you hear about this?</p>
-        <div class="checks" role="radiogroup" aria-labelledby="heard-label">
-          <label class="check"><input type="radio" name="heard" value="Poster"><span class="box"></span><span class="check-label">Poster</span></label>
-          <label class="check"><input type="radio" name="heard" value="Social media"><span class="box"></span><span class="check-label">Social media</span></label>
-          <label class="check"><input type="radio" name="heard" value="A friend"><span class="box"></span><span class="check-label">A friend</span></label>
-          <label class="check"><input type="radio" name="heard" value="Artists Talking Together at Nook"><span class="box"></span><span class="check-label">Artists Talking Together at Nook</span></label>
-        </div>
-      </fieldset>
-
-      <fieldset class="q" hidden>
-        <legend class="q-title">Just for fun</legend>
-        <p class="q-help">Optional, but we're curious.</p>
-        <label class="k" for="r-eight">A movie you think is an 8/10</label>
-        <input class="line-input" id="r-eight" name="eightTen" autocomplete="off">
-        <label class="k" for="r-least">Your least favorite movie</label>
-        <input class="line-input" id="r-least" name="leastFavorite" autocomplete="off">
-      </fieldset>
-
-      <p class="q-error" id="q-error" role="alert"></p>
-      <div class="q-nav">
-        <button class="outline-btn" id="q-back" type="button" hidden>← Back</button>
-        <button class="btn" id="q-next" type="submit">Next →</button>
-      </div>
-    </form>
-
-    <div class="rsvp-done" id="rsvp-done" hidden tabindex="-1">
-      <p class="done-stamp">You're on the call sheet!</p>
-      <p class="done-name" id="done-name"></p>
-      <p class="done-msg" id="done-msg"></p>
-      <p class="done-note" id="done-note"></p>
-      <button class="outline-btn" id="rsvp-again" type="button">Register someone else</button>
-    </div>
-  </section>
+  </div>
 
   <section class="block" id="rules" aria-labelledby="rules-title">
     <div class="block-head"><h2 id="rules-title">The rules</h2><p>Short and sweet</p></div>
@@ -668,12 +663,13 @@ setInterval(tick, 1000);
   });
 })();
 
-// RSVP: five questions on the page, posted to the Google Form in the background
+// Registration: four quick steps on the page, posted to the Google Form in the background
 (function rsvp() {
   const R = FESTIVAL.rsvp || {};
   const connected = Boolean(R.action && R.fields && R.fields.name);
-  const SOLO = "Just me. Find me a team.";
-  const ELIGIBLE = "3 or more (award eligible)";
+  // These answers land in the form's "If you are a group, has each team member registered?" text field.
+  const YES = "Yes, everyone on my team has registered";
+  const SOLO = "I'm coming solo";
   const form = $("rsvp-form");
   const steps = [...form.querySelectorAll("fieldset.q")];
   const frames = [...form.querySelectorAll(".q-frames span")];
@@ -719,13 +715,9 @@ setInterval(tick, 1000);
     }
     if (i === 2) {
       if (!checked("roles").length) return "Check at least one role. “Never made a film” counts.";
-      if (!checked("experience").length) return "Pick your movie-making experience. Hobby is great.";
+      if (!checked("experience").length) return "Pick your movie-making experience. Beginner is great.";
     }
-    if (i === 3 && !checked("team").length) return "Pick one. Solo is totally fine.";
-    if (i === 4) {
-      if (!$("r-drives").value.trim()) return "Tell us what drives you. A sentence is plenty.";
-      if (!checked("heard").length) return "Let us know how you heard about this.";
-    }
+    if (i === 3 && !checked("group").length) return "Pick one. Coming solo is totally fine.";
     return "";
   }
 
@@ -738,13 +730,8 @@ setInterval(tick, 1000);
     add("workLink", data.workLink);
     data.roles.forEach((v) => add("roles", v));
     add("experience", data.experience);
-    add("team", data.team);
-    add("teamName", data.teamName);
+    add("groupRegistered", data.group);
     data.gear.forEach((v) => add("gear", v));
-    add("drives", data.drives);
-    add("heard", data.heard);
-    add("eightTen", data.eightTen);
-    add("leastFavorite", data.leastFavorite);
     // Google doesn't let other sites read its reply, so a network error is the only failure we can see.
     return fetch(R.action, { method: "POST", mode: "no-cors", body });
   }
@@ -753,20 +740,16 @@ setInterval(tick, 1000);
     form.hidden = true;
     const done = $("rsvp-done");
     done.hidden = false;
-    $("done-name").textContent = data.teamName ? `${data.name} · ${data.teamName}` : data.name;
+    $("done-name").textContent = data.name;
     $("done-msg").textContent =
-      data.team === ELIGIBLE ? "Prize eligible, as long as your film at least loosely follows the prompt. See you at Tompkins Square Park, 11AM Saturday." :
-      data.team === SOLO     ? "Teams are made at Tompkins Square Park, 11AM Saturday. Every film submitted on time screens." :
-                               "Find one more teammate and you're prize eligible. Either way, every film submitted on time screens.";
+      data.group === YES  ? "Your whole crew is on the list. See you at Tompkins Square Park, 11AM Saturday." :
+      data.group === SOLO ? "Teams are made at Tompkins Square Park, 11AM Saturday. Every film submitted on time screens." :
+                            "Remind your teammates to register too: everyone needs their own registration. Send them this page!";
     $("done-note").textContent = sent
       ? `We'll send a confirmation to ${data.email}.`
       : "Preview only: this form isn't connected to Google Forms yet, so nothing was sent.";
     done.focus();
   }
-
-  form.querySelectorAll('input[name="team"]').forEach((radio) => {
-    radio.addEventListener("change", () => { $("team-name").hidden = checked("team")[0] === SOLO; });
-  });
 
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
@@ -774,7 +757,6 @@ setInterval(tick, 1000);
     if (issue) { error.textContent = issue; return; }
     if (step < steps.length - 1) { show(step + 1); return; }
 
-    const team = checked("team")[0];
     const data = {
       name: $("r-name").value.trim(),
       email: $("r-email").value.trim(),
@@ -782,13 +764,8 @@ setInterval(tick, 1000);
       workLink: $("r-link").value.trim(),
       roles: checked("roles"),
       experience: checked("experience")[0],
-      team,
-      teamName: team === SOLO ? "" : $("r-team").value.trim(),
+      group: checked("group")[0],
       gear: checked("gear"),
-      drives: $("r-drives").value.trim(),
-      heard: checked("heard")[0],
-      eightTen: $("r-eight").value.trim(),
-      leastFavorite: $("r-least").value.trim(),
     };
     if (!connected) { finish(data, false); return; }
 
@@ -811,7 +788,6 @@ setInterval(tick, 1000);
   document.querySelectorAll("[data-rsvp]").forEach((a) => a.addEventListener("click", open));
   $("rsvp-again").addEventListener("click", () => {
     form.reset();
-    $("team-name").hidden = true;
     $("rsvp-done").hidden = true;
     form.hidden = false;
     show(0);

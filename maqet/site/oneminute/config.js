@@ -12,7 +12,7 @@ window.FESTIVAL = {
   // mode and tells people nothing was sent.
   rsvp: {
     action: "https://docs.google.com/forms/d/e/1FAIpQLSdCEW4OdAh7mZwz4xWZQ97NLCtT65v2WufraNq6ow87wP694w/formResponse",
-    fields: {"name":"entry.1666411830","email":"entry.1930397110","phone":"entry.1783030360","workLink":"entry.927707821","roles":"entry.1827480192","experience":"entry.1638446186","team":"entry.1771160019","teamName":"entry.361540500","gear":"entry.480374014","drives":"entry.325410617","heard":"entry.343443323","eightTen":"entry.243476661","leastFavorite":"entry.925028679"},
+    fields: {"name":"entry.1666411830","email":"entry.1930397110","phone":"entry.1783030360","workLink":"entry.927707821","roles":"entry.1827480192","experience":"entry.1638446186","groupRegistered":"entry.361540500","gear":"entry.480374014"},
   },
 
   contactEmail: "maqetcollective@gmail.com",   // shown at the bottom: "Any questions? Email ..."

@@ -26,9 +26,10 @@ const SEND_CONFIRMATION = true;   // email each person a "you're on the call she
 // These choices must match site/oneminute/index.html exactly, or the website's
 // answers won't land in the form.
 const ROLES = ['Director', 'Writer', 'Editor', 'Camera / DOP', 'Sound', 'Actor', 'Producer', 'Never made a film'];
-const TEAM = ['Just me. Find me a team.', '2 of us', '3 or more (award eligible)'];
 const GEAR = ['Camera', 'Mics / sound gear', 'Lights', 'Laptop with editing software', 'Just my brilliant self'];
-const EXPERIENCE = ['Hobby', 'Independent', 'Pro'];
+const EXPERIENCE = ['Beginner', 'Hobbyist', 'Pro'];
+// The website's buttons for the group question. The form stores them as text.
+const GROUP = ['Yes, everyone on my team has registered', 'Not yet, I\'ll make sure they do', 'I\'m coming solo'];
 const HEARD = ['Poster', 'Social media', 'A friend', 'Artists Talking Together at Nook'];
 
 function createRsvpForm() {
@@ -71,25 +72,17 @@ function createRsvpForm() {
     .setTitle('Movie-making experience')
     .setChoiceValues(EXPERIENCE)
     .setRequired(true);
-  const team = form.addMultipleChoiceItem()
-    .setTitle('Who\'s on your team?')
-    .setHelpText('Teams of 3 or more can win prizes. Coming solo? Teams are made at Tompkins Square Park. Every film submitted on time is screened.')
-    .setChoiceValues(TEAM)
+  const groupRegistered = form.addTextItem()
+    .setTitle('If you are a group, has each team member registered?')
+    .setHelpText('Everyone needs to register, one registration per person.')
     .setRequired(true);
-  const teamName = form.addTextItem()
-    .setTitle('Team name')
-    .setHelpText('Optional.');
   const gear = form.addCheckboxItem()
     .setTitle('What can you bring?')
     .setHelpText('Optional. Helps us match crews.')
     .setChoiceValues(GEAR);
-  const drives = form.addParagraphTextItem()
-    .setTitle('What drives you to make movies?')
-    .setRequired(true);
   const heard = form.addMultipleChoiceItem()
     .setTitle('How did you hear about this?')
-    .setChoiceValues(HEARD)
-    .setRequired(true);
+    .setChoiceValues(HEARD);
   const eightTen = form.addTextItem()
     .setTitle('Just for fun: a movie you think is an 8/10')
     .setHelpText('Optional.');
@@ -116,10 +109,8 @@ function createRsvpForm() {
     workLink: [workLink, '__link__'],
     roles: [roles, [ROLES[0]]],
     experience: [experience, EXPERIENCE[0]],
-    team: [team, TEAM[0]],
-    teamName: [teamName, '__team__'],
+    groupRegistered: [groupRegistered, '__group__'],
     gear: [gear, [GEAR[0]]],
-    drives: [drives, '__drives__'],
     heard: [heard, HEARD[0]],
     eightTen: [eightTen, '__eight__'],
     leastFavorite: [leastFavorite, '__least__'],
@@ -175,8 +166,7 @@ function onRsvp(e) {
 
   const name = answers['What\'s your name?'] || 'Someone';
   const email = answers['Email'];
-  const team = answers['Who\'s on your team?'] || '';
-  const teamName = answers['Team name'];
+  const group = answers['If you are a group, has each team member registered?'] || '';
   const owner = NOTIFY_EMAIL || Session.getEffectiveUser().getEmail();
 
   const summary = Object.keys(answers)
@@ -186,18 +176,18 @@ function onRsvp(e) {
   MailApp.sendEmail({
     to: owner,
     replyTo: email || owner,
-    subject: `New registration: ${name}${teamName ? ` (${teamName})` : ''} · ${team}`,
+    subject: `New registration: ${name}${group ? ` · ${group}` : ''}`,
     body: summary,
   });
 
   if (SEND_CONFIRMATION && email) {
     let teamLine;
-    if (team === TEAM[2]) {
-      teamLine = 'Your team is prize eligible, as long as your film at least loosely follows the prompt.';
-    } else if (team === TEAM[1]) {
-      teamLine = 'Find one more teammate and you\'re prize eligible. Either way, every film submitted on time is screened.';
+    if (group === GROUP[0]) {
+      teamLine = 'Your whole crew is registered. Teams of 3+ with a film that at least loosely follows the prompt are prize eligible.';
+    } else if (group === GROUP[2]) {
+      teamLine = 'You\'re coming solo. Teams are made at Tompkins Square Park on Saturday morning.';
     } else {
-      teamLine = 'You registered solo. Teams are made at Tompkins Square Park on Saturday morning.';
+      teamLine = 'Remind your teammates: everyone needs to register, one registration per person.';
     }
 
     MailApp.sendEmail({
@@ -208,7 +198,7 @@ function onRsvp(e) {
       body:
         `Hi ${name},\n\n` +
         'Thanks for registering for The 1 Minute Film Festival, hosted by MAQET.\n\n' +
-        'Sat Nov 14, 11:00 AM: meet at Tompkins Square Park. The prompt is handed out and the 24-hour clock starts.\n' +
+        'Sat Nov 14, 11:00 AM: meet at Tompkins Square Park. Teams are made, the prompt is handed out and the 24-hour clock starts.\n' +
         'Sun Nov 15, 11:00 AM: final cut due.\n' +
         'Sun Nov 15, 7:00 PM: all works submitted on time are screened together (location TBD).\n\n' +
         'The rules: all creative activity happens within the 24 hours, submit by 11:00 AM Sunday (60 seconds or less), and come enjoy everyone\'s work at the screening.\n\n' +
