@@ -16,7 +16,7 @@
 <meta property="og:type" content="website">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Permanent+Marker&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Momo+Trust+Display&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Permanent+Marker&display=swap">
 <style>
 /* Layout: a production call sheet scribbled on in marker. Ruled header grid holding the three-line hook, then registration, rules, the weekend, prizes and a sign-off. */
 :root {
@@ -32,7 +32,7 @@
   --aqua: #84F5EF;
   --pen: #1A27E0;
 
-  --display: "Anton", Impact, "Arial Narrow", sans-serif;
+  --display: "Momo Trust Display", "Arial Black", "Helvetica Neue", Arial, sans-serif;
   --mono: "Courier Prime", "Courier New", Courier, monospace;
   --marker: "Permanent Marker", "Marker Felt", "Comic Sans MS", cursive;
   color-scheme: light;
@@ -101,15 +101,15 @@ mark { background: linear-gradient(transparent 12%, var(--highlight) 12% 88%, tr
 .c-times { grid-area: times; }
 .c-title { grid-area: title; display: grid; justify-items: center; align-content: center; text-align: center; gap: .5rem; }
 .doc-label { margin: 0; padding: .15em .7em; border: 2px solid var(--ink); font-weight: 700; font-size: .9rem; letter-spacing: .3em; text-transform: uppercase; }
-h1 { margin: 0; font-family: var(--display); font-weight: 400; font-size: clamp(2rem, 4.4vw, 3.3rem); line-height: .95; text-transform: uppercase; color: var(--green); text-shadow: .045em .04em 0 var(--magenta); text-wrap: balance; }
+h1 { margin: 0; font-family: var(--display); font-weight: 400; font-size: clamp(1.45rem, 2.9vw, 2.2rem); line-height: 1.05; text-transform: uppercase; color: var(--green); text-shadow: .045em .04em 0 var(--magenta); text-wrap: balance; }
 .dates { margin: 0; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
 .tminus { display: grid; gap: .1rem; justify-items: center; }
 .tminus .k { color: var(--ink); }
-.tm { font-family: var(--display); font-size: clamp(1.7rem, 3.2vw, 2.2rem); line-height: 1; font-variant-numeric: tabular-nums; background: var(--ink); color: var(--lime); padding: .12em .4em .16em; }
+.tm { font-family: var(--display); font-size: clamp(1.25rem, 2.3vw, 1.65rem); line-height: 1; font-variant-numeric: tabular-nums; background: var(--ink); color: var(--lime); padding: .12em .4em .16em; }
 
 /* the hook */
 .hook { grid-area: hook; display: grid; grid-template-columns: max-content minmax(0, 1fr); align-items: center; column-gap: clamp(1.5rem, 4vw, 3.5rem); padding: clamp(1.3rem, 3vw, 2.1rem) clamp(1rem, 3vw, 2.2rem) clamp(1.4rem, 3vw, 2rem); }
-.lines { margin: 0; display: grid; gap: .14em; font-family: var(--display); font-weight: 400; font-size: clamp(2.6rem, 6.2vw, 5.1rem); line-height: 1; text-transform: uppercase; }
+.lines { margin: 0; display: grid; gap: .14em; font-family: var(--display); font-weight: 400; font-size: clamp(1.9rem, 3.9vw, 3.2rem); line-height: 1.08; text-transform: uppercase; }
 .line { display: block; }
 .hl {
   background: linear-gradient(transparent 52%, var(--highlight) 52% 94%, transparent 94%) no-repeat left / 100% 100%;
@@ -128,11 +128,15 @@ h1 { margin: 0; font-family: var(--display); font-weight: 400; font-size: clamp(
 .rec.on { color: var(--magenta); }
 .rec.on::before { content: "● "; animation: blink 1s steps(2, start) infinite; }
 @keyframes blink { to { visibility: hidden; } }
-.rt-tc { margin: 0; justify-self: start; font-family: var(--display); font-size: clamp(2rem, 3.6vw, 2.6rem); line-height: 1; font-variant-numeric: tabular-nums; background: var(--ink); color: var(--paper); padding: .14em .4em .18em; }
+.rt-tc { margin: 0; justify-self: start; font-family: var(--display); font-size: clamp(1.4rem, 2.5vw, 1.85rem); line-height: 1; font-variant-numeric: tabular-nums; background: var(--ink); color: var(--paper); padding: .14em .4em .18em; }
 .rt-bar { flex: 1 1 10rem; height: 10px; border: 2px solid var(--ink); }
 .rt-bar span { display: block; height: 100%; width: 0; background: var(--magenta); }
 .outline-btn { justify-self: start; background: var(--paper); border: 2px solid var(--ink); color: var(--ink); font-family: var(--mono); font-weight: 700; font-size: .9rem; letter-spacing: .06em; text-transform: uppercase; padding: .5em .9em; cursor: pointer; }
 .outline-btn:hover { background: var(--ink); color: var(--paper); }
+
+/* clocks: Momo's digits vary in width, so each one sits in a fixed slot */
+.dg { display: inline-block; width: .74em; text-align: center; }
+.dg-sep { display: inline-block; width: .3em; text-align: center; }
 
 /* ── blocks ── */
 .block { margin-top: clamp(2.8rem, 6vw, 4rem); }
@@ -144,7 +148,7 @@ h1 { margin: 0; font-family: var(--display); font-weight: 400; font-size: clamp(
 .btn {
   display: inline-block;
   background: var(--ink); color: var(--paper);
-  font-family: var(--display); font-size: 1.45rem; letter-spacing: .04em; text-transform: uppercase; text-decoration: none;
+  font-family: var(--display); font-size: 1.05rem; letter-spacing: .02em; text-transform: uppercase; text-decoration: none;
   padding: .5em 1.15em .55em;
   border: 0;
   box-shadow: 5px 5px 0 var(--magenta);
@@ -187,9 +191,9 @@ h1 { margin: 0; font-family: var(--display); font-weight: 400; font-size: clamp(
   transition: rotate .2s ease, translate .2s ease, box-shadow .2s ease;
 }
 .rsvp-start:hover .ch-box { rotate: 0deg; translate: -2px -2px; box-shadow: 9px 9px 0 var(--ink); }
-.ch-rsvp { font-family: var(--display); font-size: clamp(2.6rem, 5.4vw, 4.2rem); line-height: 1; text-transform: uppercase; }
+.ch-rsvp { font-family: var(--display); font-size: clamp(1.7rem, 3.4vw, 2.7rem); line-height: 1; text-transform: uppercase; }
 .ch-count { font-weight: 700; font-size: .85rem; letter-spacing: .08em; text-transform: uppercase; }
-.ch-tag { position: absolute; top: -1.05rem; right: -.9rem; padding: .15em .5em; background: var(--paper); border: 3px solid var(--magenta); color: var(--magenta); font-family: var(--display); font-size: 1rem; letter-spacing: .04em; text-transform: uppercase; white-space: nowrap; rotate: 6deg; }
+.ch-tag { position: absolute; top: -1.05rem; right: -.9rem; padding: .15em .5em; background: var(--paper); border: 3px solid var(--magenta); color: var(--magenta); font-family: var(--display); font-size: .74rem; letter-spacing: .02em; text-transform: uppercase; white-space: nowrap; rotate: 6deg; }
 
 /* RSVP: the five questions */
 .rsvp-form, .rsvp-done {
@@ -206,9 +210,9 @@ h1 { margin: 0; font-family: var(--display); font-weight: 400; font-size: clamp(
 .q-frames span { width: 26px; height: 16px; border: 2px solid var(--ink); transition: background .2s ease; }
 .q-frames span.on { background: var(--magenta); }
 .q { border: 0; margin: 0; padding: 1.1rem 0 0; min-width: 0; display: grid; gap: .55rem; }
-.q-title { padding: 0 0 .3rem; font-family: var(--display); font-size: clamp(2rem, 4.6vw, 3.1rem); line-height: 1; text-transform: uppercase; }
+.q-title { padding: 0 0 .3rem; font-family: var(--display); font-size: clamp(1.4rem, 3vw, 2.1rem); line-height: 1.1; text-transform: uppercase; }
 .q-help { margin: 0; color: var(--faint); font-size: .95rem; }
-.q-title--long { font-size: clamp(1.6rem, 3.4vw, 2.3rem); }
+.q-title--long { font-size: clamp(1.15rem, 2.4vw, 1.55rem); }
 .q-note { margin: 0 0 .3rem; padding: .55rem .8rem .6rem; background: var(--highlight); border: 2px solid var(--ink); max-width: 56ch; }
 .q .k { margin-top: .5rem; }
 .line-input {
@@ -246,7 +250,7 @@ h1 { margin: 0; font-family: var(--display); font-weight: 400; font-size: clamp(
 
 .rsvp-done { display: grid; gap: .6rem; justify-items: start; }
 .rsvp-done:focus { outline: none; }
-.done-stamp { margin: .3rem 0 0; padding: .1em .5em; border: 5px solid var(--magenta); color: var(--magenta); font-family: var(--display); font-size: clamp(1.8rem, 4.5vw, 2.8rem); line-height: 1.1; text-transform: uppercase; rotate: -4deg; animation: stamp .3s cubic-bezier(.2, 1.6, .4, 1); }
+.done-stamp { margin: .3rem 0 0; padding: .1em .5em; border: 5px solid var(--magenta); color: var(--magenta); font-family: var(--display); font-size: clamp(1.2rem, 2.8vw, 1.8rem); line-height: 1.15; text-transform: uppercase; rotate: -4deg; animation: stamp .3s cubic-bezier(.2, 1.6, .4, 1); }
 @keyframes stamp { from { scale: 1.8; opacity: 0; } }
 .done-name { margin: .5rem 0 0; font-family: var(--marker); font-size: 2rem; line-height: 1.1; color: var(--pen); }
 .done-msg { margin: 0; font-size: 1.1rem; max-width: 52ch; }
@@ -257,8 +261,8 @@ h1 { margin: 0; font-family: var(--display); font-weight: 400; font-size: clamp(
 .prize { background: var(--paper); padding: 1.2rem 1.3rem 1.4rem; display: grid; align-content: start; gap: .5rem; min-width: 0; }
 .prize--main { background: var(--highlight); }
 .prize .k { color: var(--ink); }
-.prize-line { margin: .2rem 0 0; font-family: var(--display); font-size: clamp(2.4rem, 5.4vw, 4.2rem); line-height: 1.02; text-transform: uppercase; }
-.prize-line--sm { font-size: clamp(1.9rem, 3.6vw, 2.8rem); color: var(--magenta); }
+.prize-line { margin: .2rem 0 0; font-family: var(--display); font-size: clamp(1.7rem, 3.6vw, 2.8rem); line-height: 1.1; text-transform: uppercase; }
+.prize-line--sm { font-size: clamp(1.3rem, 2.5vw, 1.9rem); color: var(--magenta); }
 .prize .doodle path { animation: none; stroke-dasharray: none; }
 .redacted { display: grid; gap: .45rem; margin: .3rem 0 .2rem; }
 .redacted span { display: block; height: 1.05rem; background: var(--ink); }
@@ -273,12 +277,43 @@ h1 { margin: 0; font-family: var(--display); font-weight: 400; font-size: clamp(
 .hint:nth-child(2) { --note: var(--highlight); --tilt: 1.5deg; }
 .hint:nth-child(3) { --note: var(--lime); --tilt: -1deg; }
 
+/* ── cast & crew list (live) ── */
+.guest-top { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: .6rem 1.5rem; margin-top: 1.1rem; }
+.guest-count { margin: 0; display: flex; align-items: baseline; gap: .5rem; flex-wrap: wrap; }
+.guest-count b { font-family: var(--display); font-weight: 400; font-size: clamp(2.6rem, 6vw, 4rem); line-height: 1; color: var(--magenta); }
+.guest-count span { font-weight: 700; letter-spacing: .1em; text-transform: uppercase; font-size: .9rem; }
+.guest-list { list-style: none; margin: 1.1rem 0 0; padding: 0; border-top: 3px solid var(--ink); }
+.guest-head, .guest { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr) minmax(0, 1.3fr); gap: .3rem 1.2rem; align-items: baseline; padding: .6rem 0; border-bottom: 1px solid var(--hairline); }
+.guest-head { padding-block: .5rem .4rem; }
+.guest-head span { font-size: .72rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--faint); }
+.guest-name { font-weight: 700; overflow-wrap: anywhere; }
+.guest-link { overflow-wrap: anywhere; color: var(--pen); text-decoration-thickness: 2px; text-underline-offset: 3px; }
+span.guest-link { color: inherit; }
+.guest-least { overflow-wrap: anywhere; }
+.guest-least .k { display: none; }
+.guest-empty { margin: 1rem 0 0; }
+.guest-drop { margin-top: 1.1rem; border: 3px solid var(--ink); background: var(--paper); }
+.guest-drop summary { list-style: none; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding: .8rem 1rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+.guest-drop summary::-webkit-details-marker { display: none; }
+.guest-drop summary::after { content: ""; flex: none; width: .65em; height: .65em; border-right: 3px solid var(--ink); border-bottom: 3px solid var(--ink); rotate: 45deg; translate: 0 -.2em; transition: rotate .2s ease, translate .2s ease; }
+.guest-drop[open] summary::after { rotate: 225deg; translate: 0 .15em; }
+.guest-drop summary:hover { background: var(--highlight); }
+.guest-drop summary:focus-visible { outline: 3px dashed var(--pen); outline-offset: 3px; }
+.guest-drop[open] summary { border-bottom: 3px solid var(--ink); }
+.guest-drop .guest-list { margin: 0; border-top: 0; padding: 0 1rem; max-height: min(60vh, 34rem); overflow-y: auto; }
+.guest-drop .guest:last-child { border-bottom: 0; }
+
+.partiful { margin: 1.2rem 0 0; }
+.partiful a { display: inline-block; padding: .55em .9em; border: 3px solid var(--ink); background: var(--paper); font-family: var(--display); font-size: .95rem; letter-spacing: .02em; text-transform: uppercase; text-decoration: none; box-shadow: 4px 4px 0 var(--magenta); }
+.partiful a:hover { box-shadow: 6px 6px 0 var(--magenta); translate: -2px -2px; }
+.signoff .partiful, .guest-top .partiful { margin: 0; }
+
 /* ── rules ── */
 .musts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.4rem 2.5rem; margin-top: 1.4rem; }
 .must { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 1rem; align-items: start; }
-.must-num { display: grid; place-items: center; width: 3.2rem; height: 3.2rem; border: 3px solid var(--magenta); border-radius: 50% 46% 52% 48%; rotate: -8deg; font-family: var(--display); font-size: 1.9rem; line-height: 1; }
+.must-num { display: grid; place-items: center; width: 3.2rem; height: 3.2rem; border: 3px solid var(--magenta); border-radius: 50% 46% 52% 48%; rotate: -8deg; font-family: var(--display); font-size: 1.4rem; line-height: 1; }
 .must p { margin: 0; }
-.must strong { display: block; font-family: var(--display); font-weight: 400; font-size: clamp(1.6rem, 3vw, 2.1rem); line-height: 1.05; text-transform: uppercase; }
+.must strong { display: block; font-family: var(--display); font-weight: 400; font-size: clamp(1.15rem, 2.1vw, 1.5rem); line-height: 1.18; text-transform: uppercase; }
 .must sup, .footnote sup { color: var(--magenta); font-size: .8em; }
 .footnote { margin: 1.6rem 0 0; padding-top: .9rem; border-top: 1px solid var(--hairline); max-width: 70ch; font-size: .98rem; }
 
@@ -286,7 +321,7 @@ h1 { margin: 0; font-family: var(--display); font-weight: 400; font-size: clamp(
 .sched { width: 100%; border-collapse: collapse; margin-top: .2rem; }
 .sched th { text-align: left; font-size: .72rem; letter-spacing: .14em; text-transform: uppercase; color: var(--faint); padding: .6rem .7rem .4rem 0; border-bottom: 1px solid var(--hairline); }
 .sched td { padding: .75rem .7rem .75rem 0; border-bottom: 1px solid var(--hairline); vertical-align: top; }
-.sched td:first-child { font-family: var(--display); font-size: 1.5rem; line-height: 1; width: 3rem; }
+.sched td:first-child { font-family: var(--display); font-size: 1.15rem; line-height: 1; width: 3rem; }
 .sched td:nth-child(2) { font-weight: 700; white-space: nowrap; width: 12rem; }
 .sched td:last-child { width: 11rem; }
 .sched tr.premiere td { background: var(--highlight); }
@@ -297,7 +332,7 @@ h1 { margin: 0; font-family: var(--display); font-weight: 400; font-size: clamp(
 /* sign-off */
 .signoff { margin-top: clamp(3rem, 7vw, 4.4rem); border: 3px solid var(--ink); background: var(--lime); padding: clamp(1.5rem, 4vw, 2.6rem); display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 1.4rem 2rem; align-items: center; }
 .signoff .k { color: var(--ink); }
-.signoff h2 { margin: .25rem 0 0; font-family: var(--display); font-weight: 400; font-size: clamp(2.4rem, 6vw, 4.2rem); line-height: .98; text-transform: uppercase; }
+.signoff h2 { margin: .25rem 0 0; font-family: var(--display); font-weight: 400; font-size: clamp(1.7rem, 4vw, 2.9rem); line-height: 1.08; text-transform: uppercase; }
 .guarantee { display: inline-block; margin-left: .15em; padding: .05em .3em; border: 4px solid var(--magenta); color: var(--magenta); font-size: .42em; letter-spacing: .04em; vertical-align: middle; rotate: -8deg; }
 .signoff-note { margin: .5rem 0 0; font-family: var(--marker); font-size: 1.25rem; color: var(--pen); rotate: -2deg; width: fit-content; }
 .signoff-cta { display: grid; justify-items: center; gap: .6rem; }
@@ -326,7 +361,7 @@ h1 { margin: 0; font-family: var(--display); font-weight: 400; font-size: clamp(
   }
   .cell { padding: .9rem 1rem; }
   .c-title { gap: .4rem; }
-  .lines { font-size: 10.4vw; }
+  .lines { font-size: 7.4vw; }
   .hook { display: block; }
   .hook .sub { margin-top: 1.1rem; font-size: .98rem; }
   .c-times, .c-prod { display: grid; grid-template-columns: 6rem minmax(0, 1fr); align-items: baseline; gap: .55rem .7rem; }
@@ -339,11 +374,14 @@ h1 { margin: 0; font-family: var(--display); font-weight: 400; font-size: clamp(
   .rsvp-start { grid-template-columns: minmax(0, 1fr); grid-template-areas: "big" "arrow" "box"; justify-items: center; text-align: center; gap: .4rem; padding-bottom: .6rem; }
   .ch-big { font-size: 2.1rem; }
   .ch-box { padding: .9rem 1.4rem 1rem; }
-  .ch-rsvp { font-size: 2.7rem; }
+  .ch-rsvp { font-size: 1.55rem; white-space: nowrap; }
   .ch-tag { right: -.4rem; }
   .ch-arrow--wide { display: none; }
   .ch-arrow--tall { display: block; width: 36px; }
   .prizes, .musts { grid-template-columns: minmax(0, 1fr); }
+  .guest-head { display: none; }
+  .guest { grid-template-columns: minmax(0, 1fr); gap: .15rem; }
+  .guest-least .k { display: inline; margin-right: .4rem; }
   .sched thead { display: none; }
   .sched, .sched tbody, .sched td { display: block; width: auto !important; }
   .sched tr { display: grid; grid-template-columns: 2.4rem minmax(0, 1fr); border-bottom: 1px solid var(--hairline); padding-block: .6rem; }
@@ -357,7 +395,7 @@ h1 { margin: 0; font-family: var(--display); font-weight: 400; font-size: clamp(
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .doodle path, .hl, .rec.on::before, .ch-big span, .ch-worm, .done-stamp { animation: none; }
-  .btn, .box::after, .ch-box, .hint, .q-frames span { transition: none; }
+  .btn, .box::after, .ch-box, .hint, .q-frames span, .guest-drop summary::after { transition: none; }
 }
 </style>
 </head>
@@ -448,7 +486,7 @@ h1 { margin: 0; font-family: var(--display); font-weight: 400; font-size: clamp(
           <input class="line-input" id="r-email" name="email" type="email" autocomplete="email" inputmode="email">
           <label class="k" for="r-phone">Phone <span class="opt-hint">optional · for texts during the 24 hours</span></label>
           <input class="line-input" id="r-phone" name="phone" type="tel" autocomplete="tel">
-          <label class="k" for="r-link">Link to your work <span class="opt-hint">optional · YouTube, Vimeo, Instagram, website…</span></label>
+          <label class="k" for="r-link">Social media or link to your work <span class="opt-hint">optional · Instagram, YouTube, Vimeo, website…</span></label>
           <input class="line-input" id="r-link" name="workLink" type="url" inputmode="url" autocomplete="url" placeholder="so we can promote your work">
         </fieldset>
 
@@ -489,6 +527,8 @@ h1 { margin: 0; font-family: var(--display); font-weight: 400; font-size: clamp(
             <label class="check"><input type="checkbox" name="gear" value="Laptop with editing software"><span class="box"></span><span class="check-label">Editing laptop</span></label>
             <label class="check"><input type="checkbox" name="gear" value="Just my brilliant self"><span class="box"></span><span class="check-label">Just my brilliant self</span></label>
           </div>
+          <label class="k q-sub" for="r-least">Just for fun: your least favorite movie <span class="opt-hint">optional</span></label>
+          <input class="line-input" id="r-least" name="leastFavorite" autocomplete="off">
         </fieldset>
 
         <p class="q-error" id="q-error" role="alert"></p>
@@ -514,6 +554,18 @@ h1 { margin: 0; font-family: var(--display); font-weight: 400; font-size: clamp(
       <button class="outline-btn" id="v-play" type="button">▶ Feel 60 seconds</button>
     </div>
   </div>
+
+  <section class="block" id="guests" aria-labelledby="guests-title" hidden>
+    <div class="block-head"><h2 id="guests-title">Cast &amp; crew list</h2><p>Updates live</p></div>
+    <div class="guest-top">
+      <p class="guest-count" aria-live="polite"><b id="guest-count">0</b> <span id="guest-count-label">registered so far</span></p>
+      <p class="partiful" data-partiful hidden><a href="#" target="_blank" rel="noopener">Coming to watch? RSVP on Partiful →</a></p>
+    </div>
+    <details class="guest-drop" id="guest-drop">
+      <summary id="guest-summary">See who's coming</summary>
+      <ol class="guest-list" id="guest-list"></ol>
+    </details>
+  </section>
 
   <section class="block" id="rules" aria-labelledby="rules-title">
     <div class="block-head"><h2 id="rules-title">The rules</h2><p>Short and sweet</p></div>
@@ -541,6 +593,7 @@ h1 { margin: 0; font-family: var(--display); font-weight: 400; font-size: clamp(
       <a data-cal="reveal" href="#when" target="_blank" rel="noopener">Crew call</a>
       <a data-cal="screening" href="#when" target="_blank" rel="noopener">Premiere</a>
     </p>
+    <p class="partiful" data-partiful hidden><a href="#" target="_blank" rel="noopener">Coming to the screening? RSVP on Partiful →</a></p>
   </section>
 
   <section class="block" id="prizes" aria-labelledby="prizes-title">
@@ -573,6 +626,7 @@ h1 { margin: 0; font-family: var(--display); font-weight: 400; font-size: clamp(
     <div class="signoff-cta">
       <a class="btn" data-rsvp href="#rsvp">Register now</a>
       <p>(it's free!)</p>
+      <p class="partiful" data-partiful hidden><a href="#" target="_blank" rel="noopener">Screening RSVP on Partiful →</a></p>
     </div>
   </section>
 
@@ -589,6 +643,15 @@ h1 { margin: 0; font-family: var(--display); font-weight: 400; font-size: clamp(
 const FESTIVAL = window.FESTIVAL;
 const $ = (id) => document.getElementById(id);
 const pad = (n) => String(n).padStart(2, "0");
+// Clock text goes in fixed-width slots so the numbers don't wobble as they tick.
+function digits(el, text) {
+  el.replaceChildren(...[...text].map((ch) => {
+    const span = document.createElement("span");
+    span.className = /\d/.test(ch) ? "dg" : "dg-sep";
+    span.textContent = ch;
+    return span;
+  }));
+}
 
 if (FESTIVAL.promptLocation) {
   document.querySelectorAll('[data-slot="prompt-location"]').forEach((el) => { el.textContent = FESTIVAL.promptLocation; });
@@ -622,7 +685,7 @@ function tick() {
   const h = Math.floor(s / 3600);  s -= h * 3600;
   const m = Math.floor(s / 60);    s -= m * 60;
   $("tm-label").textContent = `${phase.label} (days:hrs:min:sec)`;
-  $("tm").textContent = `${pad(d)}:${pad(h)}:${pad(m)}:${pad(s)}`;
+  digits($("tm"), `${pad(d)}:${pad(h)}:${pad(m)}:${pad(s)}`);
 }
 tick();
 setInterval(tick, 1000);
@@ -638,10 +701,11 @@ setInterval(tick, 1000);
   let raf = 0;
   const play = $("v-play");
   const rec = $("v-rec");
+  digits($("v-tc"), tc(60));
 
   function frame(now) {
     const t = Math.min(60, (now - startedAt) / 1000);
-    $("v-tc").textContent = tc(t);
+    digits($("v-tc"), tc(t));
     $("v-fill").style.width = `${(t / 60) * 100}%`;
     if (t < 60) { raf = requestAnimationFrame(frame); return; }
     stop();
@@ -732,6 +796,7 @@ setInterval(tick, 1000);
     add("experience", data.experience);
     add("groupRegistered", data.group);
     data.gear.forEach((v) => add("gear", v));
+    add("leastFavorite", data.leastFavorite);
     // Google doesn't let other sites read its reply, so a network error is the only failure we can see.
     return fetch(R.action, { method: "POST", mode: "no-cors", body });
   }
@@ -766,6 +831,7 @@ setInterval(tick, 1000);
       experience: checked("experience")[0],
       group: checked("group")[0],
       gear: checked("gear"),
+      leastFavorite: $("r-least").value.trim(),
     };
     if (!connected) { finish(data, false); return; }
 
@@ -792,6 +858,92 @@ setInterval(tick, 1000);
     form.hidden = false;
     show(0);
   });
+})();
+
+// Partiful link for the screening (buttons stay hidden until it's set in config.js)
+if (FESTIVAL.partifulUrl) {
+  document.querySelectorAll("[data-partiful]").forEach((p) => {
+    p.querySelector("a").href = FESTIVAL.partifulUrl;
+    p.hidden = false;
+  });
+}
+
+// Live cast & crew list: count, names, links and least favorite movies from the registration sheet
+(function guestList() {
+  if (!FESTIVAL.guestListUrl) return;
+  const section = $("guests");
+  const list = $("guest-list");
+
+  // Turn whatever people typed into a safe, tidy link (or plain text if it isn't a web address).
+  function cleanLink(raw) {
+    const typed = (raw || "").trim();
+    if (!typed) return null;
+    if (typed.startsWith("@")) return { text: typed.slice(0, 40) };
+    const withScheme = /^https?:\/\//i.test(typed) ? typed : `https://${typed.replace(/^\/+/, "")}`;
+    try {
+      const url = new URL(withScheme);
+      if (!/^https?:$/.test(url.protocol) || !url.hostname.includes(".")) return { text: typed.slice(0, 40) };
+      return { text: (url.hostname.replace(/^www\./, "") + url.pathname.replace(/\/$/, "")).slice(0, 40), href: url.href };
+    } catch (e) {
+      return { text: typed.slice(0, 40) };
+    }
+  }
+
+  function cell(tag, className, text) {
+    const el = document.createElement(tag);
+    el.className = className;
+    if (text) el.textContent = text;
+    return el;
+  }
+
+  function render(data) {
+    const count = Number(data.count) || 0;
+    $("guest-count").textContent = count;
+    $("guest-count-label").textContent = count === 1 ? "person registered so far" : "registered so far";
+    const guests = Array.isArray(data.guests) ? data.guests : [];
+    const rows = [];
+    if (guests.length) {
+      const head = cell("li", "guest-head");
+      head.setAttribute("aria-hidden", "true");
+      head.append(cell("span", "", "Name"), cell("span", "", "Social / work"), cell("span", "", "Least favorite movie"));
+      rows.push(head);
+    }
+    guests.forEach((g) => {
+      const li = cell("li", "guest");
+      li.append(cell("span", "guest-name", String(g.name || "").slice(0, 60)));
+      const link = cleanLink(g.link);
+      if (link && link.href) {
+        const a = cell("a", "guest-link", link.text);
+        a.href = link.href;
+        a.target = "_blank";
+        a.rel = "noopener nofollow ugc";
+        li.append(a);
+      } else {
+        li.append(cell("span", "guest-link", link ? link.text : ""));
+      }
+      const least = cell("span", "guest-least");
+      if (g.leastFavorite) {
+        least.append(cell("span", "k", "Least favorite:"), document.createTextNode(String(g.leastFavorite).slice(0, 80)));
+      }
+      li.append(least);
+      rows.push(li);
+    });
+    if (!guests.length) rows.push(cell("li", "guest-empty", "Be the first name on the list."));
+    list.replaceChildren(...rows);
+    $("guest-summary").textContent = guests.length ? `See who's coming (${guests.length})` : "See who's coming";
+    section.hidden = false;
+  }
+
+  async function load() {
+    try {
+      const res = await fetch(FESTIVAL.guestListUrl, { cache: "no-store" });
+      if (!res.ok) return;
+      render(await res.json());
+    } catch (e) { /* keep showing the last list we got */ }
+  }
+
+  load();
+  setInterval(load, 60000);
 })();
 
 // Google Calendar links

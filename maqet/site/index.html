@@ -52,6 +52,7 @@ a:hover { opacity: .6; }
 a:active { opacity: .7; }
 a:focus-visible { outline: 2px solid var(--star); outline-offset: 4px; }
 p { margin: 0; }
+[hidden] { display: none !important; }
 img { display: block; width: 100%; height: auto; }
 
 /* masthead */
@@ -94,6 +95,9 @@ hr { height: 1px; margin: 0; border: 0; background: var(--rule); }
 .indent { padding-left: 1.3em; }
 .new { color: var(--star); font-size: .82em; font-weight: 700; letter-spacing: .1em; margin-bottom: .35rem; }
 .rsvp { display: inline-block; margin-top: .9rem; font-weight: 700; letter-spacing: .06em; border-bottom: 2px solid currentColor; }
+.live-count { margin-top: .9rem; font-weight: 700; letter-spacing: .06em; }
+.live-count b { font-weight: 900; color: var(--star); }
+.partiful-line a { display: inline-block; margin-top: .5rem; font-weight: 700; letter-spacing: .04em; border-bottom: 2px solid currentColor; }
 
 /* festival poster tile (stands in for the flyer) */
 .fest-tile {
@@ -155,6 +159,8 @@ hr { height: 1px; margin: 0; border: 0; background: var(--rule); }
       <p><b>24 Hours to make 60 Seconds of Cinema.</b> Write, shoot and edit a film of 60 seconds or less between 11AM Saturday and 11AM Sunday.</p>
       <p class="grey small indent">LOCATION TBD<br>Screening Sunday Nov 15, 7PM<br>Judges will give prizes to top films!</p>
       <p><a class="rsvp" href="/oneminute/">REGISTER SOLO OR AS A GROUP →</a></p>
+      <p class="live-count" id="live-count" hidden><span class="star">☆</span> <b id="live-num">0</b> registered so far</p>
+      <p class="partiful-line" data-partiful hidden><a href="#" target="_blank" rel="noopener">Coming to watch? RSVP for the screening on Partiful →</a></p>
     </div>
     <a class="fest-tile" href="/oneminute/" aria-label="The 1 Minute Film Festival">
       <span class="fest-name">The 1 Minute Film Festival</span>
@@ -251,6 +257,31 @@ hr { height: 1px; margin: 0; border: 0; background: var(--rule); }
   </dl>
 </main>
 
+<script src="/oneminute/config.js"></script>
+<script>
+// Festival extras from the shared settings: Partiful link and the live registration count.
+(function () {
+  const F = window.FESTIVAL || {};
+  if (F.partifulUrl) {
+    document.querySelectorAll("[data-partiful]").forEach((p) => {
+      p.querySelector("a").href = F.partifulUrl;
+      p.hidden = false;
+    });
+  }
+  if (!F.guestListUrl) return;
+  async function load() {
+    try {
+      const res = await fetch(F.guestListUrl, { cache: "no-store" });
+      if (!res.ok) return;
+      const data = await res.json();
+      document.getElementById("live-num").textContent = Number(data.count) || 0;
+      document.getElementById("live-count").hidden = false;
+    } catch (e) { /* leave the count hidden if the list can't be reached */ }
+  }
+  load();
+  setInterval(load, 60000);
+})();
+</script>
 <script>
 // The masthead fades out over the first 600px of scrolling, like the Cargo site.
 (function () {

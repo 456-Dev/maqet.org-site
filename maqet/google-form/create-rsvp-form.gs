@@ -207,3 +207,57 @@ function onRsvp(e) {
     });
   }
 }
+
+// ── Live guest list for the website ───────────────────────────────────────
+// Deploy → New deployment → Web app (Execute as: Me · Who has access: Anyone),
+// then paste the web app URL into site/oneminute/config.js → guestListUrl.
+// Only name, link and least favorite movie are sent; email and phone never
+// leave this script. To hide someone, add a column titled "Hide" to the
+// responses sheet and type anything in their row.
+const RESPONSES_SHEET_ID = '1n-Qr6hEmrOhlRa-eqgZ-tSamXbQD_aFj00DV83DcTZk';
+
+function doGet() {
+  const cache = CacheService.getScriptCache();
+  let json = cache.get('guest-list');
+  if (!json) {
+    json = JSON.stringify(guestList_());
+    cache.put('guest-list', json, 60);
+  }
+  return ContentService.createTextOutput(json).setMimeType(ContentService.MimeType.JSON);
+}
+
+function guestList_() {
+  const sheet = SpreadsheetApp.openById(RESPONSES_SHEET_ID).getSheets().find((sh) =>
+    sh.getLastColumn() > 0 &&
+    sh.getRange(1, 1, 1, sh.getLastColumn()).getDisplayValues()[0].includes('What\'s your name?'));
+  if (!sheet) return { count: 0, guests: [] };
+
+  const rows = sheet.getDataRange().getDisplayValues();
+  const header = rows.shift().map((h) => h.trim());
+  const col = (title) => header.indexOf(title);
+  const cName = col('What\'s your name?');
+  const cEmail = col('Email');
+  const cLink = col('Link to your work');
+  const cLeast = col('Just for fun: your least favorite movie');
+  const cHide = header.findIndex((h) => h.toLowerCase() === 'hide');
+
+  // One entry per person (by email; their latest registration wins), newest first.
+  const byPerson = new Map();
+  rows.forEach((r) => {
+    const name = (r[cName] || '').trim();
+    if (!name) return;
+    const key = (cEmail >= 0 && r[cEmail].trim().toLowerCase()) || name.toLowerCase();
+    byPerson.delete(key);
+    byPerson.set(key, r);
+  });
+  const people = [...byPerson.values()].reverse();
+
+  const guests = people
+    .filter((r) => !(cHide >= 0 && String(r[cHide]).trim()))
+    .map((r) => ({
+      name: r[cName].trim(),
+      link: cLink >= 0 ? r[cLink].trim() : '',
+      leastFavorite: cLeast >= 0 ? r[cLeast].trim() : '',
+    }));
+  return { count: people.length, guests, updated: new Date().toISOString() };
+}
