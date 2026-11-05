@@ -12,14 +12,14 @@ window.FESTIVAL = {
   // mode and tells people nothing was sent.
   rsvp: {
     action: "https://docs.google.com/forms/d/e/1FAIpQLSdCEW4OdAh7mZwz4xWZQ97NLCtT65v2WufraNq6ow87wP694w/formResponse",
-    fields: {"name":"entry.1666411830","email":"entry.1930397110","phone":"entry.1783030360","workLink":"entry.927707821","roles":"entry.1827480192","experience":"entry.1638446186","groupRegistered":"entry.361540500","gear":"entry.480374014","leastFavorite":"entry.925028679"},
+    fields: {"name":"entry.1666411830","email":"entry.1930397110","phone":"entry.1783030360","workLink":"entry.927707821","roles":"entry.1827480192","experience":"entry.1638446186","groupRegistered":"entry.361540500","gear":"entry.480374014"},
   },
 
   // Screening RSVPs on Partiful. Paste the event link; the Partiful buttons appear once it's set.
-  partifulUrl: "",
+  partifulUrl: "https://partiful.com/e/mtoygeGzwnDpjeBTCeiL?c=lY9ufW0V",
 
   // Live registration count + cast & crew list. Paste the Apps Script web app URL (ends in /exec).
-  guestListUrl: "",
+  guestListUrl: "https://script.google.com/macros/s/AKfycbyp3PGtstP0HFCf2YhibYZLEdGB8BkkdS4uqUvp2qq0S0gTRFEvIsKimsIMH0c4MWNYJw/exec",
 
   contactEmail: "maqetcollective@gmail.com",   // shown at the bottom: "Any questions? Email ..."
   instagramUrl: "",   // e.g. "https://instagram.com/maqet"

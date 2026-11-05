@@ -211,7 +211,7 @@ function onRsvp(e) {
 // ── Live guest list for the website ───────────────────────────────────────
 // Deploy → New deployment → Web app (Execute as: Me · Who has access: Anyone),
 // then paste the web app URL into site/oneminute/config.js → guestListUrl.
-// Only name, link and least favorite movie are sent; email and phone never
+// Only name and link are sent; email and phone never
 // leave this script. To hide someone, add a column titled "Hide" to the
 // responses sheet and type anything in their row.
 const RESPONSES_SHEET_ID = '1n-Qr6hEmrOhlRa-eqgZ-tSamXbQD_aFj00DV83DcTZk';
@@ -238,7 +238,6 @@ function guestList_() {
   const cName = col('What\'s your name?');
   const cEmail = col('Email');
   const cLink = col('Link to your work');
-  const cLeast = col('Just for fun: your least favorite movie');
   const cHide = header.findIndex((h) => h.toLowerCase() === 'hide');
 
   // One entry per person (by email; their latest registration wins), newest first.
@@ -257,7 +256,6 @@ function guestList_() {
     .map((r) => ({
       name: r[cName].trim(),
       link: cLink >= 0 ? r[cLink].trim() : '',
-      leastFavorite: cLeast >= 0 ? r[cLeast].trim() : '',
     }));
   return { count: people.length, guests, updated: new Date().toISOString() };
 }
