@@ -74,7 +74,6 @@ img { display: block; width: 100%; height: auto; }
 .sc-tile { grid-column: 6 / span 3; container-type: inline-size; position: relative; aspect-ratio: 4 / 5; overflow: hidden; display: grid; align-content: end; background: #111; color: #fff; }
 .sc-tile:hover { opacity: 1; }
 .sc-tile img, .sc-tile video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-.sc-tile .sc-words { position: absolute; inset: 0; padding: 7cqi; background: #fff; color: var(--ink); font-size: 5.4cqi; line-height: 1.35; white-space: pre-wrap; overflow: hidden; }
 .sc-tile .sc-cap { position: relative; padding: 6cqi; background: linear-gradient(transparent, rgba(0,0,0,.65)); font-size: 6cqi; line-height: 1.15; }
 .sc-tile .sc-cap b { display: block; font-size: 9cqi; font-weight: 900; letter-spacing: .04em; text-transform: uppercase; }
 .sc-tile .sc-empty { position: relative; padding: 6cqi; align-self: center; text-align: center; font-size: 11cqi; font-weight: 900; letter-spacing: .06em; line-height: 1; text-transform: uppercase; }
@@ -322,11 +321,11 @@ hr { height: 1px; margin: 0; border: 0; background: var(--rule); }
     const p = d.picks && d.picks[0];
     if (!p) return;
     const tile = document.getElementById("sc-tile");
-    const isText = p.mime.startsWith("text/");
-    const m = document.createElement(isText ? "span" : p.mime.startsWith("video/") ? "video" : "img");
-    if (isText) { m.className = "sc-words"; fetch(p.media).then((r) => r.text()).then((t) => { m.textContent = t; }); }
-    else if (m.tagName === "VIDEO") Object.assign(m, { muted: true, loop: true, autoplay: true, playsInline: true, src: p.media });
-    else { m.alt = p.title || "Work by " + p.artist; m.src = p.media; }
+    const f = p.files.find((x) => x.role !== "audio");
+    if (!f) return;
+    const m = document.createElement(f.mime.startsWith("video/") ? "video" : "img");
+    if (m.tagName === "VIDEO") Object.assign(m, { muted: true, loop: true, autoplay: true, playsInline: true, src: f.url });
+    else { m.alt = p.title || "Work by " + p.artist; m.src = f.url; }
     const cap = document.createElement("span"); cap.className = "sc-cap";
     const b = document.createElement("b"); b.textContent = "Today";
     cap.append(b, document.createTextNode(p.artist + (p.title ? " · " + p.title : "")));

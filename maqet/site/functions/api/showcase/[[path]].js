@@ -3,7 +3,7 @@
 //
 //   GET  /api/showcase                 theme, deadline, posted picks (public)
 //   POST /api/showcase/submit          multipart submission (public)
-//   GET  /api/showcase/media/<id>      file for a posted pick (admin key sees any)
+//   GET  /api/showcase/media/<id>/<n>  file n of a posted pick (admin key sees any)
 //   GET  /api/showcase/admin/list      ?week=YYYY-MM-DD  (X-Admin-Key)
 //   POST /api/showcase/admin/update    {id, status, postDate, rank}  (X-Admin-Key)
 //   POST /api/showcase/admin/theme     {week, theme}  (X-Admin-Key)
@@ -11,17 +11,22 @@
 // A "week" is named by the Friday its voting happens on. Submissions close
 // Friday 6PM New York time; anything later counts toward the next Friday.
 
-const MAX_BYTES = 95 * 1024 * 1024;
-const MEDIA_TYPES = ["Photo", "Painting / drawing", "Digital art", "Video", "Sculpture / 3D", "Textile / fashion", "Mixed media", "Writing", "Other"];
-const OK_MIME = /^(image\/(jpeg|png|webp|heic|heif|gif)|video\/(mp4|quicktime|webm))$/;
-const EXT = { "image/jpeg": "jpg", "image/png": "png", "image/webp": "webp", "image/heic": "heic", "image/heif": "heif", "image/gif": "gif", "video/mp4": "mp4", "video/quicktime": "mov", "video/webm": "webm" };
+const MAX_BYTES = 95 * 1024 * 1024;   // whole submission (Pages request limit is 100 MB)
+const MAX_FILES = 10;                 // Instagram carousel limit
+const MEDIA_TYPES = ["Photo", "Painting / drawing", "Digital art", "Video", "Sculpture / 3D", "Textile / fashion", "Mixed media", "Writing", "Music", "Other"];
+const IMAGE = /^image\/(jpeg|png|webp|heic|heif|gif)$/;
+const VIDEO = /^video\/(mp4|quicktime|webm)$/;
+const AUDIO = /^audio\/(mpeg|mp3|mp4|x-m4a|m4a|aac|wav|x-wav|wave)$/;
+const EXT = { "image/jpeg": "jpg", "image/png": "png", "image/webp": "webp", "image/heic": "heic", "image/heif": "heif", "image/gif": "gif",
+  "video/mp4": "mp4", "video/quicktime": "mov", "video/webm": "webm",
+  "audio/mpeg": "mp3", "audio/mp3": "mp3", "audio/mp4": "m4a", "audio/x-m4a": "m4a", "audio/m4a": "m4a", "audio/aac": "aac", "audio/wav": "wav", "audio/x-wav": "wav", "audio/wave": "wav" };
 
 const SCHEMA = [
   `CREATE TABLE IF NOT EXISTS sc_submissions (
      id TEXT PRIMARY KEY, week TEXT NOT NULL, created TEXT NOT NULL,
      artist TEXT NOT NULL, handle TEXT, email TEXT NOT NULL, title TEXT,
-     media_type TEXT NOT NULL, caption TEXT, mime TEXT NOT NULL, size INTEGER,
-     media_key TEXT NOT NULL, status TEXT NOT NULL DEFAULT 'new',
+     media_type TEXT NOT NULL, caption TEXT, files TEXT NOT NULL, size INTEGER,
+     status TEXT NOT NULL DEFAULT 'new',
      post_date TEXT, rank INTEGER, ip_hash TEXT)`,
   `CREATE INDEX IF NOT EXISTS sc_sub_week ON sc_submissions(week)`,
   `CREATE TABLE IF NOT EXISTS sc_weeks (week TEXT PRIMARY KEY, theme TEXT NOT NULL)`,
@@ -73,9 +78,27 @@ function isAdmin(request, env) {
 
 const publicPick = (r) => ({
   id: r.id, artist: r.artist, handle: r.handle, title: r.title, mediaType: r.media_type,
-  caption: r.caption, mime: r.mime, postDate: r.post_date, week: r.week,
-  media: `/api/showcase/media/${r.id}`,
+  caption: r.caption, postDate: r.post_date, week: r.week,
+  files: JSON.parse(r.files).map((f, n) => ({ url: `/api/showcase/media/${r.id}/${n}`, mime: f.mime, role: f.role })),
 });
+
+// Which files a submission needs, by media type. Returns an error string or "".
+function checkFiles(mediaType, media, cover, audio) {
+  if (mediaType === "Music") {
+    if (!audio) return "Attach your song (MP3, M4A, WAV or AAC).";
+    if (!AUDIO.test(audio.type)) return "The song has to be an MP3, M4A, WAV or AAC file.";
+    if (!cover) return "Music needs a cover image too.";
+    if (!IMAGE.test(cover.type)) return "The cover has to be a JPG, PNG, HEIC or WEBP image.";
+    return "";
+  }
+  if (!media.length) return mediaType === "Writing" ? "Attach your writing as images (one per slide)." : "Attach your photo or video.";
+  if (media.length > MAX_FILES) return `Up to ${MAX_FILES} files, the most Instagram allows in one post.`;
+  for (const f of media) {
+    if (mediaType === "Writing" ? !IMAGE.test(f.type) : !(IMAGE.test(f.type) || VIDEO.test(f.type)))
+      return mediaType === "Writing" ? "Writing has to be images (JPG, PNG, HEIC, WEBP), one per slide." : "Use JPG, PNG, HEIC, WEBP, GIF, MP4, MOV or WEBM files.";
+  }
+  return "";
+}
 
 async function submit(request, env) {
   const ct = request.headers.get("content-type") || "";
@@ -91,20 +114,20 @@ async function submit(request, env) {
   const title = clean(form.get("title"), 120);
   const mediaType = clean(form.get("mediaType"), 40);
   const caption = clean(form.get("caption"), 2000);
-  const file = form.get("file");
 
   if (!artist) return json({ error: "Add your name as you want it credited." }, 400);
   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return json({ error: "Add an email so we can reach you." }, 400);
   if (!MEDIA_TYPES.includes(mediaType)) return json({ error: "Pick a media type." }, 400);
   if (form.get("consent") !== "yes") return json({ error: "Check the box so we can post your work." }, 400);
-  // Writing can come in as pasted text instead of a file.
-  const writing = String(form.get("writing") ?? "").replace(/\r\n?/g, "\n").replace(/[\u0000-\u0008\u000b-\u001f\u007f]/g, "").trim().slice(0, 5000);
-  const hasFile = file && typeof file !== "string" && file.size;
-  if (!hasFile && !(mediaType === "Writing" && writing)) return json({ error: mediaType === "Writing" ? "Paste your writing or attach a photo of it." : "Attach your photo or video." }, 400);
-  if (hasFile && file.size > MAX_BYTES) return json({ error: "That file is too big. Keep it under 95 MB." }, 413);
-  const mime = hasFile ? (file.type || "").toLowerCase() : "text/plain";
-  if (hasFile && !OK_MIME.test(mime)) return json({ error: "Use a JPG, PNG, HEIC, WEBP, GIF, MP4, MOV or WEBM file." }, 415);
-
+  const isFile = (f) => f && typeof f !== "string" && f.size;
+  const media = form.getAll("files").filter(isFile);
+  const cover = isFile(form.get("cover")) ? form.get("cover") : null;
+  const audio = isFile(form.get("audio")) ? form.get("audio") : null;
+  const problem = checkFiles(mediaType, media, cover, audio);
+  if (problem) return json({ error: problem }, 400);
+  const parts = mediaType === "Music" ? [[cover, "cover"], [audio, "audio"]] : media.map((f) => [f, "media"]);
+  const total = parts.reduce((n, [f]) => n + f.size, 0);
+  if (total > MAX_BYTES) return json({ error: "That's too big. Keep everything under 95 MB." }, 413);
   const db = env.DB;
   await ensureSchema(db);
   const ih = await ipHash(request);
@@ -114,24 +137,30 @@ async function submit(request, env) {
 
   const week = currentWeek();
   const id = crypto.randomUUID().replace(/-/g, "").slice(0, 16);
-  const key = `submissions/${week}/${id}.${hasFile ? EXT[mime] || "bin" : "txt"}`;
-  const body = hasFile ? file.stream() : new TextEncoder().encode(writing);
-  await env.MEDIA.put(key, body, { httpMetadata: { contentType: hasFile ? mime : "text/plain; charset=utf-8" } });
-  const size = hasFile ? file.size : new TextEncoder().encode(writing).length;
-  await db.prepare(`INSERT INTO sc_submissions (id, week, created, artist, handle, email, title, media_type, caption, mime, size, media_key, ip_hash)
-                    VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13)`)
-    .bind(id, week, new Date().toISOString(), artist, handle, email, title, mediaType, caption, mime, size, key, ih).run();
+  const files = [];
+  for (const [n, [f, role]] of parts.entries()) {
+    const mime = (f.type || "").toLowerCase();
+    const key = `submissions/${week}/${id}-${n}.${EXT[mime] || "bin"}`;
+    await env.MEDIA.put(key, f.stream(), { httpMetadata: { contentType: mime } });
+    files.push({ key, mime, size: f.size, role });
+  }
+  await db.prepare(`INSERT INTO sc_submissions (id, week, created, artist, handle, email, title, media_type, caption, files, size, ip_hash)
+                    VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12)`)
+    .bind(id, week, new Date().toISOString(), artist, handle, email, title, mediaType, caption, JSON.stringify(files), total, ih).run();
   return json({ ok: true, id, week });
 }
 
-async function media(request, env, id) {
+async function media(request, env, id, n) {
   await ensureSchema(env.DB);
-  const row = await env.DB.prepare("SELECT media_key, mime, status FROM sc_submissions WHERE id = ?1").bind(id).first();
+  const row = await env.DB.prepare("SELECT files, status FROM sc_submissions WHERE id = ?1").bind(id).first();
   if (!row || (row.status !== "posted" && !isAdmin(request, env))) return new Response("Not found", { status: 404 });
+  const file = JSON.parse(row.files)[Number(n) || 0];
+  if (!file) return new Response("Not found", { status: 404 });
+  row.mime = file.mime; row.media_key = file.key;
   const range = request.headers.get("range");
   const obj = await env.MEDIA.get(row.media_key, range ? { range: request.headers } : undefined);
   if (!obj) return new Response("Not found", { status: 404 });
-  const headers = new Headers({ "content-type": row.mime === "text/plain" ? "text/plain; charset=utf-8" : row.mime, "accept-ranges": "bytes",
+  const headers = new Headers({ "content-type": row.mime, "accept-ranges": "bytes",
     "cache-control": row.status === "posted" ? "public, max-age=86400" : "private, no-store" });
   if (range && obj.range) {
     const start = obj.range.offset ?? 0;
@@ -163,7 +192,7 @@ export async function onRequest({ request, env, params }) {
   try {
     if (route === "" && method === "GET") return overview(env);
     if (route === "submit" && method === "POST") return submit(request, env);
-    if (parts[0] === "media" && parts[1] && method === "GET") return media(request, env, parts[1]);
+    if (parts[0] === "media" && parts[1] && method === "GET") return media(request, env, parts[1], parts[2]);
 
     if (parts[0] === "admin") {
       if (!isAdmin(request, env)) return json({ error: "forbidden" }, 403);
@@ -171,7 +200,7 @@ export async function onRequest({ request, env, params }) {
       if (parts[1] === "list" && method === "GET") {
         const week = new URL(request.url).searchParams.get("week") || currentWeek();
         const { results } = await env.DB.prepare("SELECT * FROM sc_submissions WHERE week = ?1 ORDER BY created ASC").bind(week).all();
-        return json({ week, theme: await themeFor(env.DB, week), submissions: results.map((r) => ({ ...publicPick(r), email: r.email, status: r.status, rank: r.rank, size: r.size, created: r.created })) });
+        return json({ week, theme: await themeFor(env.DB, week), submissions: results.map((r) => ({ ...publicPick(r), email: r.email, status: r.status, rank: r.rank, size: r.size, created: r.created, keys: JSON.parse(r.files).map((f) => f.key) })) });
       }
       if (parts[1] === "update" && method === "POST") {
         const b = await request.json();

@@ -1,0 +1,15 @@
+# Cloudflare Pages config for maqet.org (project maqet26). Deploy from this folder:
+#   wrangler pages deploy . --project-name maqet26 --branch <preview|main>
+name = "maqet26"
+pages_build_output_dir = "."
+compatibility_date = "2026-11-01"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "maqet-showcase"
+database_id = "aca47644-4213-4b2e-b82e-c5237b3044bc"
+
+# R2 bucket for uploads goes here once R2 is enabled on the account:
+# [[r2_buckets]]
+# binding = "MEDIA"
+# bucket_name = "maqet-showcase"

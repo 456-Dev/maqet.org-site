@@ -91,7 +91,16 @@ select { appearance: none; background: linear-gradient(45deg, transparent 50%, v
 .picks { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr)); gap: 2rem var(--gap); }
 .pick-card { display: grid; gap: .4rem; align-content: start; }
 .pick-card .frame { aspect-ratio: 4 / 5; overflow: hidden; background: #f2f2f2; }
-.pick-card .frame .words { padding: 1.1em; font-size: .82em; line-height: 1.35; white-space: pre-wrap; overflow: hidden; height: 100%; background: #fff; border: 1px solid var(--hair); }
+.pick-card .frame { position: relative; }
+.pick-card .count { position: absolute; top: .5em; right: .5em; padding: .1em .45em; background: rgba(0,0,0,.6); color: #fff; font-size: .75em; font-weight: 700; }
+.pick-card .song { position: absolute; left: 0; right: 0; bottom: 0; width: 100%; height: 2.4em; }
+.drop--small { min-height: 7rem; }
+.thumbs { list-style: none; margin: .7rem 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(4.6rem, 1fr)); gap: .5rem; }
+.thumbs:empty { display: none; }
+.thumbs li { position: relative; aspect-ratio: 4 / 5; background: #f2f2f2; overflow: hidden; }
+.thumbs img, .thumbs video { width: 100%; height: 100%; object-fit: cover; }
+.thumbs .num { position: absolute; left: .25rem; top: .25rem; min-width: 1.3em; text-align: center; background: #fff; font-size: .75em; font-weight: 700; }
+.thumbs .x { position: absolute; right: .2rem; top: .2rem; width: 1.5em; height: 1.5em; border: 0; border-radius: 50%; background: rgba(0,0,0,.65); color: #fff; font: inherit; font-size: .8em; line-height: 1; cursor: pointer; }
 .pick-card .frame img, .pick-card .frame video { width: 100%; height: 100%; object-fit: cover; }
 .pick-card .who { font-weight: 700; }
 .empty { grid-column: 1 / -1; }
@@ -133,7 +142,7 @@ select { appearance: none; background: linear-gradient(45deg, transparent 50%, v
       <p class="grey small indent" id="closes">Submissions close Friday, 6PM</p>
     </div>
     <div class="side">
-      <p><b>Any medium, as long as it can be an Instagram post.</b> Photo, painting, video, sculpture, fashion, writing. Send it in and tell us how you'd caption it.</p>
+      <p><b>Any medium, as long as it can be an Instagram post.</b> Photo, painting, video, sculpture, fashion, writing as images, music with a cover. Carousels of up to 10 are fine. Send it in and tell us how you'd caption it.</p>
       <ol class="steps">
         <li>Submit by Friday 6PM.</li>
         <li>MAQET members get a numbered sheet of every piece and vote for their 7 favorites.</li>
@@ -145,27 +154,36 @@ select { appearance: none; background: linear-gradient(45deg, transparent 50%, v
   <section class="row" aria-labelledby="submit-title">
     <form class="form" id="form" novalidate>
       <h2 class="label" id="submit-title">SUBMIT YOUR WORK →</h2>
-      <label class="drop" id="drop">
-        <input type="file" name="file" id="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif,image/gif,video/mp4,video/quicktime,video/webm">
-        <span id="drop-text"><span class="pick">Choose a photo or video</span><br><small class="grey">or drop it here · JPG, PNG, HEIC, MP4, MOV · up to 95 MB</small></span>
-        <img class="preview" id="preview-img" alt="" hidden>
-        <video class="preview" id="preview-vid" muted playsinline hidden></video>
+      <label class="field"><span>Media type</span>
+        <select name="mediaType">
+          <option value="">Pick one</option>
+          <option>Photo</option><option>Painting / drawing</option><option>Digital art</option><option>Video</option>
+          <option>Sculpture / 3D</option><option>Textile / fashion</option><option>Mixed media</option><option>Writing</option><option>Music</option><option>Other</option>
+        </select>
       </label>
+      <div id="media-box">
+        <label class="drop" id="drop">
+          <input type="file" id="file" multiple accept="image/jpeg,image/png,image/webp,image/heic,image/heif,image/gif,video/mp4,video/quicktime,video/webm">
+          <span id="drop-text"><span class="pick">Choose photos or videos</span><br><small class="grey" id="drop-hint">or drop them here · up to 10 for a carousel · square or 4:5 fits best · 95 MB total</small></span>
+        </label>
+        <ol class="thumbs" id="thumbs"></ol>
+      </div>
+      <div class="two" id="music-box" hidden>
+        <label class="drop drop--small" id="drop-audio">
+          <input type="file" id="audio" accept="audio/mpeg,audio/mp4,audio/x-m4a,audio/aac,audio/wav,audio/x-wav,.mp3,.m4a,.wav,.aac">
+          <span><span class="pick">Choose your song</span><br><small class="grey" id="audio-name">MP3, M4A, WAV or AAC</small></span>
+        </label>
+        <label class="drop drop--small" id="drop-cover">
+          <input type="file" id="cover" accept="image/jpeg,image/png,image/webp,image/heic,image/heif">
+          <span id="cover-text"><span class="pick">Choose a cover image</span><br><small class="grey">square fits best</small></span>
+          <img class="preview" id="cover-img" alt="" hidden>
+        </label>
+      </div>
       <div class="two">
         <label class="field"><span>Your name</span><input type="text" name="artist" autocomplete="name" maxlength="80" placeholder="as you want it credited"></label>
         <label class="field"><span>Instagram</span><input type="text" name="handle" maxlength="60" placeholder="@yourhandle (optional)"></label>
       </div>
-      <div class="two">
-        <label class="field"><span>Email</span><input type="email" name="email" autocomplete="email" maxlength="120" placeholder="never shown publicly"></label>
-        <label class="field"><span>Media type</span>
-          <select name="mediaType">
-            <option value="">Pick one</option>
-            <option>Photo</option><option>Painting / drawing</option><option>Digital art</option><option>Video</option>
-            <option>Sculpture / 3D</option><option>Textile / fashion</option><option>Mixed media</option><option>Writing</option><option>Other</option>
-          </select>
-        </label>
-      </div>
-      <label class="field" id="writing-field" hidden><span>Your writing</span><textarea name="writing" maxlength="5000" rows="8" placeholder="Paste your poem, story or text here. Or attach a photo of the page above."></textarea><small>Up to 5,000 characters. We set it as a clean text post for Instagram.</small></label>
+      <label class="field"><span>Email</span><input type="email" name="email" autocomplete="email" maxlength="120" placeholder="never shown publicly"></label>
       <label class="field"><span>Title of the piece</span><input type="text" name="title" maxlength="120" placeholder="optional"></label>
       <label class="field"><span>Suggested caption</span><textarea name="caption" maxlength="2000" placeholder="What should the post say?"></textarea><small>We may trim it to fit. Your name and handle are added automatically.</small></label>
       <label class="check"><input type="checkbox" name="consent" value="yes"><span class="small">This is my work, and MAQET can post it on Instagram and this site with credit to me.</span></label>
@@ -198,30 +216,41 @@ select { appearance: none; background: linear-gradient(45deg, transparent 50%, v
 <script>
 (function () {
   const $ = (id) => document.getElementById(id);
-  const form = $("form"), file = $("file"), msg = $("msg"), send = $("send");
+  const form = $("form"), msg = $("msg"), send = $("send"), typeSel = form.elements.mediaType;
+  const MB = 1024 * 1024, MAX_TOTAL = 95 * MB, MAX_FILES = 10;
+  const IMAGE = /^image\//, VIDEO = /^video\//;
+  let chosen = [], audio = null, cover = null;
 
   function fridayLabel(week) {
     const d = new Date(week + "T12:00:00");
     return d.toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" });
   }
 
+  function mediaEl(f, alt) {
+    if (VIDEO.test(f.mime)) {
+      const v = document.createElement("video");
+      Object.assign(v, { src: f.url, muted: true, loop: true, playsInline: true, preload: "metadata" });
+      v.addEventListener("mouseenter", () => v.play()); v.addEventListener("mouseleave", () => v.pause());
+      v.addEventListener("click", () => (v.paused ? v.play() : v.pause()));
+      return v;
+    }
+    const i = document.createElement("img"); i.src = f.url; i.loading = "lazy"; i.alt = alt; return i;
+  }
+
   function card(p) {
     const el = document.createElement("figure");
     el.className = "pick-card"; el.style.margin = "0";
     const frame = document.createElement("div"); frame.className = "frame";
-    if (p.mime.startsWith("text/")) {
-      const w = document.createElement("div"); w.className = "words"; w.textContent = "…";
-      fetch(p.media).then((r) => r.text()).then((t) => { w.textContent = t; }).catch(() => {});
-      frame.append(w);
-    } else if (p.mime.startsWith("video/")) {
-      const v = document.createElement("video");
-      Object.assign(v, { src: p.media, muted: true, loop: true, playsInline: true, preload: "metadata" });
-      v.addEventListener("mouseenter", () => v.play()); v.addEventListener("mouseleave", () => v.pause());
-      v.addEventListener("click", () => (v.paused ? v.play() : v.pause()));
-      frame.append(v);
-    } else {
-      const i = document.createElement("img"); i.src = p.media; i.loading = "lazy"; i.alt = p.title || ("Work by " + p.artist); frame.append(i);
-    }
+    const alt = p.title || ("Work by " + p.artist);
+    const shown = p.files.filter((f) => f.role !== "audio");
+    let at = 0;
+    const show = () => frame.replaceChildren(mediaEl(shown[at], alt), ...(shown.length > 1 ? [dots()] : []), ...(sound ? [sound] : []));
+    const dots = () => { const d = document.createElement("span"); d.className = "count"; d.textContent = (at + 1) + " / " + shown.length; return d; };
+    const song = p.files.find((f) => f.role === "audio");
+    let sound = null;
+    if (song) { sound = document.createElement("audio"); sound.controls = true; sound.preload = "none"; sound.src = song.url; sound.className = "song"; }
+    if (shown.length > 1) frame.addEventListener("click", (e) => { if (e.target.tagName !== "AUDIO") { at = (at + 1) % shown.length; show(); } });
+    show();
     const who = document.createElement("p"); who.className = "who"; who.textContent = p.artist;
     const meta = document.createElement("p"); meta.className = "grey small";
     meta.textContent = [p.title, p.mediaType].filter(Boolean).join(" · ");
@@ -244,35 +273,63 @@ select { appearance: none; background: linear-gradient(45deg, transparent 50%, v
     if (d.picks && d.picks.length) $("picks").replaceChildren(...d.picks.map(card));
   }).catch(() => {});
 
-  // file picker + drag and drop + preview
-  const drop = $("drop");
-  function showPreview() {
-    const f = file.files[0];
-    $("preview-img").hidden = $("preview-vid").hidden = true;
-    if (!f) { $("drop-text").hidden = false; return; }
-    const url = URL.createObjectURL(f);
-    const v = f.type.startsWith("video/");
-    const el = v ? $("preview-vid") : $("preview-img");
-    el.src = url; el.hidden = false;
-    $("drop-text").hidden = !/^(image\/(jpeg|png|webp|gif)|video\/)/.test(f.type);
-    if (!$("drop-text").hidden) $("drop-text").textContent = f.name;
+  // media type decides what to upload: a carousel of images/videos, images only (writing), or song + cover (music)
+  function applyType() {
+    const t = typeSel.value;
+    $("music-box").hidden = t !== "Music";
+    $("media-box").hidden = t === "Music";
+    const writing = t === "Writing";
+    $("file").accept = writing ? "image/jpeg,image/png,image/webp,image/heic,image/heif" : "image/jpeg,image/png,image/webp,image/heic,image/heif,image/gif,video/mp4,video/quicktime,video/webm";
+    $("drop-text").firstElementChild.textContent = writing ? "Choose images of your writing" : "Choose photos or videos";
+    $("drop-hint").textContent = writing
+      ? "one image per slide, up to 10 · square or 4:5 · set your text so it reads on a phone"
+      : "or drop them here · up to 10 for a carousel · square or 4:5 fits best · 95 MB total";
   }
-  file.addEventListener("change", showPreview);
-  ["dragenter", "dragover"].forEach((t) => drop.addEventListener(t, (e) => { e.preventDefault(); drop.classList.add("over"); }));
-  ["dragleave", "drop"].forEach((t) => drop.addEventListener(t, (e) => { e.preventDefault(); drop.classList.remove("over"); }));
-  drop.addEventListener("drop", (e) => { if (e.dataTransfer.files.length) { file.files = e.dataTransfer.files; showPreview(); } });
+  typeSel.addEventListener("change", applyType);
 
-  const typeSel = form.elements.mediaType;
-  typeSel.addEventListener("change", () => { $("writing-field").hidden = typeSel.value !== "Writing"; });
+  function renderThumbs() {
+    const ol = $("thumbs");
+    ol.replaceChildren(...chosen.map((f, n) => {
+      const li = document.createElement("li");
+      const url = URL.createObjectURL(f);
+      const m = VIDEO.test(f.type) ? Object.assign(document.createElement("video"), { src: url, muted: true }) : Object.assign(document.createElement("img"), { src: url, alt: "" });
+      const num = document.createElement("span"); num.className = "num"; num.textContent = n + 1;
+      const x = document.createElement("button"); x.type = "button"; x.className = "x"; x.textContent = "×"; x.setAttribute("aria-label", "Remove " + f.name);
+      x.addEventListener("click", (e) => { e.preventDefault(); chosen.splice(n, 1); renderThumbs(); });
+      li.append(m, num, x); return li;
+    }));
+  }
+  function addFiles(list) {
+    chosen = chosen.concat([...list]).slice(0, MAX_FILES);
+    renderThumbs();
+  }
+  $("file").addEventListener("change", (e) => { addFiles(e.target.files); e.target.value = ""; });
+  $("audio").addEventListener("change", (e) => { audio = e.target.files[0] || null; $("audio-name").textContent = audio ? audio.name : "MP3, M4A, WAV or AAC"; });
+  $("cover").addEventListener("change", (e) => {
+    cover = e.target.files[0] || null;
+    $("cover-img").hidden = !cover; if (cover) $("cover-img").src = URL.createObjectURL(cover);
+    $("cover-text").hidden = Boolean(cover && /^image\/(jpeg|png|webp)/.test(cover.type));
+  });
+  for (const [zone, onFiles] of [[$("drop"), (fs) => addFiles(fs)], [$("drop-audio"), (fs) => { audio = fs[0]; $("audio-name").textContent = audio.name; }], [$("drop-cover"), (fs) => { $("cover").files = fs; $("cover").dispatchEvent(new Event("change")); }]]) {
+    ["dragenter", "dragover"].forEach((t) => zone.addEventListener(t, (e) => { e.preventDefault(); zone.classList.add("over"); }));
+    ["dragleave", "drop"].forEach((t) => zone.addEventListener(t, (e) => { e.preventDefault(); zone.classList.remove("over"); }));
+    zone.addEventListener("drop", (e) => { if (e.dataTransfer.files.length) onFiles(e.dataTransfer.files); });
+  }
 
   function check(fd) {
-    const f = file.files[0];
-    const isWriting = fd.get("mediaType") === "Writing";
-    if (!f && !(isWriting && fd.get("writing").trim())) return isWriting ? "Paste your writing or attach a photo of it." : "Attach your photo or video.";
-    if (f && f.size > 95 * 1024 * 1024) return "That file is too big. Keep it under 95 MB.";
+    const t = fd.get("mediaType");
+    if (!t) return "Pick a media type.";
+    if (t === "Music") {
+      if (!audio) return "Attach your song.";
+      if (!cover) return "Music needs a cover image too.";
+      if (audio.size + cover.size > MAX_TOTAL) return "That's too big. Keep everything under 95 MB.";
+    } else {
+      if (!chosen.length) return t === "Writing" ? "Attach your writing as images (one per slide)." : "Attach your photo or video.";
+      if (t === "Writing" && chosen.some((f) => !IMAGE.test(f.type))) return "Writing has to be images, one per slide.";
+      if (chosen.reduce((n, f) => n + f.size, 0) > MAX_TOTAL) return "That's too big. Keep everything under 95 MB.";
+    }
     if (!fd.get("artist").trim()) return "Add your name as you want it credited.";
     if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(fd.get("email").trim())) return "Add an email so we can reach you.";
-    if (!fd.get("mediaType")) return "Pick a media type.";
     if (fd.get("consent") !== "yes") return "Check the box so we can post your work.";
     return "";
   }
@@ -283,6 +340,8 @@ select { appearance: none; background: linear-gradient(45deg, transparent 50%, v
     const problem = check(fd);
     msg.className = "msg err"; msg.textContent = problem;
     if (problem) return;
+    if (fd.get("mediaType") === "Music") { fd.append("audio", audio); fd.append("cover", cover); }
+    else chosen.forEach((f) => fd.append("files", f));
     msg.className = "msg"; msg.textContent = "Uploading…";
     send.disabled = true; $("bar").hidden = false;
     const xhr = new XMLHttpRequest();
