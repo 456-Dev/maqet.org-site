@@ -151,6 +151,30 @@ hr { height: 1px; margin: 0; border: 0; background: var(--rule); }
   .star { animation: none; }
   .fest-name { transition: none; }
 }
+
+/* current projects: numbered index, full images (never cropped) */
+.sec-label { margin: clamp(56px, 8vw, 110px) 0 0; font-size: .82em; font-weight: 700; letter-spacing: .16em; color: var(--grey); }
+.sec-label.now { margin-top: clamp(40px, 4.5vw, 56px); }
+.sec-label + .row { margin-top: 1.2rem; }
+.idx { list-style: none; margin: 1.2rem 0 0; padding: 0; border-top: 1px solid var(--rule); }
+.idx li { display: grid; grid-template-columns: 2.6em minmax(0, 1fr) clamp(150px, 18vw, 230px); gap: var(--gap) clamp(16px, 2.5vw, 36px); align-items: start; padding: clamp(14px, 1.6vw, 22px) 0; border-bottom: 1px solid var(--rule); }
+.idx .n { align-self: start; font-weight: 900; color: var(--star); padding-top: .15em; }
+.idx-text { display: grid; gap: .4rem; align-content: start; }
+.idx h3 { margin: 0; font-size: 1.2em; font-weight: 900; letter-spacing: .12em; line-height: 1.15; }
+.when { font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+.idx-links { display: flex; flex-wrap: wrap; align-items: baseline; gap: .4rem 1.4rem; margin-top: .3rem; }
+.go { display: inline-block; font-weight: 700; letter-spacing: .06em; border-bottom: 2px solid currentColor; }
+.idx .live-count { margin-top: 0; }
+.idx-pic { grid-column: auto; width: 100%; justify-self: end; }
+.idx .fest-tile { aspect-ratio: 1; }
+.idx .sc-tile { aspect-ratio: 4 / 5; width: 80%; }
+.idx .fest-tile { border-width: clamp(6px, .8vw, 10px); }
+.idx-img img { width: 100%; height: auto; }
+@media (max-width: 700px) {
+  .idx li { grid-template-columns: 2em minmax(0, 1fr); align-items: start; }
+  .idx-pic { grid-column: 2; justify-self: start; width: 100%; max-width: 15rem; }
+  .idx .sc-tile { width: 100%; max-width: 12rem; }
+}
 </style>
 </head>
 <body>
@@ -167,47 +191,43 @@ hr { height: 1px; margin: 0; border: 0; background: var(--rule); }
 <main>
   <hr>
 
-  <section class="row" aria-labelledby="oneminute-title">
-    <div class="feature-meta">
-      <p class="new"><span class="star">☆</span> NEW · NOV 14–15, 2026</p>
-      <h2 class="feature-title" id="oneminute-title"><a href="/oneminute/">THE 1 MINUTE FILM FESTIVAL</a></h2>
-      <p><b>24 Hours to make 60 Seconds of Cinema.</b> Write, shoot and edit a film of 60 seconds or less between 11AM Saturday and 11AM Sunday.</p>
-      <p class="grey small indent">MILLENNIUM FILM WORKSHOP<br>167 Wilson Ave, Brooklyn<br>Screening Sunday Nov 15, 7PM<br>Judges will give prizes to top films!</p>
-      <p><a class="rsvp" href="/oneminute/">REGISTER SOLO OR AS A GROUP →</a></p>
-      <p class="live-count" id="live-count" hidden><span class="star">☆</span> <b id="live-num">0</b> registered so far</p>
-      <p class="partiful-line" data-partiful hidden><a href="#" target="_blank" rel="noopener">Coming to watch? RSVP for the screening on Partiful →</a></p>
-    </div>
-    <a class="fest-tile" href="/oneminute/" aria-label="The 1 Minute Film Festival">
-      <span class="fest-name">The 1 Minute Film Festival</span>
-      <span class="fest-line">24 Hours to make 60 Seconds of Cinema</span>
-      <span class="fest-line">Nov 14–15 · Millennium Film Workshop</span>
-    </a>
-  </section>
+  <h2 class="sec-label now">CURRENT PROJECTS</h2>
+  <ol class="idx">
+    <li>
+      <span class="n">01</span>
+      <div class="idx-text">
+        <h3 id="oneminute-title"><a href="/oneminute/">THE 1 MINUTE FILM FESTIVAL</a></h3>
+        <p class="when">NOV 14–15 · MILLENNIUM FILM WORKSHOP, 167 WILSON AVE</p>
+        <p class="grey small">24 hours to make 60 seconds of cinema. Screening Sunday 7PM, judges give prizes.</p>
+        <p class="live-count" id="live-count" hidden><span class="star">☆</span> <b id="live-num">0</b> registered so far</p>
+        <p class="idx-links"><a class="go" href="/oneminute/">REGISTER →</a><span class="partiful-line" data-partiful hidden><a class="go" href="#" target="_blank" rel="noopener">SCREENING RSVP →</a></span></p>
+      </div>
+      <a class="fest-tile idx-pic" href="/oneminute/" aria-label="The 1 Minute Film Festival"><span class="fest-name">The 1 Minute Film Festival</span><span class="fest-line">24 Hours to make 60 Seconds of Cinema</span><span class="fest-line">Nov 14–15 · Millennium Film Workshop</span></a>
+    </li>
+    <li>
+      <span class="n">02</span>
+      <div class="idx-text">
+        <h3 id="showcase-title"><a href="/showcase/">DAILY MAQET SHOWCASE</a></h3>
+        <p class="when">THIS WEEK: <span id="sc-theme">MEMBER SHOWCASE</span></p>
+        <p class="grey small">Any medium that fits an Instagram post. Members vote Friday, and the top 7 post to @_maqet_, one a day.</p>
+        <p class="grey small" id="sc-closes">Submissions close Friday, 6PM</p>
+        <p class="idx-links"><a class="go" href="/showcase/">SUBMIT YOUR WORK →</a></p>
+      </div>
+      <a class="sc-tile idx-pic" href="/showcase/" id="sc-tile" aria-label="Daily MAQET Showcase"><span class="sc-empty"><span class="star">☆</span>Your work here</span></a>
+    </li>
+    <li>
+      <span class="n">03</span>
+      <div class="idx-text">
+        <h3 id="att-title"><a href="https://maqetcollective.cargo.site/artists-talking-together">ARTISTS TALKING TOGETHER</a></h3>
+        <p class="when">EVERY FRIDAY 7–9PM · NOOK BROOKLYN</p>
+        <p class="grey small">𖡡 45 Irving Ave, Unit 1, Brooklyn, NY 11237</p>
+        <p class="idx-links"><a class="go" href="https://maqetcollective.cargo.site/artists-talking-together">DETAILS →</a></p>
+      </div>
+      <a class="idx-pic idx-img" href="https://maqetcollective.cargo.site/artists-talking-together"><img src="https://freight.cargo.site/w/1500/q/75/i/M3103129830709686025150678739824/Eventbrite-MAQET-Discussion-group-poster.jpg" width="1500" height="750" alt="Artists Talking Together poster: two people talking at a table"></a>
+    </li>
+  </ol>
 
-  <section class="row" aria-labelledby="showcase-title">
-    <div class="feature-meta">
-      <p class="new"><span class="star">☆</span> NEW · A PIECE A DAY</p>
-      <h2 class="feature-title" id="showcase-title"><a href="/showcase/">DAILY MAQET SHOWCASE</a></h2>
-      <p><b>This week: <span id="sc-theme">Member showcase</span>.</b> Submit work in any medium that fits an Instagram post. Members vote Friday night, and the top 7 post to @_maqet_, one a day.</p>
-      <p class="grey small indent" id="sc-closes">Submissions close Friday, 6PM</p>
-      <p><a class="rsvp" href="/showcase/">SUBMIT YOUR WORK →</a></p>
-    </div>
-    <a class="sc-tile" href="/showcase/" id="sc-tile" aria-label="Daily MAQET Showcase">
-      <span class="sc-empty"><span class="star">☆</span>Your work here</span>
-    </a>
-  </section>
-
-  <section class="row" aria-labelledby="att-title">
-    <div class="feature-meta">
-      <!-- Artists Talking Together page still lives on Cargo until the full migration. -->
-      <h2 class="feature-title" id="att-title"><a href="https://maqetcollective.cargo.site/artists-talking-together">ARTISTS TALKING TOGETHER</a></h2>
-      <p><b>EVERY FRIDAY NIGHT</b> 7:00 - 9:00 PM</p>
-      <p class="grey small indent">@ NOOK BROOKLYN<br>𖡡 45 Irving Ave, Unit 1, Brooklyn, NY 11237</p>
-    </div>
-    <div class="feature-pic">
-      <img src="https://freight.cargo.site/w/1500/q/75/i/M3103129830709686025150678739824/Eventbrite-MAQET-Discussion-group-poster.jpg" width="1500" height="750" alt="Artists Talking Together poster: two people talking at a table">
-    </div>
-  </section>
+  <h2 class="sec-label">PAST SHOWS</h2>
 
   <section class="row" aria-labelledby="tbta-title">
     <div class="show-meta">
