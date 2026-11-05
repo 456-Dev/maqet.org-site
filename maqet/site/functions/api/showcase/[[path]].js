@@ -39,6 +39,7 @@ let schemaReady = false;
 async function ensureSchema(db) {
   if (schemaReady) return;
   for (const sql of SCHEMA) await db.prepare(sql).run();
+  try { await db.prepare("ALTER TABLE sc_submissions ADD COLUMN link TEXT").run(); } catch (e) { /* already there */ }
   schemaReady = true;
 }
 
@@ -86,14 +87,15 @@ const publicPick = (r) => ({
 });
 
 // Which files a submission needs, by media type. Returns an error string or "".
-function checkFiles(mediaType, media, cover, audio) {
+function checkFiles(mediaType, media, cover, audio, link) {
   if (mediaType === "Music") {
-    if (!audio) return "Attach your song (MP3, M4A, WAV or AAC).";
-    if (!AUDIO.test(audio.type)) return "The song has to be an MP3, M4A, WAV or AAC file.";
+    if (!audio && !link) return "Attach your song (MP3, M4A, WAV or AAC) or paste a link to it.";
+    if (audio && !AUDIO.test(audio.type)) return "The song has to be an MP3, M4A, WAV or AAC file.";
     if (!cover) return "Music needs a cover image too.";
     if (!IMAGE.test(cover.type)) return "The cover has to be a JPG, PNG, HEIC or WEBP image.";
     return "";
   }
+  if (!media.length && link) return "";
   if (!media.length) return mediaType === "Writing" ? "Attach your writing as images (one per slide)." : "Attach your photo or video.";
   if (media.length > MAX_FILES) return `Up to ${MAX_FILES} files, the most Instagram allows in one post.`;
   for (const f of media) {
@@ -126,9 +128,14 @@ async function submit(request, env) {
   const media = form.getAll("files").filter(isFile);
   const cover = isFile(form.get("cover")) ? form.get("cover") : null;
   const audio = isFile(form.get("audio")) ? form.get("audio") : null;
-  const problem = checkFiles(mediaType, media, cover, audio);
+  let link = clean(form.get("link"), 500);
+  if (link) {
+    try { const u = new URL(/^https?:\/\//i.test(link) ? link : "https://" + link); if (!/^https?:$/.test(u.protocol) || !u.hostname.includes(".")) throw 0; link = u.href; }
+    catch (e) { return json({ error: "That link doesn't look right. Paste the full share link." }, 400); }
+  }
+  const problem = checkFiles(mediaType, media, cover, audio, link);
   if (problem) return json({ error: problem }, 400);
-  const parts = mediaType === "Music" ? [[cover, "cover"], [audio, "audio"]] : media.map((f) => [f, "media"]);
+  const parts = mediaType === "Music" ? [[cover, "cover"], ...(audio ? [[audio, "audio"]] : [])] : media.map((f) => [f, "media"]);
   const total = parts.reduce((n, [f]) => n + f.size, 0);
   if (total > MAX_BYTES) return json({ error: "That's too big. Keep everything under 30 MB." }, 413);
   const db = env.DB;
@@ -147,9 +154,9 @@ async function submit(request, env) {
     await putFile(env, key, f, mime);
     files.push({ key, mime, size: f.size, role, ...(env.MEDIA ? {} : { d1: 1 }) });
   }
-  await db.prepare(`INSERT INTO sc_submissions (id, week, created, artist, handle, email, title, media_type, caption, files, size, ip_hash)
-                    VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12)`)
-    .bind(id, week, new Date().toISOString(), artist, handle, email, title, mediaType, caption, JSON.stringify(files), total, ih).run();
+  await db.prepare(`INSERT INTO sc_submissions (id, week, created, artist, handle, email, title, media_type, caption, files, size, ip_hash, link)
+                    VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13)`)
+    .bind(id, week, new Date().toISOString(), artist, handle, email, title, mediaType, caption, JSON.stringify(files), total, ih, link || null).run();
   return json({ ok: true, id, week });
 }
 
@@ -254,7 +261,7 @@ export async function onRequest({ request, env, params }) {
       if (parts[1] === "list" && method === "GET") {
         const week = new URL(request.url).searchParams.get("week") || currentWeek();
         const { results } = await env.DB.prepare("SELECT * FROM sc_submissions WHERE week = ?1 ORDER BY created ASC").bind(week).all();
-        return json({ week, theme: await themeFor(env.DB, week), submissions: results.map((r) => ({ ...publicPick(r), email: r.email, status: r.status, rank: r.rank, size: r.size, created: r.created, keys: JSON.parse(r.files).map((f) => f.key) })) });
+        return json({ week, theme: await themeFor(env.DB, week), submissions: results.map((r) => ({ ...publicPick(r), email: r.email, status: r.status, rank: r.rank, size: r.size, created: r.created, link: r.link, keys: JSON.parse(r.files).map((f) => f.key) })) });
       }
       if (parts[1] === "update" && method === "POST") {
         const b = await request.json();

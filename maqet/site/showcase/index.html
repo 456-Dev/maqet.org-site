@@ -179,6 +179,7 @@ select { appearance: none; background: linear-gradient(45deg, transparent 50%, v
           <img class="preview" id="cover-img" alt="" hidden>
         </label>
       </div>
+      <label class="field"><span>Or a link to your files</span><input type="url" name="link" maxlength="500" placeholder="Google Drive, Dropbox or WeTransfer"><small>For anything over 30 MB, like longer videos or full-quality audio. Make sure the link is set so anyone can open it.</small></label>
       <div class="two">
         <label class="field"><span>Your name</span><input type="text" name="artist" autocomplete="name" maxlength="80" placeholder="as you want it credited"></label>
         <label class="field"><span>Instagram</span><input type="text" name="handle" maxlength="60" placeholder="@yourhandle (optional)"></label>
@@ -270,7 +271,8 @@ select { appearance: none; background: linear-gradient(45deg, transparent 50%, v
     if (!d) return;
     if (d.theme) { $("theme").textContent = d.theme; $("done-theme").textContent = d.theme; }
     $("closes").textContent = "Submissions close " + fridayLabel(d.week) + ", 6PM";
-    if (d.picks && d.picks.length) $("picks").replaceChildren(...d.picks.map(card));
+    const picks = (d.picks || []).filter((p) => p.files.some((f) => f.role !== "audio"));
+    if (picks.length) $("picks").replaceChildren(...picks.map(card));
   }).catch(() => {});
 
   // media type decides what to upload: a carousel of images/videos, images only (writing), or song + cover (music)
@@ -318,13 +320,14 @@ select { appearance: none; background: linear-gradient(45deg, transparent 50%, v
 
   function check(fd) {
     const t = fd.get("mediaType");
+    const link = fd.get("link").trim();
     if (!t) return "Pick a media type.";
     if (t === "Music") {
-      if (!audio) return "Attach your song.";
+      if (!audio && !link) return "Attach your song or paste a link to it.";
       if (!cover) return "Music needs a cover image too.";
-      if (audio.size + cover.size > MAX_TOTAL) return "That's too big. Keep everything under 30 MB.";
+      if ((audio ? audio.size : 0) + cover.size > MAX_TOTAL) return "That's too big. Keep everything under 30 MB. For bigger files, paste a link instead.";
     } else {
-      if (!chosen.length) return t === "Writing" ? "Attach your writing as images (one per slide)." : "Attach your photo or video.";
+      if (!chosen.length && !link) return t === "Writing" ? "Attach your writing as images (one per slide)." : "Attach your photo or video.";
       if (t === "Writing" && chosen.some((f) => !IMAGE.test(f.type))) return "Writing has to be images, one per slide.";
       if (chosen.reduce((n, f) => n + f.size, 0) > MAX_TOTAL) return "That's too big. Keep everything under 30 MB.";
     }
@@ -340,7 +343,7 @@ select { appearance: none; background: linear-gradient(45deg, transparent 50%, v
     const problem = check(fd);
     msg.className = "msg err"; msg.textContent = problem;
     if (problem) return;
-    if (fd.get("mediaType") === "Music") { fd.append("audio", audio); fd.append("cover", cover); }
+    if (fd.get("mediaType") === "Music") { if (audio) fd.append("audio", audio); fd.append("cover", cover); }
     else chosen.forEach((f) => fd.append("files", f));
     msg.className = "msg"; msg.textContent = "Uploading…";
     send.disabled = true; $("bar").hidden = false;
