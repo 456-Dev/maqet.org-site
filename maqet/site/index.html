@@ -226,6 +226,7 @@ hr { height: 1px; margin: 0; border: 0; background: var(--rule); }
         <p class="when">THIS WEEK: <span id="sc-theme">MEMBER SHOWCASE</span></p>
         <p class="grey small">Any medium that fits an Instagram post. Members vote Friday, and the top 7 post to @_maqet_, one a day.</p>
         <p class="grey small" id="sc-closes">Submissions close Friday, 6PM</p>
+        <p class="live-count" id="sc-count" hidden><span class="star">☆</span> <b id="sc-count-n">0</b> <span id="sc-count-label">submitted this week</span></p>
         <p class="idx-links"><a class="go" href="/showcase/">SUBMIT YOUR WORK →</a></p>
       </div>
       <a class="sc-tile idx-pic" href="/showcase/" id="sc-tile" aria-label="Daily MAQET Showcase"><span class="sc-empty"><span class="star">☆</span>Your work here</span></a>
@@ -343,6 +344,10 @@ hr { height: 1px; margin: 0; border: 0; background: var(--rule); }
     if (d.theme) document.getElementById("sc-theme").textContent = d.theme;
     const fri = new Date(d.week + "T12:00:00").toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" });
     document.getElementById("sc-closes").textContent = "Submissions close " + fri + ", 6PM";
+    const n = Number(d.submittedThisWeek) || 0;
+    document.getElementById("sc-count-n").textContent = n;
+    document.getElementById("sc-count-label").textContent = n === 1 ? "piece submitted this week" : "pieces submitted this week";
+    document.getElementById("sc-count").hidden = false;
     const p = d.picks && d.picks[0];
     if (!p) return;
     const tile = document.getElementById("sc-tile");

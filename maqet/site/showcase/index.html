@@ -58,6 +58,8 @@ hr { height: 1px; margin: 0; border: 0; background: var(--rule); }
 .small { font-size: .82em; }
 .indent { padding-left: 1.3em; }
 .theme { font-size: clamp(1.6em, 3.4vw, 2.6em); font-weight: 900; letter-spacing: .04em; line-height: 1.05; text-transform: uppercase; margin: .2rem 0 .6rem; }
+.count { margin-top: .9rem; font-weight: 700; letter-spacing: .06em; }
+.count b { font-weight: 900; color: var(--star); font-size: 1.3em; }
 .steps { margin: 0; padding-left: 1.3em; display: grid; gap: .5em; }
 
 /* form */
@@ -140,6 +142,7 @@ select { appearance: none; background: linear-gradient(45deg, transparent 50%, v
       <p class="grey small">This week's theme</p>
       <p class="theme" id="theme">Member showcase</p>
       <p class="grey small indent" id="closes">Submissions close Friday, 6PM</p>
+      <p class="count" id="count" hidden><b id="count-n">0</b> <span id="count-label">submitted this week</span></p>
     </div>
     <div class="side">
       <p><b>Any medium, as long as it can be an Instagram post.</b> Photo, painting, video, sculpture, fashion, writing as images, music with a cover. Carousels of up to 10 are fine. Send it in and tell us how you'd caption it.</p>
@@ -271,6 +274,8 @@ select { appearance: none; background: linear-gradient(45deg, transparent 50%, v
     if (!d) return;
     if (d.theme) { $("theme").textContent = d.theme; $("done-theme").textContent = d.theme; }
     $("closes").textContent = "Submissions close " + fridayLabel(d.week) + ", 6PM";
+    const n = Number(d.submittedThisWeek) || 0;
+    $("count-n").textContent = n; $("count-label").textContent = n === 1 ? "piece submitted this week" : "pieces submitted this week"; $("count").hidden = false;
     const picks = (d.picks || []).filter((p) => p.files.some((f) => f.role !== "audio"));
     if (picks.length) $("picks").replaceChildren(...picks.map(card));
   }).catch(() => {});
