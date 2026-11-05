@@ -405,7 +405,11 @@ span.guest-link { color: inherit; }
   .ch-arrow--tall { display: block; width: 36px; }
   .prizes, .musts { grid-template-columns: minmax(0, 1fr); }
   .guest-head { display: none; }
-  .guest { grid-template-columns: minmax(0, 1fr); gap: .15rem; }
+  .guest { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: .1rem .8rem; padding: .45rem 0; font-size: .9rem; }
+  .guest-name, .guest-link { overflow-wrap: normal; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .guest-link { text-align: right; }
+  .guest-drop .guest-list { padding: 0 .75rem; max-height: min(55vh, 28rem); }
+  .guest-drop summary { padding: .7rem .75rem; }
   .sched thead { display: none; }
   .sched, .sched tbody, .sched td { display: block; width: auto !important; }
   .sched tr { display: grid; grid-template-columns: 2.4rem minmax(0, 1fr); border-bottom: 1px solid var(--hairline); padding-block: .6rem; }
@@ -463,7 +467,7 @@ span.guest-link { color: inherit; }
       <p class="k">Delivery</p>
       <p class="v">Sun&nbsp;Nov&nbsp;15 · 11:00&nbsp;AM</p>
       <p class="k">Premiere</p>
-      <p class="v">Sun&nbsp;Nov&nbsp;15 · 7:00&nbsp;PM<br>Location TBD</p>
+      <p class="v">Sun&nbsp;Nov&nbsp;15 · 7:00&nbsp;PM<br><a href="https://maps.google.com/?q=Millennium+Film+Workshop+167+Wilson+Ave+Brooklyn+NY+11237" target="_blank" rel="noopener">Millennium Film Workshop</a><br>167 Wilson Ave, Brooklyn</p>
       <p class="k">Sunrise · Sunset</p>
       <p class="v">Sat 6:41&nbsp;AM · 4:39&nbsp;PM<br>Sun 6:43&nbsp;AM · 4:38&nbsp;PM</p>
     </div>
@@ -474,7 +478,7 @@ span.guest-link { color: inherit; }
         <span class="line"><span class="word">60 seconds.<svg class="doodle doodle--squiggle" viewBox="0 0 300 20" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M2 12 Q20 2 38 12 T74 12 T110 12 T146 12 T182 12 T218 12 T254 12 T290 10"/></svg></span></span>
         <span class="line"><span class="hl">One screening.</span></span>
       </p>
-      <p class="sub">Write, shoot and edit a film of 60 seconds or less between 11AM Saturday and 11AM Sunday. All works submitted on time will be screened together at LOCATION TBD on Sunday, 7PM.</p>
+      <p class="sub">Write, shoot and edit a film of 60 seconds or less between 11AM Saturday and 11AM Sunday. All works submitted on time will be screened together at MILLENNIUM FILM WORKSHOP on Sunday, 7PM.</p>
     </div>
 
     <section class="cell c-reg" id="rsvp" aria-labelledby="rsvp-title">
@@ -601,7 +605,7 @@ span.guest-link { color: inherit; }
       <div class="must"><span class="must-num">1</span><p><strong>Meet at Tompkins Square Park.<sup>*</sup></strong>11AM on Saturday, Nov 14. Teams are made and the prompt is handed out.</p></div>
       <div class="must"><span class="must-num">2</span><p><strong>All creative activity done within 24 hours.</strong>Write, shoot and edit between 11AM Saturday and 11AM Sunday.</p></div>
       <div class="must"><span class="must-num">3</span><p><strong>Submit your work by 11AM the next day.</strong>Sunday, Nov 15. 60 seconds or less.</p></div>
-      <div class="must"><span class="must-num">4</span><p><strong>Come to the screening and enjoy everyone's work!</strong>Sunday, Nov 15 at 7PM. Location TBD.</p></div>
+      <div class="must"><span class="must-num">4</span><p><strong>Come to the screening and enjoy everyone's work!</strong>Sunday, Nov 15 at 7PM at Millennium Film Workshop, 167 Wilson Ave, Brooklyn, NY 11237.</p></div>
     </div>
     <p class="footnote"><sup>*</sup> Only teams with at least 3 crew members, with a film that at least loosely follows the prompt, will be prize eligible. <mark>Submissions that don't meet these criteria will still be screened!!!</mark></p>
 
@@ -614,7 +618,7 @@ span.guest-link { color: inherit; }
       <tbody>
         <tr><td>1</td><td>Sat 11:00 AM</td><td>Meet up. Teams are made and the prompt is handed out. Clock starts.</td><td data-slot="prompt-location">TBA</td></tr>
         <tr><td>2</td><td>Sun 11:00 AM</td><td>Final cut due. 60 seconds or less.</td><td>–</td></tr>
-        <tr class="premiere"><td>3</td><td>Sun 7:00 PM</td><td>All works submitted on time screen together.</td><td>TBD</td></tr>
+        <tr class="premiere"><td>3</td><td>Sun 7:00 PM</td><td>All works submitted on time screen together.</td><td>Millennium Film Workshop, 167 Wilson Ave</td></tr>
       </tbody>
     </table>
     <p class="cal"><span>Add to Google Calendar:</span>
@@ -661,7 +665,7 @@ span.guest-link { color: inherit; }
         <p class="stub-day">Sun</p>
         <p class="stub-date">Nov 15</p>
         <p class="stub-time">7PM</p>
-        <p class="stub-place">Location TBD</p>
+        <p class="stub-place">Millennium Film Workshop<br>167 Wilson Ave, Brooklyn</p>
       </div>
     </div>
   </section>
@@ -670,7 +674,7 @@ span.guest-link { color: inherit; }
     <div>
       <p class="k">Make it official</p>
       <h2 id="signoff-title">Your film. On screen. For free. <span class="guarantee">[guaranteed]</span></h2>
-      <p class="signoff-note">Sun Nov 15 · 7PM · location TBD</p>
+      <p class="signoff-note">Sun Nov 15 · 7PM · Millennium Film Workshop, 167 Wilson Ave, Brooklyn</p>
     </div>
     <div class="signoff-cta">
       <a class="btn" data-rsvp href="#rsvp">Register now</a>
@@ -1004,7 +1008,7 @@ const gcal = (title, start, minutes, location) => {
 };
 const calEvents = {
   reveal:    gcal("1 Minute Film Festival: prompt reveal", FESTIVAL.promptReveal, 60, FESTIVAL.promptLocation),
-  screening: gcal("1 Minute Film Festival: screenings (location TBD)", FESTIVAL.screening, 120),
+  screening: gcal("1 Minute Film Festival: screenings", FESTIVAL.screening, 120, "Millennium Film Workshop, 167 Wilson Ave, Brooklyn, NY 11237"),
 };
 document.querySelectorAll("[data-cal]").forEach((a) => { a.href = calEvents[a.dataset.cal]; });
 </script>
