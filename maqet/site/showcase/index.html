@@ -361,7 +361,7 @@ select { appearance: none; background: linear-gradient(45deg, transparent 50%, v
   });
 
   const logo = $("logo");
-  function fade() { const o = Math.max(0, 1 - window.scrollY / 600); logo.style.opacity = o; logo.style.visibility = o === 0 ? "hidden" : ""; }
+  function fade() { const o = Math.max(0, 1 - window.scrollY / 200); logo.style.opacity = o; logo.style.visibility = o === 0 ? "hidden" : ""; }
   window.addEventListener("scroll", fade, { passive: true }); fade();
 })();
 </script>

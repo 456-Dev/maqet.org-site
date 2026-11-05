@@ -358,11 +358,11 @@ hr { height: 1px; margin: 0; border: 0; background: var(--rule); }
 })();
 </script>
 <script>
-// The masthead fades out over the first 600px of scrolling, like the Cargo site.
+// The masthead fades out over the first 200px of scrolling, like the Cargo site.
 (function () {
   const logo = document.getElementById("logo");
   function fade() {
-    const opacity = Math.max(0, 1 - window.scrollY / 600);
+    const opacity = Math.max(0, 1 - window.scrollY / 200);
     logo.style.opacity = opacity;
     logo.style.visibility = opacity === 0 ? "hidden" : "";
   }
