@@ -67,6 +67,17 @@ img { display: block; width: 100%; height: auto; }
 .star { display: inline-block; color: var(--star); animation: maqet-star 1.2s ease-in-out infinite; }
 @keyframes maqet-star { 50% { transform: scale(1.5); } }
 .about { width: 4.6em; line-height: 1.2; }
+.nav { display: grid; gap: .5em; justify-items: start; }
+.nav .about:first-child { width: auto; }
+
+/* showcase tile */
+.sc-tile { grid-column: 6 / span 3; container-type: inline-size; position: relative; aspect-ratio: 4 / 5; overflow: hidden; display: grid; align-content: end; background: #111; color: #fff; }
+.sc-tile:hover { opacity: 1; }
+.sc-tile img, .sc-tile video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.sc-tile .sc-cap { position: relative; padding: 6cqi; background: linear-gradient(transparent, rgba(0,0,0,.65)); font-size: 6cqi; line-height: 1.15; }
+.sc-tile .sc-cap b { display: block; font-size: 9cqi; font-weight: 900; letter-spacing: .04em; text-transform: uppercase; }
+.sc-tile .sc-empty { position: relative; padding: 6cqi; align-self: center; text-align: center; font-size: 11cqi; font-weight: 900; letter-spacing: .06em; line-height: 1; text-transform: uppercase; }
+.sc-tile .sc-empty .star { display: block; font-size: 22cqi; margin-bottom: 4cqi; }
 
 hr { height: 1px; margin: 0; border: 0; background: var(--rule); }
 
@@ -127,7 +138,8 @@ hr { height: 1px; margin: 0; border: 0; background: var(--rule); }
 @media (max-width: 700px) {
   :root { --text: clamp(17px, 4.6vw, 22px); }
   .row { grid-template-columns: minmax(0, 1fr); }
-  .feature-meta, .feature-pic, .show-meta, .show-text, .show-pic, .show-pic--narrow, .fest-tile { grid-column: 1 / -1; }
+  .feature-meta, .feature-pic, .show-meta, .show-text, .show-pic, .show-pic--narrow, .fest-tile, .sc-tile { grid-column: 1 / -1; }
+  .sc-tile { width: 80%; }
   .show-pic--narrow { max-width: 60%; }
   .fest-tile { width: 80%; }
   .foot { grid-template-columns: 7.5em minmax(0, 1fr); }
@@ -146,7 +158,10 @@ hr { height: 1px; margin: 0; border: 0; background: var(--rule); }
 <header class="mast">
   <h1 class="logo" id="logo"><a href="/">M<span class="star">☆</span>QET COLLECTIVE<br>NYC</a></h1>
   <!-- About page still lives on Cargo until the full migration. -->
-  <a class="about" href="https://maqetcollective.cargo.site/about-us">ABOUT US</a>
+  <nav class="nav">
+    <a class="about" href="/showcase/">SHOWCASE</a>
+    <a class="about" href="https://maqetcollective.cargo.site/about-us">ABOUT US</a>
+  </nav>
 </header>
 
 <main>
@@ -166,6 +181,19 @@ hr { height: 1px; margin: 0; border: 0; background: var(--rule); }
       <span class="fest-name">The 1 Minute Film Festival</span>
       <span class="fest-line">24 Hours to make 60 Seconds of Cinema</span>
       <span class="fest-line">Nov 14–15 · Millennium Film Workshop</span>
+    </a>
+  </section>
+
+  <section class="row" aria-labelledby="showcase-title">
+    <div class="feature-meta">
+      <p class="new"><span class="star">☆</span> NEW · A PIECE A DAY</p>
+      <h2 class="feature-title" id="showcase-title"><a href="/showcase/">DAILY MAQET SHOWCASE</a></h2>
+      <p><b>This week: <span id="sc-theme">Member showcase</span>.</b> Submit work in any medium that fits an Instagram post. Members vote Friday night, and the top 7 post to @_maqet_, one a day.</p>
+      <p class="grey small indent" id="sc-closes">Submissions close Friday, 6PM</p>
+      <p><a class="rsvp" href="/showcase/">SUBMIT YOUR WORK →</a></p>
+    </div>
+    <a class="sc-tile" href="/showcase/" id="sc-tile" aria-label="Daily MAQET Showcase">
+      <span class="sc-empty"><span class="star">☆</span>Your work here</span>
     </a>
   </section>
 
@@ -280,6 +308,28 @@ hr { height: 1px; margin: 0; border: 0; background: var(--rule); }
   }
   load();
   setInterval(load, 60000);
+})();
+</script>
+<script>
+// Showcase row: this week's theme and today's pick from the showcase API.
+(function () {
+  fetch("/api/showcase", { cache: "no-store" }).then((r) => r.ok ? r.json() : null).then((d) => {
+    if (!d) return;
+    if (d.theme) document.getElementById("sc-theme").textContent = d.theme;
+    const fri = new Date(d.week + "T12:00:00").toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" });
+    document.getElementById("sc-closes").textContent = "Submissions close " + fri + ", 6PM";
+    const p = d.picks && d.picks[0];
+    if (!p) return;
+    const tile = document.getElementById("sc-tile");
+    const m = document.createElement(p.mime.startsWith("video/") ? "video" : "img");
+    if (m.tagName === "VIDEO") Object.assign(m, { muted: true, loop: true, autoplay: true, playsInline: true });
+    else m.alt = p.title || "Work by " + p.artist;
+    m.src = p.media;
+    const cap = document.createElement("span"); cap.className = "sc-cap";
+    const b = document.createElement("b"); b.textContent = "Today";
+    cap.append(b, document.createTextNode(p.artist + (p.title ? " · " + p.title : "")));
+    tile.replaceChildren(m, cap);
+  }).catch(() => {});
 })();
 </script>
 <script>

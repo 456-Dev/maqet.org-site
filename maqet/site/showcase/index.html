@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Daily MAQET Showcase · MAQET Collective</title>
+<meta name="description" content="A new theme every week. Submit your work in any medium; MAQET members vote on Friday and seven pieces post to @_maqet_, one a day.">
+<link rel="canonical" href="https://maqet.org/showcase/">
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<meta property="og:title" content="Daily MAQET Showcase">
+<meta property="og:description" content="A new theme every week. Seven pieces, one a day, on @_maqet_.">
+<meta property="og:url" content="https://maqet.org/showcase/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;700;900&display=swap">
+<style>
+/* Layout: same masthead, rule and 12-column rows as the home page. Theme + how it works, the submit form, then the grid of posted picks. */
+:root {
+  --paper: #FFFFFF;
+  --ink: rgba(0, 0, 0, 0.85);
+  --grey: rgba(106, 106, 106, 0.85);
+  --rule: rgba(0, 0, 0, 0.75);
+  --hair: rgba(0, 0, 0, 0.18);
+  --star: rgba(228, 24, 180, 0.85);
+  --sans: "Hanken Grotesk", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --pad: clamp(16px, 4.4vw, 64px);
+  --gap: clamp(8px, 0.95vw, 14px);
+  --text: clamp(16px, 1.45vw, 19px);
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--sans); font-size: var(--text); line-height: 1.22; padding-inline: var(--pad); padding-block: clamp(150px, 18vw, 240px) 56px; }
+a { color: inherit; text-decoration: none; }
+a:hover { opacity: .6; }
+a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, button:focus-visible { outline: 2px solid var(--star); outline-offset: 3px; }
+p { margin: 0; }
+[hidden] { display: none !important; }
+img, video { display: block; width: 100%; height: auto; }
+
+.mast { position: fixed; top: 0; left: 0; right: 0; z-index: 10; display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; padding: clamp(18px, 4.4vw, 56px) var(--pad) 0; pointer-events: none; }
+.mast a { pointer-events: auto; }
+.logo { margin: 0; font-size: clamp(24px, 3.2vw, 42px); font-weight: 500; line-height: 1; letter-spacing: .3em; }
+.star { display: inline-block; color: var(--star); animation: maqet-star 1.2s ease-in-out infinite; }
+@keyframes maqet-star { 50% { transform: scale(1.5); } }
+.about { width: 4.6em; line-height: 1.2; }
+hr { height: 1px; margin: 0; border: 0; background: var(--rule); }
+
+.row { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gap); row-gap: 1.2rem; align-items: start; margin-top: clamp(56px, 8vw, 110px); }
+.row:first-of-type { margin-top: clamp(40px, 4.5vw, 56px); }
+.row > * { min-width: 0; }
+.meta { grid-column: 1 / span 5; display: grid; gap: .25rem; }
+.side { grid-column: 7 / span 6; display: grid; gap: 1.1em; }
+.title { margin: 0 0 1.1rem; font-size: 1.35em; font-weight: 900; letter-spacing: .13em; line-height: 1.15; }
+.label { margin: 0; font-size: 1em; font-weight: 700; }
+.new { color: var(--star); font-size: .82em; font-weight: 700; letter-spacing: .1em; margin-bottom: .35rem; }
+.grey { color: var(--grey); }
+.small { font-size: .82em; }
+.indent { padding-left: 1.3em; }
+.theme { font-size: clamp(1.6em, 3.4vw, 2.6em); font-weight: 900; letter-spacing: .04em; line-height: 1.05; text-transform: uppercase; margin: .2rem 0 .6rem; }
+.steps { margin: 0; padding-left: 1.3em; display: grid; gap: .5em; }
+
+/* form */
+.form { grid-column: 1 / span 7; display: grid; gap: 1.1rem; }
+.field { display: grid; gap: .35rem; }
+.field > span { font-weight: 700; letter-spacing: .04em; }
+.field small { color: var(--grey); font-size: .82em; }
+input[type=text], input[type=email], select, textarea { width: 100%; font: inherit; color: inherit; background: transparent; border: 0; border-bottom: 1px solid var(--rule); border-radius: 0; padding: .4rem 0; }
+textarea { resize: vertical; min-height: 5.5em; border: 1px solid var(--rule); padding: .5rem; }
+select { appearance: none; background: linear-gradient(45deg, transparent 50%, var(--ink) 50%) right .5em center / .45em .45em no-repeat; padding-right: 1.4em; cursor: pointer; }
+.two { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1.1rem var(--gap); }
+.drop { display: grid; place-items: center; text-align: center; gap: .4rem; min-height: 9rem; padding: 1.2rem; border: 1px dashed var(--rule); cursor: pointer; }
+.drop:hover, .drop.over { background: rgba(228, 24, 180, .06); }
+.drop input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+.drop .pick { font-weight: 700; border-bottom: 2px solid currentColor; }
+.preview { max-height: 16rem; width: auto; max-width: 100%; margin-inline: auto; }
+.check { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: .6rem; align-items: start; cursor: pointer; }
+.check input { width: 1.05em; height: 1.05em; margin: .15em 0 0; accent-color: #000; }
+.hp { position: absolute; left: -9999px; }
+.send { justify-self: start; font: inherit; font-weight: 700; letter-spacing: .06em; color: var(--paper); background: var(--ink); border: 0; padding: .75em 1.3em; cursor: pointer; }
+.send:hover { background: var(--star); }
+.send[disabled] { opacity: .5; cursor: progress; }
+.msg { font-weight: 700; }
+.msg.err { color: #b00020; }
+.bar { height: 3px; background: var(--hair); }
+.bar i { display: block; height: 100%; width: 0; background: var(--star); transition: width .2s; }
+.done { grid-column: 1 / span 7; display: grid; gap: .6rem; }
+.done .theme { color: var(--star); }
+
+/* posted picks */
+.picks { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr)); gap: 2rem var(--gap); }
+.pick-card { display: grid; gap: .4rem; align-content: start; }
+.pick-card .frame { aspect-ratio: 4 / 5; overflow: hidden; background: #f2f2f2; }
+.pick-card .frame img, .pick-card .frame video { width: 100%; height: 100%; object-fit: cover; }
+.pick-card .who { font-weight: 700; }
+.empty { grid-column: 1 / -1; }
+
+.foot { margin-top: clamp(80px, 11vw, 140px); display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gap); row-gap: .2rem; }
+.foot dt { grid-column: 1 / span 2; }
+.foot dd { grid-column: 3 / span 6; margin: 0; overflow-wrap: anywhere; }
+
+@media (max-width: 700px) {
+  :root { --text: clamp(17px, 4.6vw, 22px); }
+  .row { grid-template-columns: minmax(0, 1fr); }
+  .meta, .side, .form, .done, .picks { grid-column: 1 / -1; }
+  .two { grid-template-columns: minmax(0, 1fr); }
+  .picks { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.4rem var(--gap); }
+  .pick-card { font-size: .82em; }
+  .foot { grid-template-columns: 7.5em minmax(0, 1fr); }
+  .foot dt { grid-column: 1; }
+  .foot dd { grid-column: 2; }
+}
+@media (prefers-reduced-motion: reduce) { .star { animation: none; } }
+</style>
+</head>
+<body>
+
+<header class="mast">
+  <h1 class="logo" id="logo"><a href="/">M<span class="star">☆</span>QET COLLECTIVE<br>NYC</a></h1>
+  <a class="about" href="https://maqetcollective.cargo.site/about-us">ABOUT US</a>
+</header>
+
+<main>
+  <hr>
+
+  <section class="row" aria-labelledby="sc-title">
+    <div class="meta">
+      <p class="new"><span class="star">☆</span> NEW · EVERY WEEK</p>
+      <h2 class="title" id="sc-title">DAILY MAQET SHOWCASE</h2>
+      <p class="grey small">This week's theme</p>
+      <p class="theme" id="theme">Member showcase</p>
+      <p class="grey small indent" id="closes">Submissions close Friday, 6PM</p>
+    </div>
+    <div class="side">
+      <p><b>Any medium, as long as it can be an Instagram post.</b> Photo, painting, video, sculpture, fashion, writing. Send it in and tell us how you'd caption it.</p>
+      <ol class="steps">
+        <li>Submit by Friday 6PM.</li>
+        <li>MAQET members get a numbered sheet of every piece and vote for their 7 favorites.</li>
+        <li>The top 7 post to <a href="https://instagram.com/_maqet_" target="_blank" rel="noopener"><u>@_maqet_</u></a>, one a day for the next week, credited to you.</li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="row" aria-labelledby="submit-title">
+    <form class="form" id="form" novalidate>
+      <h2 class="label" id="submit-title">SUBMIT YOUR WORK →</h2>
+      <label class="drop" id="drop">
+        <input type="file" name="file" id="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif,image/gif,video/mp4,video/quicktime,video/webm">
+        <span id="drop-text"><span class="pick">Choose a photo or video</span><br><small class="grey">or drop it here · JPG, PNG, HEIC, MP4, MOV · up to 95 MB</small></span>
+        <img class="preview" id="preview-img" alt="" hidden>
+        <video class="preview" id="preview-vid" muted playsinline hidden></video>
+      </label>
+      <div class="two">
+        <label class="field"><span>Your name</span><input type="text" name="artist" autocomplete="name" maxlength="80" placeholder="as you want it credited"></label>
+        <label class="field"><span>Instagram</span><input type="text" name="handle" maxlength="60" placeholder="@yourhandle (optional)"></label>
+      </div>
+      <div class="two">
+        <label class="field"><span>Email</span><input type="email" name="email" autocomplete="email" maxlength="120" placeholder="never shown publicly"></label>
+        <label class="field"><span>Media type</span>
+          <select name="mediaType">
+            <option value="">Pick one</option>
+            <option>Photo</option><option>Painting / drawing</option><option>Digital art</option><option>Video</option>
+            <option>Sculpture / 3D</option><option>Textile / fashion</option><option>Mixed media</option><option>Writing / poetry</option><option>Other</option>
+          </select>
+        </label>
+      </div>
+      <label class="field"><span>Title of the piece</span><input type="text" name="title" maxlength="120" placeholder="optional"></label>
+      <label class="field"><span>Suggested caption</span><textarea name="caption" maxlength="2000" placeholder="What should the post say?"></textarea><small>We may trim it to fit. Your name and handle are added automatically.</small></label>
+      <label class="check"><input type="checkbox" name="consent" value="yes"><span class="small">This is my work, and MAQET can post it on Instagram and this site with credit to me.</span></label>
+      <input class="hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <div class="bar" id="bar" hidden><i></i></div>
+      <p class="msg" id="msg" role="alert"></p>
+      <button class="send" id="send" type="submit">SEND IT IN</button>
+    </form>
+    <div class="done" id="done" hidden>
+      <p class="label">GOT IT. THANK YOU.</p>
+      <p class="theme" id="done-theme">You're in</p>
+      <p>Voting happens Friday night. If your piece makes the top 7, it posts to <a href="https://instagram.com/_maqet_" target="_blank" rel="noopener"><u>@_maqet_</u></a> during the next week.</p>
+      <p><a href="/showcase/" id="again"><u>Submit another piece</u></a></p>
+    </div>
+  </section>
+
+  <section class="row" aria-labelledby="picks-title">
+    <h2 class="label meta" id="picks-title">THE PICKS</h2>
+    <div class="picks" id="picks"><p class="empty grey">The first seven picks post after this Friday's vote.</p></div>
+  </section>
+
+  <dl class="foot">
+    <dt>Instagram</dt>
+    <dd><a href="https://instagram.com/_maqet_" target="_blank" rel="noopener">@_maqet_</a></dd>
+    <dt>Email</dt>
+    <dd><a href="mailto:parsonscommunityexhibition@gmail.com">parsonscommunityexhibition@gmail.com</a></dd>
+  </dl>
+</main>
+
+<script>
+(function () {
+  const $ = (id) => document.getElementById(id);
+  const form = $("form"), file = $("file"), msg = $("msg"), send = $("send");
+
+  function fridayLabel(week) {
+    const d = new Date(week + "T12:00:00");
+    return d.toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" });
+  }
+
+  function card(p) {
+    const el = document.createElement("figure");
+    el.className = "pick-card"; el.style.margin = "0";
+    const frame = document.createElement("div"); frame.className = "frame";
+    if (p.mime.startsWith("video/")) {
+      const v = document.createElement("video");
+      Object.assign(v, { src: p.media, muted: true, loop: true, playsInline: true, preload: "metadata" });
+      v.addEventListener("mouseenter", () => v.play()); v.addEventListener("mouseleave", () => v.pause());
+      v.addEventListener("click", () => (v.paused ? v.play() : v.pause()));
+      frame.append(v);
+    } else {
+      const i = document.createElement("img"); i.src = p.media; i.loading = "lazy"; i.alt = p.title || ("Work by " + p.artist); frame.append(i);
+    }
+    const who = document.createElement("p"); who.className = "who"; who.textContent = p.artist;
+    const meta = document.createElement("p"); meta.className = "grey small";
+    meta.textContent = [p.title, p.mediaType].filter(Boolean).join(" · ");
+    const when = document.createElement("p"); when.className = "grey small";
+    when.textContent = new Date(p.postDate + "T12:00:00").toLocaleDateString("en-US", { month: "short", day: "numeric" });
+    el.append(frame, who, meta, when);
+    if (p.handle) {
+      const h = document.createElement("a"); h.className = "small"; h.textContent = p.handle;
+      const u = p.handle.replace(/^@/, "");
+      if (/^[\w.]+$/.test(u)) { h.href = "https://instagram.com/" + u; h.target = "_blank"; h.rel = "noopener nofollow"; }
+      el.append(h);
+    }
+    return el;
+  }
+
+  fetch("/api/showcase", { cache: "no-store" }).then((r) => r.ok ? r.json() : null).then((d) => {
+    if (!d) return;
+    if (d.theme) { $("theme").textContent = d.theme; $("done-theme").textContent = d.theme; }
+    $("closes").textContent = "Submissions close " + fridayLabel(d.week) + ", 6PM";
+    if (d.picks && d.picks.length) $("picks").replaceChildren(...d.picks.map(card));
+  }).catch(() => {});
+
+  // file picker + drag and drop + preview
+  const drop = $("drop");
+  function showPreview() {
+    const f = file.files[0];
+    $("preview-img").hidden = $("preview-vid").hidden = true;
+    if (!f) { $("drop-text").hidden = false; return; }
+    const url = URL.createObjectURL(f);
+    const v = f.type.startsWith("video/");
+    const el = v ? $("preview-vid") : $("preview-img");
+    el.src = url; el.hidden = false;
+    $("drop-text").hidden = !/^(image\/(jpeg|png|webp|gif)|video\/)/.test(f.type);
+    if (!$("drop-text").hidden) $("drop-text").textContent = f.name;
+  }
+  file.addEventListener("change", showPreview);
+  ["dragenter", "dragover"].forEach((t) => drop.addEventListener(t, (e) => { e.preventDefault(); drop.classList.add("over"); }));
+  ["dragleave", "drop"].forEach((t) => drop.addEventListener(t, (e) => { e.preventDefault(); drop.classList.remove("over"); }));
+  drop.addEventListener("drop", (e) => { if (e.dataTransfer.files.length) { file.files = e.dataTransfer.files; showPreview(); } });
+
+  function check(fd) {
+    const f = file.files[0];
+    if (!f) return "Attach your photo or video.";
+    if (f.size > 95 * 1024 * 1024) return "That file is too big. Keep it under 95 MB.";
+    if (!fd.get("artist").trim()) return "Add your name as you want it credited.";
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(fd.get("email").trim())) return "Add an email so we can reach you.";
+    if (!fd.get("mediaType")) return "Pick a media type.";
+    if (fd.get("consent") !== "yes") return "Check the box so we can post your work.";
+    return "";
+  }
+
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const fd = new FormData(form);
+    const problem = check(fd);
+    msg.className = "msg err"; msg.textContent = problem;
+    if (problem) return;
+    msg.className = "msg"; msg.textContent = "Uploading…";
+    send.disabled = true; $("bar").hidden = false;
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", "/api/showcase/submit");
+    xhr.upload.onprogress = (ev) => { if (ev.lengthComputable) $("bar").firstElementChild.style.width = (100 * ev.loaded / ev.total) + "%"; };
+    xhr.onload = () => {
+      let r = {}; try { r = JSON.parse(xhr.responseText); } catch (err) {}
+      if (xhr.status === 200 && r.ok) { form.hidden = true; $("done").hidden = false; window.scrollTo({ top: $("done").offsetTop - 160, behavior: "smooth" }); return; }
+      send.disabled = false; $("bar").hidden = true;
+      msg.className = "msg err"; msg.textContent = r.error || "Upload failed. Check your connection and try again.";
+    };
+    xhr.onerror = () => { send.disabled = false; $("bar").hidden = true; msg.className = "msg err"; msg.textContent = "Upload failed. Check your connection and try again."; };
+    xhr.send(fd);
+  });
+
+  const logo = $("logo");
+  function fade() { const o = Math.max(0, 1 - window.scrollY / 600); logo.style.opacity = o; logo.style.visibility = o === 0 ? "hidden" : ""; }
+  window.addEventListener("scroll", fade, { passive: true }); fade();
+})();
+</script>
+</body>
+</html>
