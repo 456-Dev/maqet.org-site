@@ -362,6 +362,11 @@ export async function onRequest({ request, env, params }) {
         const ranked = Object.values(score).sort((a, b) => b.points - a.points || a.n - b.n);
         return json({ week, closes: await voteCloses(env.DB, week), voters: votes.length, ranked });
       }
+      if (parts[1] === "clear-votes" && method === "POST") {
+        const b = await request.json();
+        const r = await env.DB.prepare("DELETE FROM sc_votes WHERE week = ?1 AND updated < ?2").bind(String(b.week), b.before || new Date().toISOString()).run();
+        return json({ ok: true, deleted: r.meta ? r.meta.changes : null });
+      }
       if (parts[1] === "closes" && method === "POST") {
         const b = await request.json();
         await env.DB.prepare("INSERT INTO sc_weeks (week, theme, closes) VALUES (?1, '', ?2) ON CONFLICT(week) DO UPDATE SET closes = ?2").bind(String(b.week), String(b.closes)).run();
