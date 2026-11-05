@@ -169,6 +169,8 @@ hr { height: 1px; margin: 0; border: 0; background: var(--rule); }
 .idx .fest-tile { aspect-ratio: 1; }
 .idx .sc-tile { aspect-ratio: 4 / 5; width: 80%; }
 .idx .fest-tile { border-width: clamp(6px, .8vw, 10px); }
+.idx .fest-name { font-size: 27cqi; line-height: .88; }
+.idx .fest-date { margin-top: 7cqi; font-size: 12cqi; }
 .idx-img img { width: 100%; height: auto; }
 @media (max-width: 700px) {
   .idx li { grid-template-columns: 2em minmax(0, 1fr); align-items: start; }
@@ -202,10 +204,20 @@ hr { height: 1px; margin: 0; border: 0; background: var(--rule); }
         <p class="live-count" id="live-count" hidden><span class="star">☆</span> <b id="live-num">0</b> registered so far</p>
         <p class="idx-links"><a class="go" href="/oneminute/">REGISTER →</a><span class="partiful-line" data-partiful hidden><a class="go" href="#" target="_blank" rel="noopener">SCREENING RSVP →</a></span></p>
       </div>
-      <a class="fest-tile idx-pic" href="/oneminute/" aria-label="The 1 Minute Film Festival"><span class="fest-name">The 1 Minute Film Festival</span><span class="fest-line">24 Hours to make 60 Seconds of Cinema</span><span class="fest-line">Nov 14–15 · Millennium Film Workshop</span></a>
+      <a class="fest-tile idx-pic" href="/oneminute/" aria-label="The 1 Minute Film Festival"><span class="fest-name">1 Minute<br>Film Fest</span><span class="fest-line fest-date">Nov 14–15</span></a>
     </li>
     <li>
       <span class="n">02</span>
+      <div class="idx-text">
+        <h3 id="att-title"><a href="https://maqetcollective.cargo.site/artists-talking-together">ARTISTS TALKING TOGETHER</a></h3>
+        <p class="when">EVERY FRIDAY 7–9PM · NOOK BROOKLYN</p>
+        <p class="grey small">𖡡 45 Irving Ave, Unit 1, Brooklyn, NY 11237</p>
+        <p class="idx-links"><a class="go" href="https://maqetcollective.cargo.site/artists-talking-together">DETAILS →</a></p>
+      </div>
+      <a class="idx-pic idx-img" href="https://maqetcollective.cargo.site/artists-talking-together"><img src="https://freight.cargo.site/w/1500/q/75/i/M3103129830709686025150678739824/Eventbrite-MAQET-Discussion-group-poster.jpg" width="1500" height="750" alt="Artists Talking Together poster: two people talking at a table"></a>
+    </li>
+    <li>
+      <span class="n">03</span>
       <div class="idx-text">
         <h3 id="showcase-title"><a href="/showcase/">DAILY MAQET SHOWCASE</a></h3>
         <p class="when">THIS WEEK: <span id="sc-theme">MEMBER SHOWCASE</span></p>
@@ -214,16 +226,6 @@ hr { height: 1px; margin: 0; border: 0; background: var(--rule); }
         <p class="idx-links"><a class="go" href="/showcase/">SUBMIT YOUR WORK →</a></p>
       </div>
       <a class="sc-tile idx-pic" href="/showcase/" id="sc-tile" aria-label="Daily MAQET Showcase"><span class="sc-empty"><span class="star">☆</span>Your work here</span></a>
-    </li>
-    <li>
-      <span class="n">03</span>
-      <div class="idx-text">
-        <h3 id="att-title"><a href="https://maqetcollective.cargo.site/artists-talking-together">ARTISTS TALKING TOGETHER</a></h3>
-        <p class="when">EVERY FRIDAY 7–9PM · NOOK BROOKLYN</p>
-        <p class="grey small">𖡡 45 Irving Ave, Unit 1, Brooklyn, NY 11237</p>
-        <p class="idx-links"><a class="go" href="https://maqetcollective.cargo.site/artists-talking-together">DETAILS →</a></p>
-      </div>
-      <a class="idx-pic idx-img" href="https://maqetcollective.cargo.site/artists-talking-together"><img src="https://freight.cargo.site/w/1500/q/75/i/M3103129830709686025150678739824/Eventbrite-MAQET-Discussion-group-poster.jpg" width="1500" height="750" alt="Artists Talking Together poster: two people talking at a table"></a>
     </li>
   </ol>
 
