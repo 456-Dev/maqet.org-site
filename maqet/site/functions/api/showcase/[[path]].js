@@ -32,6 +32,7 @@ const SCHEMA = [
      post_date TEXT, rank INTEGER, ip_hash TEXT)`,
   `CREATE INDEX IF NOT EXISTS sc_sub_week ON sc_submissions(week)`,
   `CREATE TABLE IF NOT EXISTS sc_weeks (week TEXT PRIMARY KEY, theme TEXT NOT NULL)`,
+  `CREATE TABLE IF NOT EXISTS sc_votes (week TEXT NOT NULL, voter TEXT NOT NULL, name TEXT NOT NULL, picks TEXT NOT NULL, updated TEXT NOT NULL, ip_hash TEXT, PRIMARY KEY (week, voter))`,
   `CREATE TABLE IF NOT EXISTS sc_chunks (key TEXT NOT NULL, n INTEGER NOT NULL, data BLOB NOT NULL, PRIMARY KEY (key, n))`,
 ];
 
@@ -40,6 +41,7 @@ async function ensureSchema(db) {
   if (schemaReady) return;
   for (const sql of SCHEMA) await db.prepare(sql).run();
   try { await db.prepare("ALTER TABLE sc_submissions ADD COLUMN link TEXT").run(); } catch (e) { /* already there */ }
+  try { await db.prepare("ALTER TABLE sc_weeks ADD COLUMN closes TEXT").run(); } catch (e) { /* already there */ }
   schemaReady = true;
 }
 
@@ -63,8 +65,18 @@ function currentWeek(now = new Date()) {
   return t.toISOString().slice(0, 10);
 }
 
+// When voting on a week closes: set per week by the box, else Saturday 12AM New York (6h after the 6PM sheet).
+async function voteCloses(db, week) {
+  const row = await db.prepare("SELECT closes FROM sc_weeks WHERE week = ?1").bind(week).first();
+  if (row && row.closes) return row.closes;
+  const sat = new Date(Date.parse(week + "T00:00:00Z") + 86400e3).toISOString().slice(0, 10);
+  const probe = new Date(sat + "T12:00:00Z");
+  const off = nyParts(probe).h - 12;   // -4 or -5
+  return new Date(Date.parse(sat + "T00:00:00Z") - off * 3600e3).toISOString();
+}
+
 async function themeFor(db, week) {
-  const row = await db.prepare("SELECT theme FROM sc_weeks WHERE week <= ?1 ORDER BY week DESC LIMIT 1").bind(week).first();
+  const row = await db.prepare("SELECT theme FROM sc_weeks WHERE week <= ?1 AND theme != '' ORDER BY week DESC LIMIT 1").bind(week).first();
   return row ? row.theme : "";
 }
 
@@ -267,18 +279,40 @@ export async function onRequest({ request, env, params }) {
     if (route === "submit" && method === "POST") return submit(request, env);
     if (parts[0] === "media" && parts[1] && method === "GET") return media(request, env, parts[1], parts[2]);
 
-    // Voting gallery for one week: /api/showcase/sheet/<week>?t=<token>&order=<id,id,...>
-    if (parts[0] === "sheet" && parts[1] && method === "GET") {
+    // Voting gallery for one week: GET /api/showcase/sheet/<week>?t=<token>
+    //                                 POST /api/showcase/sheet/<week>/vote?t=<token> {name, picks:[id...]}
+    if (parts[0] === "sheet" && parts[1]) {
       const week = parts[1];
       if (!(await sheetOk(request, env, week))) return json({ error: "This voting link isn't valid." }, 403);
       await ensureSchema(env.DB);
       const t = new URL(request.url).searchParams.get("t");
       const { results } = await env.DB.prepare("SELECT * FROM sc_submissions WHERE week = ?1 AND status != 'hidden' ORDER BY created ASC").bind(week).all();
-      return json({ week, theme: await themeFor(env.DB, week), pieces: results.map((r) => {
-        const pk = publicPick(r);
-        pk.files = pk.files.map((f) => ({ ...f, url: f.url + "?t=" + t }));
-        return pk;
-      }) });
+      const ids = results.map((r) => r.id);
+      const need = Math.min(7, ids.length);
+      const closes = await voteCloses(env.DB, week);
+      const open = Date.now() < Date.parse(closes);
+      if (parts[2] === "vote" && method === "POST") {
+        if (!open) return json({ error: "Voting is closed for this week." }, 403);
+        const b = await request.json().catch(() => ({}));
+        const name = clean(b.name, 60);
+        if (name.length < 2) return json({ error: "Add your name so we know who voted." }, 400);
+        const picks = [...new Set((Array.isArray(b.picks) ? b.picks : []).map(String))].filter((id) => ids.includes(id));
+        if (picks.length !== need) return json({ error: `Pick exactly ${need}.` }, 400);
+        const voter = name.toLowerCase().replace(/\s+/g, " ");
+        await env.DB.prepare(`INSERT INTO sc_votes (week, voter, name, picks, updated, ip_hash) VALUES (?1, ?2, ?3, ?4, ?5, ?6)
+                              ON CONFLICT(week, voter) DO UPDATE SET name = ?3, picks = ?4, updated = ?5, ip_hash = ?6`)
+          .bind(week, voter, name, JSON.stringify(picks), new Date().toISOString(), await ipHash(request)).run();
+      } else if (method !== "GET") {
+        return json({ error: "not found" }, 404);
+      }
+      const { results: votes } = await env.DB.prepare("SELECT name FROM sc_votes WHERE week = ?1 ORDER BY updated ASC").bind(week).all();
+      return json({ week, theme: await themeFor(env.DB, week), need, closes, open,
+        voters: votes.map((v) => v.name),
+        pieces: results.map((r) => {
+          const pk = publicPick(r);
+          pk.files = pk.files.map((f) => ({ ...f, url: f.url + "?t=" + t }));
+          return pk;
+        }) });
     }
     if (parts[0] === "admin" && parts[1] === "sheet-token" && isAdmin(request, env)) {
       const week = new URL(request.url).searchParams.get("week") || currentWeek();
@@ -318,6 +352,20 @@ export async function onRequest({ request, env, params }) {
         files.push({ key: String(b.key), mime: String(b.mime), size: Number(b.size), role: String(b.role || "media"), d1: 1, fromLink: 1 });
         await env.DB.prepare("UPDATE sc_submissions SET files = ?2 WHERE id = ?1").bind(String(b.id), JSON.stringify(files)).run();
         return json({ ok: true, n: files.length - 1 });
+      }
+      if (parts[1] === "tally" && method === "GET") {
+        const week = new URL(request.url).searchParams.get("week") || currentWeek();
+        const { results: subs } = await env.DB.prepare("SELECT id, artist, title, created FROM sc_submissions WHERE week = ?1 AND status != 'hidden' ORDER BY created ASC").bind(week).all();
+        const { results: votes } = await env.DB.prepare("SELECT name, picks, updated FROM sc_votes WHERE week = ?1").bind(week).all();
+        const score = Object.fromEntries(subs.map((s, i) => [s.id, { id: s.id, n: i + 1, artist: s.artist, title: s.title, points: 0 }]));
+        for (const v of votes) for (const id of JSON.parse(v.picks)) if (score[id]) score[id].points++;
+        const ranked = Object.values(score).sort((a, b) => b.points - a.points || a.n - b.n);
+        return json({ week, closes: await voteCloses(env.DB, week), voters: votes.length, ranked });
+      }
+      if (parts[1] === "closes" && method === "POST") {
+        const b = await request.json();
+        await env.DB.prepare("INSERT INTO sc_weeks (week, theme, closes) VALUES (?1, '', ?2) ON CONFLICT(week) DO UPDATE SET closes = ?2").bind(String(b.week), String(b.closes)).run();
+        return json({ ok: true });
       }
       if (parts[1] === "theme" && method === "POST") {
         const b = await request.json();

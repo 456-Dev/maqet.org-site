@@ -48,6 +48,20 @@ hr { height: 1px; margin: 1.6rem 0 0; border: 0; background: var(--rule); }
 .cap { white-space: pre-wrap; }
 .missing { padding: 2rem; color: var(--grey); text-align: center; }
 .err { margin-top: 2rem; font-weight: 700; }
+.pick { justify-self: start; margin-top: .8rem; font: inherit; font-weight: 900; letter-spacing: .08em; padding: .6em 1.1em; border: 2px solid var(--ink); background: #fff; color: var(--ink); cursor: pointer; }
+.pick[aria-pressed="true"] { background: var(--star); border-color: var(--star); color: #fff; }
+.pick:disabled { opacity: .35; cursor: not-allowed; }
+.piece.picked .num { text-decoration: underline; text-underline-offset: .12em; }
+.ballot { position: sticky; bottom: 0; z-index: 5; margin: 0 calc(-1 * var(--pad)); padding: .9rem var(--pad) calc(.9rem + env(safe-area-inset-bottom)); background: #fff; border-top: 2px solid var(--ink); display: flex; flex-wrap: wrap; align-items: center; gap: .6rem 1rem; }
+.ballot .tally { font-weight: 900; letter-spacing: .06em; }
+.ballot .tally b { color: var(--star); }
+.ballot input { flex: 1 1 12rem; min-width: 0; font: inherit; padding: .5rem .2rem; border: 0; border-bottom: 1px solid var(--rule); }
+.ballot button { font: inherit; font-weight: 900; letter-spacing: .06em; padding: .65em 1.2em; border: 0; background: var(--ink); color: #fff; cursor: pointer; }
+.ballot button:disabled { opacity: .4; cursor: not-allowed; }
+.ballot .bmsg { flex-basis: 100%; font-weight: 700; }
+.ballot .bmsg.err { margin: 0; color: #b00020; }
+.voters { margin-top: .6rem; }
+.voters b { color: var(--star); font-weight: 900; }
 @media (max-width: 760px) {
   .piece { grid-template-columns: 2.6em minmax(0, 1fr); }
   .info { grid-column: 2; }
@@ -61,13 +75,20 @@ hr { height: 1px; margin: 1.6rem 0 0; border: 0; background: var(--rule); }
 <h1 id="theme">This week</h1>
 <div class="how">
   <p id="count"></p>
-  <p>Pick your 7 favorites and reply in the WhatsApp group: <code>vote 3 7 12 1 9 14 5</code></p>
-  <p class="meta">Seven different numbers. Send again to change your vote; your last one counts. The top 7 post to @_maqet_, one a day.</p>
+  <p id="howto">Tap <b>VOTE</b> on your 7 favorites, add your name at the bottom and submit.</p>
+  <p class="meta" id="rules">Vote again with the same name to change it; your last vote counts. The top 7 post to @_maqet_, one a day.</p>
+  <p class="voters" id="voters"></p>
 </div>
 <nav class="jump" id="jump"></nav>
 <hr>
 <main id="pieces"></main>
 <p class="err" id="err" hidden></p>
+<form class="ballot" id="ballot" hidden novalidate>
+  <span class="tally"><b id="picked">0</b> / <span id="need">7</span> picked</span>
+  <input id="name" name="name" autocomplete="name" maxlength="60" placeholder="Your name">
+  <button id="submit" type="submit" disabled>SUBMIT VOTE</button>
+  <p class="bmsg" id="bmsg" role="status"></p>
+</form>
 
 <script>
 (function () {
@@ -109,6 +130,46 @@ hr { height: 1px; margin: 1.6rem 0 0; border: 0; background: var(--rule); }
     return box;
   }
 
+  let need = 7, open = false;
+  const chosen = new Set();
+  function showVoters(list) {
+    const n = list.length;
+    $("voters").innerHTML = "";
+    const b = el("b", null, String(n));
+    $("voters").append(b, document.createTextNode(n === 1 ? " person has voted" : " people have voted"));
+    if (n) $("voters").append(document.createTextNode(": " + list.join(", ")));
+  }
+  function sync() {
+    document.querySelectorAll(".pick").forEach((b) => {
+      const on = chosen.has(b.dataset.id);
+      b.setAttribute("aria-pressed", on);
+      b.textContent = on ? "VOTED ★" : "VOTE ☆";
+      b.disabled = !on && chosen.size >= need;
+      b.closest(".piece").classList.toggle("picked", on);
+    });
+    $("picked").textContent = chosen.size;
+    $("submit").disabled = chosen.size !== need;
+    localStorage.setItem("maqet-picks-" + week, JSON.stringify([...chosen]));
+  }
+  $("ballot").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const name = $("name").value.trim();
+    const msg = $("bmsg");
+    msg.className = "bmsg err";
+    if (name.length < 2) { msg.textContent = "Add your name so we know who voted."; $("name").focus(); return; }
+    if (chosen.size !== need) { msg.textContent = "Pick exactly " + need + "."; return; }
+    $("submit").disabled = true; msg.className = "bmsg"; msg.textContent = "Sending…";
+    fetch("/api/showcase/sheet/" + encodeURIComponent(week) + "/vote?t=" + encodeURIComponent(t), {
+      method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ name, picks: [...chosen] }),
+    }).then((r) => r.json().then((d) => ({ ok: r.ok, d }))).then(({ ok, d }) => {
+      $("submit").disabled = chosen.size !== need;
+      if (!ok) { msg.className = "bmsg err"; msg.textContent = d.error || "That didn't go through. Try again."; return; }
+      localStorage.setItem("maqet-voter", name);
+      showVoters(d.voters);
+      msg.className = "bmsg"; msg.textContent = "Thanks, " + name + ". Your vote is in. You can change it until voting closes.";
+    }).catch(() => { $("submit").disabled = false; msg.className = "bmsg err"; msg.textContent = "That didn't go through. Check your connection and try again."; });
+  });
+
   if (!week || !t) { $("err").textContent = "This voting link is missing its code. Use the link from the WhatsApp group."; $("err").hidden = false; return; }
   fetch("/api/showcase/sheet/" + encodeURIComponent(week) + "?t=" + encodeURIComponent(t), { cache: "no-store" })
     .then((r) => r.json().then((d) => ({ ok: r.ok, d })))
@@ -117,6 +178,18 @@ hr { height: 1px; margin: 1.6rem 0 0; border: 0; background: var(--rule); }
       $("theme").textContent = d.theme || "This week";
       document.title = (d.theme || "Voting sheet") + " · Daily MAQET Showcase";
       $("count").textContent = d.pieces.length + " pieces this week.";
+      need = d.need;
+      $("need").textContent = need;
+      $("howto").innerHTML = "Tap <b>VOTE</b> on your " + (need === 7 ? "7 favorites" : need + " favorites") + ", add your name at the bottom and submit.";
+      showVoters(d.voters);
+      const closes = new Date(d.closes);
+      const when = closes.toLocaleString("en-US", { timeZone: "America/New_York", weekday: "short", hour: "numeric", minute: "2-digit" });
+      $("rules").textContent = (d.open ? "Voting closes " + when + ". " : "Voting closed " + when + ". ") + "Vote again with the same name to change it; your last vote counts. The top 7 post to @_maqet_, one a day.";
+      open = d.open;
+      $("name").value = localStorage.getItem("maqet-voter") || "";
+      const saved = JSON.parse(localStorage.getItem("maqet-picks-" + week) || "[]");
+      saved.forEach((id) => { if (d.pieces.some((p) => p.id === id)) chosen.add(id); });
+      $("ballot").hidden = !open;
       const rows = d.pieces.map((p, i) => {
         const n = i + 1;
         const row = el("article", "piece"); row.id = String(n);
@@ -125,11 +198,16 @@ hr { height: 1px; margin: 1.6rem 0 0; border: 0; background: var(--rule); }
         const meta = [p.title, p.mediaType, p.handle ? "@" + p.handle.replace(/^@/, "") : ""].filter(Boolean).join(" · ");
         info.append(el("p", "meta", meta));
         if (p.caption) { info.append(el("p", "cap-k", "SUGGESTED CAPTION"), el("p", "cap", p.caption)); }
+        const btn = el("button", "pick", "VOTE ☆");
+        btn.type = "button"; btn.dataset.id = p.id;
+        btn.onclick = () => { chosen.has(p.id) ? chosen.delete(p.id) : chosen.add(p.id); sync(); };
+        if (open) info.append(btn);
         row.append(el("p", "num", String(n)), stage(p), info);
         const a = el("a", null, String(n)); a.href = "#" + n; $("jump").append(a);
         return row;
       });
       $("pieces").replaceChildren(...rows);
+      sync();
       if (location.hash) { const target = document.getElementById(location.hash.slice(1)); if (target) target.scrollIntoView(); }
     })
     .catch(() => { $("err").textContent = "Couldn't load this week's pieces. Try again in a minute."; $("err").hidden = false; });
