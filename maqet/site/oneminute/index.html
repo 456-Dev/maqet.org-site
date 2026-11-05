@@ -18,7 +18,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Momo+Trust+Display&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Permanent+Marker&display=swap">
 <style>
-/* Layout: a production call sheet scribbled on in marker. Ruled header grid holding the three-line hook, then registration, rules, the weekend, prizes and a sign-off. */
+/* Layout: a production call sheet scribbled on in marker. Ruled header grid holding the three-line hook, then registration, the cast & crew list, rules, the weekend, prizes, the premiere ticket and a sign-off. */
 :root {
   --frame: #C23A0B;
   --paper: #FFFFFF;
@@ -122,7 +122,7 @@ h1 { margin: 0; font-family: var(--display); font-weight: 400; font-size: clamp(
 
 /* runtime check */
 .c-reg { grid-area: reg; padding: 1.1rem clamp(1rem, 3vw, 2.2rem) 1.5rem; }
-.c-reg .rsvp-start { margin-top: 1.1rem; }
+.c-reg .reg-row { margin-top: 1.1rem; }
 .c-run { grid-area: run; display: flex; flex-wrap: wrap; align-items: center; gap: .8rem 1.4rem; padding-block: .85rem; }
 .rec { color: var(--faint); }
 .rec.on { color: var(--magenta); }
@@ -170,7 +170,7 @@ h1 { margin: 0; font-family: var(--display); font-weight: 400; font-size: clamp(
 }
 .rsvp-start:focus-visible { outline: none; }
 .rsvp-start:focus-visible .ch-box { outline: 3px dashed var(--pen); outline-offset: 7px; }
-.ch-big { grid-area: big; font-family: var(--marker); font-size: clamp(2.4rem, 5vw, 3.8rem); line-height: 1; color: var(--magenta); rotate: -4deg; white-space: nowrap; }
+.ch-big { grid-area: big; font-family: var(--marker); font-size: clamp(2.4rem, 4.4vw, 3.3rem); line-height: 1; color: var(--magenta); rotate: -4deg; white-space: nowrap; }
 .ch-big span { display: inline-block; animation: wave 2.6s ease-in-out infinite; animation-delay: calc(var(--i) * .09s); }
 @keyframes wave { 0%, 55%, 100% { translate: 0 0; } 25% { translate: 0 -.1em; } }
 .ch-arrow { grid-area: arrow; width: 100%; height: auto; overflow: visible; }
@@ -191,8 +191,13 @@ h1 { margin: 0; font-family: var(--display); font-weight: 400; font-size: clamp(
   transition: rotate .2s ease, translate .2s ease, box-shadow .2s ease;
 }
 .rsvp-start:hover .ch-box { rotate: 0deg; translate: -2px -2px; box-shadow: 9px 9px 0 var(--ink); }
-.ch-rsvp { font-family: var(--display); font-size: clamp(1.7rem, 3.4vw, 2.7rem); line-height: 1; text-transform: uppercase; }
+.ch-rsvp { font-family: var(--display); font-size: clamp(1.7rem, 3vw, 2.4rem); line-height: 1; text-transform: uppercase; }
 .ch-count { font-weight: 700; font-size: .85rem; letter-spacing: .08em; text-transform: uppercase; }
+.reg-row { display: flex; align-items: center; gap: 1rem 1.2rem; }
+.reg-row .rsvp-start { flex: 1 1 0; min-width: 0; margin-top: 0; }
+.reg-count { flex: none; margin: 0 0 .4rem; display: grid; justify-items: center; gap: .15rem; text-align: center; rotate: -3deg; }
+.reg-count b { font-family: var(--display); font-weight: 400; font-size: clamp(2.4rem, 4.4vw, 3.4rem); line-height: .9; color: var(--magenta); }
+.reg-count span { max-width: 5.6em; font-family: var(--marker); font-size: 1rem; line-height: 1.1; color: var(--pen); }
 .ch-tag { position: absolute; top: -1.05rem; right: -.9rem; padding: .15em .5em; background: var(--paper); border: 3px solid var(--magenta); color: var(--magenta); font-family: var(--display); font-size: .74rem; letter-spacing: .02em; text-transform: uppercase; white-space: nowrap; rotate: 6deg; }
 
 /* RSVP: the five questions */
@@ -278,10 +283,6 @@ h1 { margin: 0; font-family: var(--display); font-weight: 400; font-size: clamp(
 .hint:nth-child(3) { --note: var(--lime); --tilt: -1deg; }
 
 /* ── cast & crew list (live) ── */
-.guest-top { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: .6rem 1.5rem; margin-top: 1.1rem; }
-.guest-count { margin: 0; display: flex; align-items: baseline; gap: .5rem; flex-wrap: wrap; }
-.guest-count b { font-family: var(--display); font-weight: 400; font-size: clamp(2.6rem, 6vw, 4rem); line-height: 1; color: var(--magenta); }
-.guest-count span { font-weight: 700; letter-spacing: .1em; text-transform: uppercase; font-size: .9rem; }
 .guest-list { list-style: none; margin: 1.1rem 0 0; padding: 0; border-top: 3px solid var(--ink); }
 .guest-head, .guest { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr) minmax(0, 1.3fr); gap: .3rem 1.2rem; align-items: baseline; padding: .6rem 0; border-bottom: 1px solid var(--hairline); }
 .guest-head { padding-block: .5rem .4rem; }
@@ -303,10 +304,27 @@ span.guest-link { color: inherit; }
 .guest-drop .guest-list { margin: 0; border-top: 0; padding: 0 1rem; max-height: min(60vh, 34rem); overflow-y: auto; }
 .guest-drop .guest:last-child { border-bottom: 0; }
 
-.partiful { margin: 1.2rem 0 0; }
-.partiful a { display: inline-block; padding: .55em .9em; border: 3px solid var(--ink); background: var(--paper); font-family: var(--display); font-size: .95rem; letter-spacing: .02em; text-transform: uppercase; text-decoration: none; box-shadow: 4px 4px 0 var(--magenta); }
+/* ── premiere screening: a ticket ── */
+.ticket { margin-top: 1.4rem; display: grid; grid-template-columns: minmax(0, 1fr) auto; background: var(--ink); color: var(--paper); border: 3px solid var(--ink); box-shadow: 7px 7px 0 var(--magenta); }
+.ticket .k { color: var(--lime); }
+.ticket-main { padding: clamp(1.3rem, 3.5vw, 2.2rem); display: grid; gap: .7rem; align-content: center; }
+.ticket-main p { margin: 0; }
+.ticket-title { font-family: var(--display); font-size: clamp(1.7rem, 4vw, 2.9rem); line-height: 1.08; text-transform: uppercase; text-wrap: balance; }
+.ticket-date { display: inline-block; background: var(--highlight); color: var(--ink); padding: 0 .2em; rotate: -2deg; }
+.ticket-text { max-width: 44ch; }
+.ticket-actions { display: flex; flex-wrap: wrap; align-items: center; gap: .9rem 1.4rem; margin-top: .5rem !important; }
+.ticket-cal { font-weight: 700; text-decoration-thickness: 2px; text-underline-offset: 3px; }
+.partiful a { display: inline-block; padding: .55em .9em; border: 3px solid var(--ink); background: var(--lime); color: var(--ink); font-family: var(--display); font-size: 1rem; letter-spacing: .02em; text-transform: uppercase; text-decoration: none; box-shadow: 4px 4px 0 var(--magenta); }
 .partiful a:hover { box-shadow: 6px 6px 0 var(--magenta); translate: -2px -2px; }
-.signoff .partiful, .guest-top .partiful { margin: 0; }
+.ticket-stub { position: relative; display: grid; align-content: center; justify-items: center; gap: .1rem; min-width: 11rem; padding: 1.3rem 1.6rem; border-left: 3px dashed var(--paper); text-align: center; }
+.ticket-stub::before, .ticket-stub::after { content: ""; position: absolute; left: -15px; width: 27px; height: 27px; border-radius: 50%; background: var(--paper); }
+.ticket-stub::before { top: -17px; }
+.ticket-stub::after { bottom: -17px; }
+.ticket-stub p { margin: 0; }
+.stub-day { font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
+.stub-date { font-family: var(--display); font-size: clamp(2.2rem, 4.6vw, 3.2rem); line-height: 1; color: var(--highlight); text-transform: uppercase; white-space: nowrap; }
+.stub-time { font-family: var(--marker); font-size: 1.7rem; line-height: 1.1; color: var(--lime); rotate: -4deg; }
+.stub-place { margin-top: .3rem !important; font-size: .82rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
 
 /* ── rules ── */
 .musts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.4rem 2.5rem; margin-top: 1.4rem; }
@@ -342,6 +360,13 @@ span.guest-link { color: inherit; }
 .foot p { margin: 0; }
 
 /* ── responsive ── */
+@media (max-width: 1000px) {
+  /* not enough room for click here + arrow + box + count in one row: the count drops under the box */
+  .reg-row { flex-direction: column; align-items: flex-end; gap: .2rem; }
+  .reg-row .rsvp-start { flex: none; }
+  .reg-count { display: flex; align-items: baseline; gap: .5rem; margin: 0 .6rem 0 0; }
+  .reg-count span { max-width: none; }
+}
 @media (max-width: 860px) {
   .head {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
@@ -370,7 +395,9 @@ span.guest-link { color: inherit; }
   .c-run > .k { flex-basis: 100%; }
   .rt-bar { order: 3; flex-basis: 100%; }
   .c-reg { padding-top: .8rem; }
-  .c-reg .rsvp-start { margin-top: .5rem; padding-top: .2rem; }
+  .c-reg .reg-row { margin-top: .5rem; align-items: center; }
+  .c-reg .rsvp-start { padding-top: .2rem; }
+  .reg-count { margin: .2rem 0 .4rem; }
   .rsvp-start { grid-template-columns: minmax(0, 1fr); grid-template-areas: "big" "arrow" "box"; justify-items: center; text-align: center; gap: .4rem; padding-bottom: .6rem; }
   .ch-big { font-size: 2.1rem; }
   .ch-box { padding: .9rem 1.4rem 1rem; }
@@ -391,6 +418,13 @@ span.guest-link { color: inherit; }
   .sched tr.premiere { background: var(--highlight); }
   .signoff { grid-template-columns: minmax(0, 1fr); }
   .signoff-cta { justify-items: start; }
+  .ticket { grid-template-columns: minmax(0, 1fr); }
+  .ticket-stub { border-left: 0; border-top: 3px dashed var(--paper); grid-template-columns: auto auto auto; align-items: baseline; justify-content: start; justify-items: start; gap: .2rem .8rem; padding: 1rem 1.3rem 1.2rem; text-align: left; }
+  .ticket-stub::before, .ticket-stub::after { top: -15px; bottom: auto; }
+  .ticket-stub::before { left: -17px; }
+  .ticket-stub::after { left: auto; right: -17px; }
+  .ticket-stub .k, .stub-place { grid-column: 1 / -1; }
+  .stub-date { font-size: 2.2rem; }
 }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
@@ -449,6 +483,7 @@ span.guest-link { color: inherit; }
     <section class="cell c-reg" id="rsvp" aria-labelledby="rsvp-title">
       <div class="block-head"><h2 id="rsvp-title">Register</h2><p>Everyone registers, solo or on a team</p></div>
 
+      <div class="reg-row">
       <button class="rsvp-start" id="rsvp-open" type="button" aria-label="Register now. Spots are limited.">
         <span class="ch-big" aria-hidden="true"><span style="--i:0">c</span><span style="--i:1">l</span><span style="--i:2">i</span><span style="--i:3">c</span><span style="--i:4">k</span><span style="--i:5">&nbsp;</span><span style="--i:6">h</span><span style="--i:7">e</span><span style="--i:8">r</span><span style="--i:9">e</span></span>
         <svg class="ch-arrow ch-arrow--wide" viewBox="0 0 320 120" aria-hidden="true">
@@ -465,6 +500,8 @@ span.guest-link { color: inherit; }
           <span class="ch-count">4 quick steps</span>
         </span>
       </button>
+      <p class="reg-count" id="reg-count" aria-live="polite" hidden><b id="guest-count">0</b> <span id="guest-count-label">registered so far</span></p>
+      </div>
 
       <!-- Choice values must match google-form/create-rsvp-form.gs exactly. -->
       <form class="rsvp-form" id="rsvp-form" hidden novalidate>
@@ -557,10 +594,6 @@ span.guest-link { color: inherit; }
 
   <section class="block" id="guests" aria-labelledby="guests-title" hidden>
     <div class="block-head"><h2 id="guests-title">Cast &amp; crew list</h2><p>Updates live</p></div>
-    <div class="guest-top">
-      <p class="guest-count" aria-live="polite"><b id="guest-count">0</b> <span id="guest-count-label">registered so far</span></p>
-      <p class="partiful" data-partiful hidden><a href="#" target="_blank" rel="noopener">Coming to watch? RSVP on Partiful →</a></p>
-    </div>
     <details class="guest-drop" id="guest-drop">
       <summary id="guest-summary">See who's coming</summary>
       <ol class="guest-list" id="guest-list"></ol>
@@ -593,7 +626,6 @@ span.guest-link { color: inherit; }
       <a data-cal="reveal" href="#when" target="_blank" rel="noopener">Crew call</a>
       <a data-cal="screening" href="#when" target="_blank" rel="noopener">Premiere</a>
     </p>
-    <p class="partiful" data-partiful hidden><a href="#" target="_blank" rel="noopener">Coming to the screening? RSVP on Partiful →</a></p>
   </section>
 
   <section class="block" id="prizes" aria-labelledby="prizes-title">
@@ -617,6 +649,28 @@ span.guest-link { color: inherit; }
     </ul>
   </section>
 
+  <section class="block" id="premiere" aria-labelledby="premiere-title">
+    <div class="block-head"><h2 id="premiere-title">Premiere screening</h2><p>Bring everyone</p></div>
+    <div class="ticket">
+      <div class="ticket-main">
+        <p class="k">You're invited</p>
+        <p class="ticket-title">Come to the premiere screening <span class="ticket-date">Nov 15th</span></p>
+        <p class="ticket-text">Every film made this weekend, screened together. Come cheer on the filmmakers, and bring your friends.</p>
+        <p class="ticket-actions">
+          <span class="partiful" data-partiful hidden><a href="#" target="_blank" rel="noopener">RSVP on Partiful →</a></span>
+          <a class="ticket-cal" data-cal="screening" href="#premiere" target="_blank" rel="noopener">Add to Google Calendar</a>
+        </p>
+      </div>
+      <div class="ticket-stub">
+        <p class="k">Admit all</p>
+        <p class="stub-day">Sun</p>
+        <p class="stub-date">Nov 15</p>
+        <p class="stub-time">7PM</p>
+        <p class="stub-place">Location TBD</p>
+      </div>
+    </div>
+  </section>
+
   <section class="signoff" aria-labelledby="signoff-title">
     <div>
       <p class="k">Make it official</p>
@@ -626,7 +680,6 @@ span.guest-link { color: inherit; }
     <div class="signoff-cta">
       <a class="btn" data-rsvp href="#rsvp">Register now</a>
       <p>(it's free!)</p>
-      <p class="partiful" data-partiful hidden><a href="#" target="_blank" rel="noopener">Screening RSVP on Partiful →</a></p>
     </div>
   </section>
 
@@ -900,6 +953,7 @@ if (FESTIVAL.partifulUrl) {
     const count = Number(data.count) || 0;
     $("guest-count").textContent = count;
     $("guest-count-label").textContent = count === 1 ? "person registered so far" : "registered so far";
+    $("reg-count").hidden = false;
     const guests = Array.isArray(data.guests) ? data.guests : [];
     const rows = [];
     if (guests.length) {
