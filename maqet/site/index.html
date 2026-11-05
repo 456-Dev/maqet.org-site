@@ -166,16 +166,18 @@ hr { height: 1px; margin: 0; border: 0; background: var(--rule); }
 .go { display: inline-block; font-weight: 700; letter-spacing: .06em; border-bottom: 2px solid currentColor; }
 .idx .live-count { margin-top: 0; }
 .idx-pic { grid-column: auto; width: 100%; justify-self: end; }
-.idx .fest-tile { aspect-ratio: 1; }
-.idx .sc-tile { aspect-ratio: 4 / 5; width: 80%; }
+.idx .fest-tile, .idx .sc-tile { aspect-ratio: 2 / 1; width: 100%; padding: 4%; }
+.idx .sc-tile { align-content: center; }
 .idx .fest-tile { border-width: clamp(6px, .8vw, 10px); }
-.idx .fest-name { font-size: 27cqi; line-height: .88; }
-.idx .fest-date { margin-top: 7cqi; font-size: 12cqi; }
+.idx .fest-name { font-size: 13.5cqi; line-height: .9; }
+.idx .fest-date { margin-top: 3cqi; font-size: 7cqi; }
+.idx .sc-tile .sc-empty { font-size: 7.5cqi; padding: 0; justify-self: center; }
+.idx .sc-tile .sc-empty .star { font-size: 13cqi; margin-bottom: 1.5cqi; }
+.idx .sc-tile img, .idx .sc-tile video { object-fit: contain; }
 .idx-img img { width: 100%; height: auto; }
 @media (max-width: 700px) {
   .idx li { grid-template-columns: 2em minmax(0, 1fr); align-items: start; }
   .idx-pic { grid-column: 2; justify-self: start; width: 100%; max-width: 15rem; }
-  .idx .sc-tile { width: 100%; max-width: 12rem; }
 }
 </style>
 </head>
@@ -204,7 +206,7 @@ hr { height: 1px; margin: 0; border: 0; background: var(--rule); }
         <p class="live-count" id="live-count" hidden><span class="star">☆</span> <b id="live-num">0</b> registered so far</p>
         <p class="idx-links"><a class="go" href="/oneminute/">REGISTER →</a><span class="partiful-line" data-partiful hidden><a class="go" href="#" target="_blank" rel="noopener">SCREENING RSVP →</a></span></p>
       </div>
-      <a class="fest-tile idx-pic" href="/oneminute/" aria-label="The 1 Minute Film Festival"><span class="fest-name">1 Minute<br>Film Fest</span><span class="fest-line fest-date">Nov 14–15</span></a>
+      <a class="fest-tile idx-pic" href="/oneminute/" aria-label="The 1 Minute Film Festival"><span class="fest-name">1 Minute Film Fest</span><span class="fest-line fest-date">Nov 14–15</span></a>
     </li>
     <li>
       <span class="n">02</span>
