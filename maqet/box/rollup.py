@@ -145,7 +145,7 @@ def main():
     c.drawString(M, H - M - 138, "Seven different numbers. Send again to change your vote; your last one counts. Top 7 post to @_maqet_.")
     c.drawImage(qr(gallery), W - M - 92, H - M - 128, 92, 92)
     c.setFillColor(STAR); c.setFont("Helvetica-Bold", 8)
-    c.drawRightString(W - M, H - M - 140, "SCAN OR TAP TO PLAY VIDEOS + SONGS")
+    c.drawRightString(W - M, H - M - 28, "SCAN OR TAP TO PLAY VIDEOS + SONGS")
     c.linkURL(gallery, (W - M - 92, H - M - 128, W - M, H - M - 36), relative=0)
     c.setStrokeColor(INK); c.setLineWidth(.6); c.line(M, H - M - 150, W - M, H - M - 150)
 
