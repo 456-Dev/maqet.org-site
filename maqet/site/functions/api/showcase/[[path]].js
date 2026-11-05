@@ -12,7 +12,7 @@
 // Friday 6PM New York time; anything later counts toward the next Friday.
 
 const MAX_BYTES = 95 * 1024 * 1024;
-const MEDIA_TYPES = ["Photo", "Painting / drawing", "Digital art", "Video", "Sculpture / 3D", "Textile / fashion", "Mixed media", "Writing / poetry", "Other"];
+const MEDIA_TYPES = ["Photo", "Painting / drawing", "Digital art", "Video", "Sculpture / 3D", "Textile / fashion", "Mixed media", "Writing", "Other"];
 const OK_MIME = /^(image\/(jpeg|png|webp|heic|heif|gif)|video\/(mp4|quicktime|webm))$/;
 const EXT = { "image/jpeg": "jpg", "image/png": "png", "image/webp": "webp", "image/heic": "heic", "image/heif": "heif", "image/gif": "gif", "video/mp4": "mp4", "video/quicktime": "mov", "video/webm": "webm" };
 
@@ -97,10 +97,13 @@ async function submit(request, env) {
   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return json({ error: "Add an email so we can reach you." }, 400);
   if (!MEDIA_TYPES.includes(mediaType)) return json({ error: "Pick a media type." }, 400);
   if (form.get("consent") !== "yes") return json({ error: "Check the box so we can post your work." }, 400);
-  if (!file || typeof file === "string" || !file.size) return json({ error: "Attach your photo or video." }, 400);
-  if (file.size > MAX_BYTES) return json({ error: "That file is too big. Keep it under 95 MB." }, 413);
-  const mime = (file.type || "").toLowerCase();
-  if (!OK_MIME.test(mime)) return json({ error: "Use a JPG, PNG, HEIC, WEBP, GIF, MP4, MOV or WEBM file." }, 415);
+  // Writing can come in as pasted text instead of a file.
+  const writing = String(form.get("writing") ?? "").replace(/\r\n?/g, "\n").replace(/[\u0000-\u0008\u000b-\u001f\u007f]/g, "").trim().slice(0, 5000);
+  const hasFile = file && typeof file !== "string" && file.size;
+  if (!hasFile && !(mediaType === "Writing" && writing)) return json({ error: mediaType === "Writing" ? "Paste your writing or attach a photo of it." : "Attach your photo or video." }, 400);
+  if (hasFile && file.size > MAX_BYTES) return json({ error: "That file is too big. Keep it under 95 MB." }, 413);
+  const mime = hasFile ? (file.type || "").toLowerCase() : "text/plain";
+  if (hasFile && !OK_MIME.test(mime)) return json({ error: "Use a JPG, PNG, HEIC, WEBP, GIF, MP4, MOV or WEBM file." }, 415);
 
   const db = env.DB;
   await ensureSchema(db);
@@ -111,11 +114,13 @@ async function submit(request, env) {
 
   const week = currentWeek();
   const id = crypto.randomUUID().replace(/-/g, "").slice(0, 16);
-  const key = `submissions/${week}/${id}.${EXT[mime] || "bin"}`;
-  await env.MEDIA.put(key, file.stream(), { httpMetadata: { contentType: mime } });
+  const key = `submissions/${week}/${id}.${hasFile ? EXT[mime] || "bin" : "txt"}`;
+  const body = hasFile ? file.stream() : new TextEncoder().encode(writing);
+  await env.MEDIA.put(key, body, { httpMetadata: { contentType: hasFile ? mime : "text/plain; charset=utf-8" } });
+  const size = hasFile ? file.size : new TextEncoder().encode(writing).length;
   await db.prepare(`INSERT INTO sc_submissions (id, week, created, artist, handle, email, title, media_type, caption, mime, size, media_key, ip_hash)
                     VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13)`)
-    .bind(id, week, new Date().toISOString(), artist, handle, email, title, mediaType, caption, mime, file.size, key, ih).run();
+    .bind(id, week, new Date().toISOString(), artist, handle, email, title, mediaType, caption, mime, size, key, ih).run();
   return json({ ok: true, id, week });
 }
 
@@ -126,7 +131,7 @@ async function media(request, env, id) {
   const range = request.headers.get("range");
   const obj = await env.MEDIA.get(row.media_key, range ? { range: request.headers } : undefined);
   if (!obj) return new Response("Not found", { status: 404 });
-  const headers = new Headers({ "content-type": row.mime, "accept-ranges": "bytes",
+  const headers = new Headers({ "content-type": row.mime === "text/plain" ? "text/plain; charset=utf-8" : row.mime, "accept-ranges": "bytes",
     "cache-control": row.status === "posted" ? "public, max-age=86400" : "private, no-store" });
   if (range && obj.range) {
     const start = obj.range.offset ?? 0;

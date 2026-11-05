@@ -91,6 +91,7 @@ select { appearance: none; background: linear-gradient(45deg, transparent 50%, v
 .picks { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr)); gap: 2rem var(--gap); }
 .pick-card { display: grid; gap: .4rem; align-content: start; }
 .pick-card .frame { aspect-ratio: 4 / 5; overflow: hidden; background: #f2f2f2; }
+.pick-card .frame .words { padding: 1.1em; font-size: .82em; line-height: 1.35; white-space: pre-wrap; overflow: hidden; height: 100%; background: #fff; border: 1px solid var(--hair); }
 .pick-card .frame img, .pick-card .frame video { width: 100%; height: 100%; object-fit: cover; }
 .pick-card .who { font-weight: 700; }
 .empty { grid-column: 1 / -1; }
@@ -160,10 +161,11 @@ select { appearance: none; background: linear-gradient(45deg, transparent 50%, v
           <select name="mediaType">
             <option value="">Pick one</option>
             <option>Photo</option><option>Painting / drawing</option><option>Digital art</option><option>Video</option>
-            <option>Sculpture / 3D</option><option>Textile / fashion</option><option>Mixed media</option><option>Writing / poetry</option><option>Other</option>
+            <option>Sculpture / 3D</option><option>Textile / fashion</option><option>Mixed media</option><option>Writing</option><option>Other</option>
           </select>
         </label>
       </div>
+      <label class="field" id="writing-field" hidden><span>Your writing</span><textarea name="writing" maxlength="5000" rows="8" placeholder="Paste your poem, story or text here. Or attach a photo of the page above."></textarea><small>Up to 5,000 characters. We set it as a clean text post for Instagram.</small></label>
       <label class="field"><span>Title of the piece</span><input type="text" name="title" maxlength="120" placeholder="optional"></label>
       <label class="field"><span>Suggested caption</span><textarea name="caption" maxlength="2000" placeholder="What should the post say?"></textarea><small>We may trim it to fit. Your name and handle are added automatically.</small></label>
       <label class="check"><input type="checkbox" name="consent" value="yes"><span class="small">This is my work, and MAQET can post it on Instagram and this site with credit to me.</span></label>
@@ -207,7 +209,11 @@ select { appearance: none; background: linear-gradient(45deg, transparent 50%, v
     const el = document.createElement("figure");
     el.className = "pick-card"; el.style.margin = "0";
     const frame = document.createElement("div"); frame.className = "frame";
-    if (p.mime.startsWith("video/")) {
+    if (p.mime.startsWith("text/")) {
+      const w = document.createElement("div"); w.className = "words"; w.textContent = "…";
+      fetch(p.media).then((r) => r.text()).then((t) => { w.textContent = t; }).catch(() => {});
+      frame.append(w);
+    } else if (p.mime.startsWith("video/")) {
       const v = document.createElement("video");
       Object.assign(v, { src: p.media, muted: true, loop: true, playsInline: true, preload: "metadata" });
       v.addEventListener("mouseenter", () => v.play()); v.addEventListener("mouseleave", () => v.pause());
@@ -256,10 +262,14 @@ select { appearance: none; background: linear-gradient(45deg, transparent 50%, v
   ["dragleave", "drop"].forEach((t) => drop.addEventListener(t, (e) => { e.preventDefault(); drop.classList.remove("over"); }));
   drop.addEventListener("drop", (e) => { if (e.dataTransfer.files.length) { file.files = e.dataTransfer.files; showPreview(); } });
 
+  const typeSel = form.elements.mediaType;
+  typeSel.addEventListener("change", () => { $("writing-field").hidden = typeSel.value !== "Writing"; });
+
   function check(fd) {
     const f = file.files[0];
-    if (!f) return "Attach your photo or video.";
-    if (f.size > 95 * 1024 * 1024) return "That file is too big. Keep it under 95 MB.";
+    const isWriting = fd.get("mediaType") === "Writing";
+    if (!f && !(isWriting && fd.get("writing").trim())) return isWriting ? "Paste your writing or attach a photo of it." : "Attach your photo or video.";
+    if (f && f.size > 95 * 1024 * 1024) return "That file is too big. Keep it under 95 MB.";
     if (!fd.get("artist").trim()) return "Add your name as you want it credited.";
     if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(fd.get("email").trim())) return "Add an email so we can reach you.";
     if (!fd.get("mediaType")) return "Pick a media type.";
