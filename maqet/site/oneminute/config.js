@@ -16,10 +16,10 @@ window.FESTIVAL = {
   },
 
   // Screening RSVPs on Partiful. Paste the event link; the Partiful buttons appear once it's set.
-  partifulUrl: "",
+  partifulUrl: "https://partiful.com/e/mtoygeGzwnDpjeBTCeiL?c=lY9ufW0V",
 
   // Live registration count + cast & crew list. Paste the Apps Script web app URL (ends in /exec).
-  guestListUrl: "",
+  guestListUrl: "https://script.google.com/macros/s/AKfycbyp3PGtstP0HFCf2YhibYZLEdGB8BkkdS4uqUvp2qq0S0gTRFEvIsKimsIMH0c4MWNYJw/exec",
 
   contactEmail: "maqetcollective@gmail.com",   // shown at the bottom: "Any questions? Email ..."
   instagramUrl: "",   // e.g. "https://instagram.com/maqet"
