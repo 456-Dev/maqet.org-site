@@ -154,6 +154,50 @@ def unpack(files, out):
     return media
 
 
+def web_copy(path, mime, tmpdir):
+    """A copy small enough for the site: videos over 25 MB re-encoded to 720p."""
+    if mime.startswith("video/") and path.stat().st_size > 25 * 1024**2:
+        out = Path(tmpdir) / (path.stem + "-web.mp4")
+        p = subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", str(path)], capture_output=True, text=True)
+        secs = max(1.0, float(p.stdout.strip() or 60))
+        kbps = max(250, int(24 * 8 * 1024 / secs) - 96)   # aim for ~24 MB total incl. 96k audio
+        height = 720 if kbps >= 1200 else 540 if kbps >= 600 else 360
+        subprocess.run(["ffmpeg", "-loglevel", "error", "-y", "-i", str(path), "-vf", f"scale=-2:'min({height},ih)'",
+                        "-c:v", "libx264", "-b:v", f"{kbps}k", "-maxrate", f"{kbps}k", "-bufsize", f"{2 * kbps}k", "-preset", "veryfast",
+                        "-c:a", "aac", "-b:a", "96k", "-movflags", "+faststart", str(out)], check=True)
+        return out, "video/mp4"
+    return path, mime
+
+
+def push_link_files(api, key, sub_id, week, ldir, media):
+    """Upload files fetched from a share link into the site so the voting gallery can play them."""
+    pushed = ldir / ".pushed.json"
+    if pushed.exists():
+        return
+    hdr = {"x-admin-key": key}
+    with tempfile.TemporaryDirectory() as tmp:
+        for i, m in enumerate(media):
+            src, mime = web_copy(ldir.parent / m["path"], m["mime"], tmp)
+            if src.stat().st_size > 30 * 1024**2:
+                raise RuntimeError(f"{src.name} is still over 30 MB after shrinking")
+            rkey = f"links/{week}/{sub_id}-{i}{Path(src).suffix.lower()}"
+            data = src.read_bytes()
+            for n, off in enumerate(range(0, len(data), 1_500_000)):
+                for attempt in range(5):
+                    try:
+                        r = requests.post(api + "/admin/chunk", params={"key": rkey, "n": n}, data=data[off:off + 1_500_000],
+                                          headers={**hdr, "content-type": "application/octet-stream"}, timeout=120)
+                        r.raise_for_status()
+                        break
+                    except requests.RequestException:
+                        if attempt == 4:
+                            raise
+                        __import__("time").sleep(2 + 3 * attempt)
+            r = requests.post(api + "/admin/attach", json={"id": sub_id, "key": rkey, "mime": mime, "size": len(data), "role": m["role"]}, headers=hdr, timeout=60)
+            r.raise_for_status()
+    pushed.write_text("ok")
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--week")
@@ -175,6 +219,8 @@ def main():
         entry["files"], entry["errors"] = [], []
         # uploaded files
         for n, f in enumerate(sub["files"]):
+            if f.get("fromLink"):
+                continue
             ext = mimetypes.guess_extension(f["mime"]) or ""
             dest = sdir / f"upload-{n}{ext}"
             if not dest.exists():
@@ -211,6 +257,11 @@ def main():
                         raise RuntimeError("the link had no photos, videos or audio in it")
                     done.write_text(json.dumps(media))
                     entry["files"] += media
+                except Exception as e:
+                    entry["errors"].append(f"link: {e}")
+            if done.exists():
+                try:
+                    push_link_files(api, key, sub["id"], week, ldir, json.loads(done.read_text()))
                 except Exception as e:
                     entry["errors"].append(f"link: {e}")
         manifest["submissions"].append(entry)

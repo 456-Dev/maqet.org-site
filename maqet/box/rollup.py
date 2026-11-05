@@ -8,7 +8,7 @@ Then one page per piece: big number, its images (carousel slides, video
 stills, music cover), artist, title, media type, suggested caption.
 Writes <DATA>/<week>/rollup.pdf and numbers.json (number -> submission id).
 """
-import argparse, json, os, subprocess, textwrap
+import argparse, hashlib, hmac, io, json, os, subprocess, textwrap
 from pathlib import Path
 
 from PIL import Image, ImageOps
@@ -23,6 +23,22 @@ GREY = HexColor("#6a6a6a")
 STAR = Color(228 / 255, 24 / 255, 180 / 255)
 W, H = letter
 M = 42  # margin
+SITE = os.environ.get("MAQET_SITE", "https://maqet.org")
+ENV = Path.home() / ".config/v4keys/maqet-cloudflare.env"
+
+
+def sheet_url(week):
+    """Private voting-gallery link; same HMAC as functions/api/showcase sheetToken()."""
+    key = next(l.split("=", 1)[1].strip() for l in ENV.read_text().splitlines() if l.startswith("MAQET_ADMIN_KEY="))
+    t = hmac.new(key.encode(), ("sheet:" + week).encode(), hashlib.sha256).hexdigest()[:24]
+    return f"{SITE}/showcase/vote/?w={week}&t={t}"
+
+
+def qr(url):
+    import qrcode
+    img = qrcode.make(url, box_size=8, border=1).convert("RGB")
+    buf = io.BytesIO(); img.save(buf, "PNG"); buf.seek(0)
+    return ImageReader(buf)
 
 
 def still(path, mime, cache):
@@ -90,7 +106,7 @@ def main():
     week = args.week or weeks[-1]
     wdir = DATA / week
     man = json.loads((wdir / "manifest.json").read_text())
-    subs = [s for s in man["submissions"] if s.get("status") != "hidden" and s["files"]]
+    subs = [s for s in man["submissions"] if s.get("status") != "hidden"]   # same set + order as the gallery
     subs.sort(key=lambda s: s["created"])
     cache = wdir / ".stills"
     cache.mkdir(exist_ok=True)
@@ -109,6 +125,7 @@ def main():
                 visuals.append((im, f["mime"], p))
         pieces.append({"n": n, "sub": s, "visuals": visuals, "audio": audio})
 
+    gallery = sheet_url(week)
     out = Path(args.out) if args.out else wdir / "rollup.pdf"
     c = canvas.Canvas(str(out), pagesize=letter)
     c.setTitle(f"MAQET Showcase · {man['theme']} · week of {week}")
@@ -125,7 +142,11 @@ def main():
     c.setFont("Helvetica-Bold", 14)
     c.drawString(M, H - M - 122, "vote 3 7 12 1 9 14 5")
     c.setFont("Helvetica", 9); c.setFillColor(GREY)
-    c.drawString(M, H - M - 138, "Seven different numbers. Send again to change your vote; your last one counts. The top 7 post to @_maqet_, one a day.")
+    c.drawString(M, H - M - 138, "Seven different numbers. Send again to change your vote; your last one counts. Top 7 post to @_maqet_.")
+    c.drawImage(qr(gallery), W - M - 92, H - M - 128, 92, 92)
+    c.setFillColor(STAR); c.setFont("Helvetica-Bold", 8)
+    c.drawRightString(W - M, H - M - 140, "SCAN OR TAP TO PLAY VIDEOS + SONGS")
+    c.linkURL(gallery, (W - M - 92, H - M - 128, W - M, H - M - 36), relative=0)
     c.setStrokeColor(INK); c.setLineWidth(.6); c.line(M, H - M - 150, W - M, H - M - 150)
 
     cols = 4 if len(pieces) > 9 else 3
@@ -146,6 +167,7 @@ def main():
         c.setFillColor(HexColor("#f2f2f2")); c.rect(x, y + 30, cw, cw, stroke=0, fill=1)
         if p["visuals"]:
             fit(c, p["visuals"][0][0], x, y + 30, cw, cw)
+        c.linkURL(f"{gallery}#{p['n']}", (x, y, x + cw, y + 30 + cw), relative=0)
         c.setFillColor(STAR); c.circle(x + 15, y + 30 + cw - 15, 12, stroke=0, fill=1)
         c.setFillColor(HexColor("#ffffff")); c.setFont("Helvetica-Bold", 12)
         c.drawCentredString(x + 15, y + 30 + cw - 19.5, str(p["n"]))
@@ -192,13 +214,22 @@ def main():
                 c.drawString(gx + 3, gy + gh - 10, f"{j + 1}/{k}")
         if vids:
             c.setFillColor(GREY); c.setFont("Helvetica", 8)
-            c.drawString(M, area_bot - 12, f"Video: still frame shown. MAQET_bot posts the clip in the group as #{p['n']}.")
+            c.drawString(M, area_bot - 12, "Video: still frame shown. Tap the picture or scan the code to play it.")
         if p["audio"]:
             c.setFillColor(GREY); c.setFont("Helvetica", 8)
-            c.drawString(M, area_bot - 12, f"Music: cover shown. MAQET_bot posts the song in the group as #{p['n']}.")
+            c.drawString(M, area_bot - 12, "Music: cover shown. Tap the picture or scan the code to listen.")
+        piece_url = f"{gallery}#{p['n']}"
+        c.linkURL(piece_url, (M, area_bot, W - M, area_top), relative=0)
+        if not vis:
+            c.setFillColor(GREY); c.setFont("Helvetica", 11)
+            c.drawCentredString(W / 2, (area_top + area_bot) / 2, "Open the link to see this piece.")
+        c.drawImage(qr(piece_url), W - M - 64, M + cap_h - 92, 64, 64)
+        c.setFillColor(STAR); c.setFont("Helvetica-Bold", 8)
+        c.drawRightString(W - M - 70, M + cap_h - 40, "OPEN / PLAY →")
+        c.linkURL(piece_url, (W - M - 64, M + cap_h - 92, W - M, M + cap_h - 28), relative=0)
         c.setFillColor(INK); c.setFont("Helvetica-Bold", 9)
         c.drawString(M, M + cap_h - 30, "SUGGESTED CAPTION")
-        wrap(c, s.get("caption") or "—", M, M + cap_h - 46, W - 2 * M, "Helvetica", 10, 13, INK, max_lines=6)
+        wrap(c, s.get("caption") or "—", M, M + cap_h - 46, W - 2 * M - 150, "Helvetica", 10, 13, INK, max_lines=6)
         c.setFillColor(GREY); c.setFont("Helvetica", 8)
         c.drawRightString(W - M, M - 18, f"MAQET showcase · {man['theme']} · #{p['n']}")
         c.showPage()

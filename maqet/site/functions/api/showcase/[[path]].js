@@ -75,6 +75,17 @@ async function ipHash(request) {
   return [...new Uint8Array(buf)].slice(0, 8).map((b) => b.toString(16).padStart(2, "0")).join("");
 }
 
+// A week's voting-sheet token: HMAC(ADMIN_KEY, week), so the link works without storing anything.
+async function sheetToken(env, week) {
+  const key = await crypto.subtle.importKey("raw", new TextEncoder().encode(env.ADMIN_KEY || ""), { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
+  const sig = await crypto.subtle.sign("HMAC", key, new TextEncoder().encode("sheet:" + week));
+  return [...new Uint8Array(sig)].slice(0, 12).map((b) => b.toString(16).padStart(2, "0")).join("");
+}
+async function sheetOk(request, env, week) {
+  const t = new URL(request.url).searchParams.get("t") || "";
+  return Boolean(env.ADMIN_KEY && week && t && t === (await sheetToken(env, week)));
+}
+
 function isAdmin(request, env) {
   const key = request.headers.get("x-admin-key") || new URL(request.url).searchParams.get("key");
   return Boolean(env.ADMIN_KEY && key && key === env.ADMIN_KEY);
@@ -202,8 +213,9 @@ function d1Stream(env, key, start, end) {
 
 async function media(request, env, id, n) {
   await ensureSchema(env.DB);
-  const row = await env.DB.prepare("SELECT files, status FROM sc_submissions WHERE id = ?1").bind(id).first();
-  if (!row || (row.status !== "posted" && !isAdmin(request, env))) return new Response("Not found", { status: 404 });
+  const row = await env.DB.prepare("SELECT files, status, week FROM sc_submissions WHERE id = ?1").bind(id).first();
+  if (!row || (row.status !== "posted" && row.status !== "hidden" && !isAdmin(request, env) && !(await sheetOk(request, env, row.week)))) return new Response("Not found", { status: 404 });
+  if (row.status === "hidden" && !isAdmin(request, env)) return new Response("Not found", { status: 404 });
   const file = JSON.parse(row.files)[Number(n) || 0];
   if (!file) return new Response("Not found", { status: 404 });
   const headers = new Headers({ "content-type": file.mime, "accept-ranges": "bytes",
@@ -255,6 +267,24 @@ export async function onRequest({ request, env, params }) {
     if (route === "submit" && method === "POST") return submit(request, env);
     if (parts[0] === "media" && parts[1] && method === "GET") return media(request, env, parts[1], parts[2]);
 
+    // Voting gallery for one week: /api/showcase/sheet/<week>?t=<token>&order=<id,id,...>
+    if (parts[0] === "sheet" && parts[1] && method === "GET") {
+      const week = parts[1];
+      if (!(await sheetOk(request, env, week))) return json({ error: "This voting link isn't valid." }, 403);
+      await ensureSchema(env.DB);
+      const t = new URL(request.url).searchParams.get("t");
+      const { results } = await env.DB.prepare("SELECT * FROM sc_submissions WHERE week = ?1 AND status != 'hidden' ORDER BY created ASC").bind(week).all();
+      return json({ week, theme: await themeFor(env.DB, week), pieces: results.map((r) => {
+        const pk = publicPick(r);
+        pk.files = pk.files.map((f) => ({ ...f, url: f.url + "?t=" + t }));
+        return pk;
+      }) });
+    }
+    if (parts[0] === "admin" && parts[1] === "sheet-token" && isAdmin(request, env)) {
+      const week = new URL(request.url).searchParams.get("week") || currentWeek();
+      return json({ week, t: await sheetToken(env, week) });
+    }
+
     if (parts[0] === "admin") {
       if (!isAdmin(request, env)) return json({ error: "forbidden" }, 403);
       await ensureSchema(env.DB);
@@ -269,6 +299,25 @@ export async function onRequest({ request, env, params }) {
         await env.DB.prepare("UPDATE sc_submissions SET status = ?2, post_date = ?3, rank = ?4 WHERE id = ?1")
           .bind(String(b.id), b.status, b.postDate || null, b.rank ?? null).run();
         return json({ ok: true });
+      }
+      // Box pushes files it fetched from share links: raw chunks first, then attach.
+      if (parts[1] === "chunk" && method === "POST") {
+        const q = new URL(request.url).searchParams;
+        const key = String(q.get("key") || ""), n = Number(q.get("n"));
+        if (!/^links\/[\w.\/-]+$/.test(key) || !(n >= 0)) return json({ error: "bad key" }, 400);
+        const buf = new Uint8Array(await request.arrayBuffer());
+        if (buf.length > CHUNK) return json({ error: "chunk too big" }, 413);
+        await env.DB.prepare("INSERT OR REPLACE INTO sc_chunks (key, n, data) VALUES (?1, ?2, ?3)").bind(key, n, buf).run();
+        return json({ ok: true });
+      }
+      if (parts[1] === "attach" && method === "POST") {
+        const b = await request.json();
+        const row = await env.DB.prepare("SELECT files FROM sc_submissions WHERE id = ?1").bind(String(b.id)).first();
+        if (!row) return json({ error: "no such submission" }, 404);
+        const files = JSON.parse(row.files).filter((f) => f.key !== b.key);
+        files.push({ key: String(b.key), mime: String(b.mime), size: Number(b.size), role: String(b.role || "media"), d1: 1, fromLink: 1 });
+        await env.DB.prepare("UPDATE sc_submissions SET files = ?2 WHERE id = ?1").bind(String(b.id), JSON.stringify(files)).run();
+        return json({ ok: true, n: files.length - 1 });
       }
       if (parts[1] === "theme" && method === "POST") {
         const b = await request.json();
