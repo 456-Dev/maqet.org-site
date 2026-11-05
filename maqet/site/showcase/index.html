@@ -164,7 +164,7 @@ select { appearance: none; background: linear-gradient(45deg, transparent 50%, v
       <div id="media-box">
         <label class="drop" id="drop">
           <input type="file" id="file" multiple accept="image/jpeg,image/png,image/webp,image/heic,image/heif,image/gif,video/mp4,video/quicktime,video/webm">
-          <span id="drop-text"><span class="pick">Choose photos or videos</span><br><small class="grey" id="drop-hint">or drop them here · up to 10 for a carousel · square or 4:5 fits best · 95 MB total</small></span>
+          <span id="drop-text"><span class="pick">Choose photos or videos</span><br><small class="grey" id="drop-hint">or drop them here · up to 10 for a carousel · square or 4:5 fits best · 30 MB total</small></span>
         </label>
         <ol class="thumbs" id="thumbs"></ol>
       </div>
@@ -217,7 +217,7 @@ select { appearance: none; background: linear-gradient(45deg, transparent 50%, v
 (function () {
   const $ = (id) => document.getElementById(id);
   const form = $("form"), msg = $("msg"), send = $("send"), typeSel = form.elements.mediaType;
-  const MB = 1024 * 1024, MAX_TOTAL = 95 * MB, MAX_FILES = 10;
+  const MB = 1024 * 1024, MAX_TOTAL = 30 * MB, MAX_FILES = 10;
   const IMAGE = /^image\//, VIDEO = /^video\//;
   let chosen = [], audio = null, cover = null;
 
@@ -283,7 +283,7 @@ select { appearance: none; background: linear-gradient(45deg, transparent 50%, v
     $("drop-text").firstElementChild.textContent = writing ? "Choose images of your writing" : "Choose photos or videos";
     $("drop-hint").textContent = writing
       ? "one image per slide, up to 10 · square or 4:5 · set your text so it reads on a phone"
-      : "or drop them here · up to 10 for a carousel · square or 4:5 fits best · 95 MB total";
+      : "or drop them here · up to 10 for a carousel · square or 4:5 fits best · 30 MB total";
   }
   typeSel.addEventListener("change", applyType);
 
@@ -322,11 +322,11 @@ select { appearance: none; background: linear-gradient(45deg, transparent 50%, v
     if (t === "Music") {
       if (!audio) return "Attach your song.";
       if (!cover) return "Music needs a cover image too.";
-      if (audio.size + cover.size > MAX_TOTAL) return "That's too big. Keep everything under 95 MB.";
+      if (audio.size + cover.size > MAX_TOTAL) return "That's too big. Keep everything under 30 MB.";
     } else {
       if (!chosen.length) return t === "Writing" ? "Attach your writing as images (one per slide)." : "Attach your photo or video.";
       if (t === "Writing" && chosen.some((f) => !IMAGE.test(f.type))) return "Writing has to be images, one per slide.";
-      if (chosen.reduce((n, f) => n + f.size, 0) > MAX_TOTAL) return "That's too big. Keep everything under 95 MB.";
+      if (chosen.reduce((n, f) => n + f.size, 0) > MAX_TOTAL) return "That's too big. Keep everything under 30 MB.";
     }
     if (!fd.get("artist").trim()) return "Add your name as you want it credited.";
     if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(fd.get("email").trim())) return "Add an email so we can reach you.";

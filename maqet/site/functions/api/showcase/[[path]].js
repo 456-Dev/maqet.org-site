@@ -1,5 +1,6 @@
 // Daily MAQET Showcase API (Cloudflare Pages Function).
-// Bindings: DB (D1), MEDIA (R2), ADMIN_KEY (secret).
+// Bindings: DB (D1), ADMIN_KEY (secret). Files live in D1 as 1.5 MB chunks
+// (sc_chunks); if an R2 bucket is bound as MEDIA later, new uploads go there instead.
 //
 //   GET  /api/showcase                 theme, deadline, posted picks (public)
 //   POST /api/showcase/submit          multipart submission (public)
@@ -11,7 +12,8 @@
 // A "week" is named by the Friday its voting happens on. Submissions close
 // Friday 6PM New York time; anything later counts toward the next Friday.
 
-const MAX_BYTES = 95 * 1024 * 1024;   // whole submission (Pages request limit is 100 MB)
+const MAX_BYTES = 30 * 1024 * 1024;   // whole submission; 42 MB tested over the free-plan Worker limit, 32 MB OK
+const CHUNK = 1_500_000;              // D1 rows max out at 2 MB
 const MAX_FILES = 10;                 // Instagram carousel limit
 const MEDIA_TYPES = ["Photo", "Painting / drawing", "Digital art", "Video", "Sculpture / 3D", "Textile / fashion", "Mixed media", "Writing", "Music", "Other"];
 const IMAGE = /^image\/(jpeg|png|webp|heic|heif|gif)$/;
@@ -30,6 +32,7 @@ const SCHEMA = [
      post_date TEXT, rank INTEGER, ip_hash TEXT)`,
   `CREATE INDEX IF NOT EXISTS sc_sub_week ON sc_submissions(week)`,
   `CREATE TABLE IF NOT EXISTS sc_weeks (week TEXT PRIMARY KEY, theme TEXT NOT NULL)`,
+  `CREATE TABLE IF NOT EXISTS sc_chunks (key TEXT NOT NULL, n INTEGER NOT NULL, data BLOB NOT NULL, PRIMARY KEY (key, n))`,
 ];
 
 let schemaReady = false;
@@ -104,7 +107,7 @@ async function submit(request, env) {
   const ct = request.headers.get("content-type") || "";
   if (!ct.includes("multipart/form-data")) return json({ error: "Send the form as multipart/form-data." }, 400);
   const len = Number(request.headers.get("content-length") || 0);
-  if (len > MAX_BYTES + 1e6) return json({ error: "That file is too big. Keep it under 95 MB." }, 413);
+  if (len > MAX_BYTES + 1e6) return json({ error: "That file is too big. Keep it under 30 MB." }, 413);
 
   const form = await request.formData();
   if (clean(form.get("website"), 10)) return json({ ok: true }); // honeypot
@@ -127,7 +130,7 @@ async function submit(request, env) {
   if (problem) return json({ error: problem }, 400);
   const parts = mediaType === "Music" ? [[cover, "cover"], [audio, "audio"]] : media.map((f) => [f, "media"]);
   const total = parts.reduce((n, [f]) => n + f.size, 0);
-  if (total > MAX_BYTES) return json({ error: "That's too big. Keep everything under 95 MB." }, 413);
+  if (total > MAX_BYTES) return json({ error: "That's too big. Keep everything under 30 MB." }, 413);
   const db = env.DB;
   await ensureSchema(db);
   const ih = await ipHash(request);
@@ -141,13 +144,53 @@ async function submit(request, env) {
   for (const [n, [f, role]] of parts.entries()) {
     const mime = (f.type || "").toLowerCase();
     const key = `submissions/${week}/${id}-${n}.${EXT[mime] || "bin"}`;
-    await env.MEDIA.put(key, f.stream(), { httpMetadata: { contentType: mime } });
-    files.push({ key, mime, size: f.size, role });
+    await putFile(env, key, f, mime);
+    files.push({ key, mime, size: f.size, role, ...(env.MEDIA ? {} : { d1: 1 }) });
   }
   await db.prepare(`INSERT INTO sc_submissions (id, week, created, artist, handle, email, title, media_type, caption, files, size, ip_hash)
                     VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12)`)
     .bind(id, week, new Date().toISOString(), artist, handle, email, title, mediaType, caption, JSON.stringify(files), total, ih).run();
   return json({ ok: true, id, week });
+}
+
+// ── file storage: R2 when bound, otherwise chunked into D1 ──
+async function putFile(env, key, f, mime) {
+  if (env.MEDIA) return env.MEDIA.put(key, f.stream(), { httpMetadata: { contentType: mime } });
+  // Stream the file so only one chunk is held at a time.
+  const reader = f.stream().getReader();
+  const buf = new Uint8Array(CHUNK);
+  let fill = 0, n = 0;
+  const flush = async () => {
+    await env.DB.prepare("INSERT OR REPLACE INTO sc_chunks (key, n, data) VALUES (?1, ?2, ?3)").bind(key, n++, buf.slice(0, fill)).run();
+    fill = 0;
+  };
+  for (;;) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    for (let off = 0; off < value.length;) {
+      const take = Math.min(CHUNK - fill, value.length - off);
+      buf.set(value.subarray(off, off + take), fill); fill += take; off += take;
+      if (fill === CHUNK) await flush();
+    }
+  }
+  if (fill) await flush();
+}
+
+// Bytes [start, end] of a D1-chunked file, streamed chunk by chunk.
+function d1Stream(env, key, start, end) {
+  let n = Math.floor(start / CHUNK);
+  const last = Math.floor(end / CHUNK);
+  return new ReadableStream({
+    async pull(ctl) {
+      if (n > last) return ctl.close();
+      const row = await env.DB.prepare("SELECT data FROM sc_chunks WHERE key = ?1 AND n = ?2").bind(key, n).first();
+      if (!row) return ctl.error(new Error("missing chunk"));
+      const bytes = new Uint8Array(row.data);
+      const base = n * CHUNK;
+      ctl.enqueue(bytes.subarray(Math.max(0, start - base), Math.min(bytes.length, end - base + 1)));
+      n++;
+    },
+  });
 }
 
 async function media(request, env, id, n) {
@@ -156,21 +199,32 @@ async function media(request, env, id, n) {
   if (!row || (row.status !== "posted" && !isAdmin(request, env))) return new Response("Not found", { status: 404 });
   const file = JSON.parse(row.files)[Number(n) || 0];
   if (!file) return new Response("Not found", { status: 404 });
-  row.mime = file.mime; row.media_key = file.key;
-  const range = request.headers.get("range");
-  const obj = await env.MEDIA.get(row.media_key, range ? { range: request.headers } : undefined);
-  if (!obj) return new Response("Not found", { status: 404 });
-  const headers = new Headers({ "content-type": row.mime, "accept-ranges": "bytes",
+  const headers = new Headers({ "content-type": file.mime, "accept-ranges": "bytes",
     "cache-control": row.status === "posted" ? "public, max-age=86400" : "private, no-store" });
-  if (range && obj.range) {
-    const start = obj.range.offset ?? 0;
-    const end = start + (obj.range.length ?? obj.size - start) - 1;
-    headers.set("content-range", `bytes ${start}-${end}/${obj.size}`);
-    headers.set("content-length", String(end - start + 1));
-    return new Response(obj.body, { status: 206, headers });
+  const range = /^bytes=(\d*)-(\d*)$/.exec(request.headers.get("range") || "");
+  if (env.MEDIA && !file.d1) {
+    const obj = await env.MEDIA.get(file.key, range ? { range: request.headers } : undefined);
+    if (!obj) return new Response("Not found", { status: 404 });
+    if (range && obj.range) {
+      const start = obj.range.offset ?? 0;
+      const end = start + (obj.range.length ?? obj.size - start) - 1;
+      headers.set("content-range", `bytes ${start}-${end}/${obj.size}`);
+      headers.set("content-length", String(end - start + 1));
+      return new Response(obj.body, { status: 206, headers });
+    }
+    headers.set("content-length", String(obj.size));
+    return new Response(obj.body, { headers });
   }
-  headers.set("content-length", String(obj.size));
-  return new Response(obj.body, { headers });
+  const size = file.size;
+  let start = 0, end = size - 1;
+  if (range) {
+    if (range[1] === "") { start = Math.max(0, size - Number(range[2])); }
+    else { start = Number(range[1]); if (range[2] !== "") end = Math.min(end, Number(range[2])); }
+    if (start > end || start >= size) return new Response(null, { status: 416, headers: { "content-range": `bytes */${size}` } });
+    headers.set("content-range", `bytes ${start}-${end}/${size}`);
+  }
+  headers.set("content-length", String(end - start + 1));
+  return new Response(d1Stream(env, file.key, start, end), { status: range ? 206 : 200, headers });
 }
 
 async function overview(env) {
