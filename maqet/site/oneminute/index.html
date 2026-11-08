@@ -280,6 +280,14 @@ h1 { margin: 0; font-family: var(--display); font-weight: 400; font-size: clamp(
 .prize-line { margin: .2rem 0 0; font-family: var(--display); font-size: clamp(1.7rem, 3.6vw, 2.8rem); line-height: 1.1; text-transform: uppercase; }
 .prize-line--sm { font-size: clamp(1.3rem, 2.5vw, 1.9rem); color: var(--magenta); }
 .prize-film { margin: 0; font-size: 1.05rem; }
+.prize { grid-template-rows: auto auto auto 1fr; }
+.rolls { display: flex; align-items: flex-end; align-self: end; height: 150px; margin-top: .6rem; padding-left: .2rem; }
+.rolls.rolls--hp5 img { margin-right: -16px; }
+.rolls img { height: 130px; width: auto; margin-right: -38px; filter: drop-shadow(3px 4px 0 rgba(17,17,17,.25)); }
+.rolls img:nth-child(1) { rotate: -7deg; }
+.rolls img:nth-child(2) { rotate: 3deg; height: 142px; z-index: 1; }
+.rolls img:nth-child(3) { rotate: 9deg; }
+.film-credit { margin: .5rem 0 0; font-size: .7rem; color: var(--faint); }
 .prize--main .prize-line { font-size: clamp(1.5rem, 2.8vw, 2.2rem); }
 .prize .doodle path { animation: none; stroke-dasharray: none; }
 .redacted { display: grid; gap: .45rem; margin: .3rem 0 .2rem; }
@@ -657,18 +665,22 @@ span.guest-link { color: inherit; }
         <p class="k">1st place</p>
         <p class="prize-film">3 rolls of</p>
         <p class="prize-line">Kodak Portra 400</p>
+        <div class="rolls" role="img" aria-label="3 rolls of Kodak Portra 400"><img src="film/portra.webp" alt=""><img src="film/portra.webp" alt=""><img src="film/portra.webp" alt=""></div>
       </div>
       <div class="prize">
         <p class="k">2nd place</p>
         <p class="prize-film">3 rolls of</p>
         <p class="prize-line prize-line--sm">Ilford HP5</p>
+        <div class="rolls rolls--hp5" role="img" aria-label="3 rolls of Ilford HP5 Plus"><img src="film/hp5.webp" alt=""><img src="film/hp5.webp" alt=""><img src="film/hp5.webp" alt=""></div>
       </div>
       <div class="prize">
         <p class="k">3rd place</p>
         <p class="prize-film">3 rolls of</p>
         <p class="prize-line prize-line--sm">Kodak Gold 200</p>
+        <div class="rolls" role="img" aria-label="3 rolls of Kodak Gold 200"><img src="film/gold.webp" alt=""><img src="film/gold.webp" alt=""><img src="film/gold.webp" alt=""></div>
       </div>
     </div>
+    <p class="film-credit">Gold 200 photo: DYVER, CC BY-SA 4.0, via Wikimedia Commons.</p>
     <ul class="hints">
       <li class="hint"><b>psst. hint:</b>Only teams of 3 or more can win. Coming solo? Teams are made at Tompkins Square Park, so you won't be alone for long.</li>
       <li class="hint"><b>hint #2:</b>To be prize eligible, your film has to at least loosely follow the prompt. Loosely counts!</li>
