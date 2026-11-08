@@ -27,6 +27,9 @@ window.FESTIVAL = {
   // Where the prompt is revealed on Saturday. Blank shows "Location to be announced."
   promptLocation: "Tompkins Square Park",
 
+  // Where the info sessions (Mon Nov 9 5PM, Wed Nov 11 8PM, Fri Nov 13 6PM) happen. Blank shows "TBA".
+  infoLocation: "",
+
   // US Eastern time. Daylight saving ends Nov 1, so the offset is -05:00.
   promptReveal:  "2026-11-14T11:00:00-05:00",
   submissionDue: "2026-11-15T11:00:00-05:00",

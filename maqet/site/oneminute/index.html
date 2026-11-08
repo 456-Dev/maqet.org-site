@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>The 1 Minute Film Festival</title>
-<meta name="description" content="24 hours. 60 seconds. Make a film of 60 seconds or less Nov 14–15 and watch it screen Sunday night. Judges give prizes to the top films. Free to register. Hosted by MAQET.">
+<meta name="description" content="24 hours. 60 seconds. Make a film of 60 seconds or less Nov 14–15 and watch it screen Sunday night. Prizes for the top 3 films. Free info sessions Nov 9, 11 and 13. Free to register. Hosted by MAQET.">
 <meta property="og:title" content="The 1 Minute Film Festival · hosted by MAQET">
 <meta property="og:description" content="Make it in 24 hours. Keep it to 60 seconds or less. Every film submitted on time screens Sunday Nov 15 at 7PM.">
 <meta name="theme-color" content="#C23A0B">
@@ -261,13 +261,25 @@ h1 { margin: 0; font-family: var(--display); font-weight: 400; font-size: clamp(
 .done-msg { margin: 0; font-size: 1.1rem; max-width: 52ch; }
 .done-note { margin: 0 0 .4rem; font-size: .9rem; color: var(--faint); max-width: 60ch; }
 
+/* ── info sessions ── */
+.sessions { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 3px; background: var(--ink); border: 3px solid var(--ink); margin-top: 1.3rem; }
+.session { background: var(--paper); padding: 1.1rem 1.3rem 1.3rem; display: grid; align-content: start; gap: .35rem; min-width: 0; }
+.session:first-child { background: var(--highlight); }
+.session .s-day { margin: 0; font-family: var(--display); font-size: clamp(1.5rem, 3vw, 2.3rem); line-height: 1; text-transform: uppercase; }
+.session .s-date { margin: 0; font-family: var(--display); font-size: clamp(1.1rem, 2vw, 1.4rem); color: var(--magenta); text-transform: uppercase; }
+.session .s-time { margin: 0; font-family: var(--marker); font-size: 1.7rem; line-height: 1.1; color: var(--pen); }
+.session.past { opacity: .45; }
+.session.past .s-day { text-decoration: line-through; }
+.sessions-note { margin: .9rem 0 0; max-width: 64ch; }
 /* ── prizes ── */
-.prizes { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 3px; background: var(--ink); border: 3px solid var(--ink); margin-top: 1.3rem; }
+.prizes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 3px; background: var(--ink); border: 3px solid var(--ink); margin-top: 1.3rem; }
 .prize { background: var(--paper); padding: 1.2rem 1.3rem 1.4rem; display: grid; align-content: start; gap: .5rem; min-width: 0; }
 .prize--main { background: var(--highlight); }
 .prize .k { color: var(--ink); }
 .prize-line { margin: .2rem 0 0; font-family: var(--display); font-size: clamp(1.7rem, 3.6vw, 2.8rem); line-height: 1.1; text-transform: uppercase; }
 .prize-line--sm { font-size: clamp(1.3rem, 2.5vw, 1.9rem); color: var(--magenta); }
+.prize-film { margin: 0; font-size: 1.05rem; }
+.prize--main .prize-line { font-size: clamp(1.5rem, 2.8vw, 2.2rem); }
 .prize .doodle path { animation: none; stroke-dasharray: none; }
 .redacted { display: grid; gap: .45rem; margin: .3rem 0 .2rem; }
 .redacted span { display: block; height: 1.05rem; background: var(--ink); }
@@ -403,7 +415,7 @@ span.guest-link { color: inherit; }
   .ch-tag { right: -.4rem; }
   .ch-arrow--wide { display: none; }
   .ch-arrow--tall { display: block; width: 36px; }
-  .prizes, .musts { grid-template-columns: minmax(0, 1fr); }
+  .prizes, .musts, .sessions { grid-template-columns: minmax(0, 1fr); }
   .guest-head { display: none; }
   .guest { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: .1rem .8rem; padding: .45rem 0; font-size: .9rem; }
   .guest-name, .guest-link { overflow-wrap: normal; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -591,6 +603,16 @@ span.guest-link { color: inherit; }
     </div>
   </div>
 
+  <section class="block" id="info" aria-labelledby="info-title">
+    <div class="block-head"><h2 id="info-title">Info sessions</h2><p>Free · pick one</p></div>
+    <div class="sessions">
+      <div class="session" data-end="2026-11-09T18:00:00-05:00"><p class="k">Session 1</p><p class="s-day">Monday</p><p class="s-date">Nov 9</p><p class="s-time">5:00 PM</p></div>
+      <div class="session" data-end="2026-11-11T21:00:00-05:00"><p class="k">Session 2</p><p class="s-day">Wednesday</p><p class="s-date">Nov 11</p><p class="s-time">8:00 PM</p></div>
+      <div class="session" data-end="2026-11-13T19:00:00-05:00"><p class="k">Session 3</p><p class="s-day">Friday</p><p class="s-date">Nov 13</p><p class="s-time">6:00 PM</p></div>
+    </div>
+    <p class="sessions-note">Learn how the weekend works, ask questions and meet other filmmakers before crew call. <b>Location: <span data-slot="info-location">TBA</span></b></p>
+  </section>
+
   <section class="block" id="guests" aria-labelledby="guests-title" hidden>
     <div class="block-head"><h2 id="guests-title">Cast &amp; crew list</h2><p>Updates live</p></div>
     <details class="guest-drop" id="guest-drop">
@@ -628,17 +650,22 @@ span.guest-link { color: inherit; }
   </section>
 
   <section class="block" id="prizes" aria-labelledby="prizes-title">
-    <div class="block-head"><h2 id="prizes-title">Prizes &amp; judging</h2><p>More soon</p></div>
+    <div class="block-head"><h2 id="prizes-title">Prizes</h2><p>Top 3 films</p></div>
     <div class="prizes">
       <div class="prize prize--main">
-        <p class="k">Prizes</p>
-        <p class="prize-line">For the <span class="word">top films<svg class="doodle doodle--loop" viewBox="0 0 375 100" preserveAspectRatio="none" aria-hidden="true"><path d="M290 9 C200 -2 60 4 18 32 C-6 50 16 86 90 93 C180 101 320 97 356 74 C382 56 372 22 300 10 C270 6 240 6 214 8"/></svg></span></p>
-        <p>Picked by our judges. More details soon.</p>
+        <p class="k">1st place</p>
+        <p class="prize-film">3 rolls of</p>
+        <p class="prize-line">Kodak Portra 400</p>
       </div>
       <div class="prize">
-        <p class="k">Judges</p>
-        <p class="redacted" aria-hidden="true"><span></span><span></span><span></span></p>
-        <p class="prize-line prize-line--sm">Revealed soon!</p>
+        <p class="k">2nd place</p>
+        <p class="prize-film">3 rolls of</p>
+        <p class="prize-line prize-line--sm">Ilford HP5</p>
+      </div>
+      <div class="prize">
+        <p class="k">3rd place</p>
+        <p class="prize-film">3 rolls of</p>
+        <p class="prize-line prize-line--sm">Kodak Gold 200</p>
       </div>
     </div>
     <ul class="hints">
@@ -708,6 +735,8 @@ function digits(el, text) {
 if (FESTIVAL.promptLocation) {
   document.querySelectorAll('[data-slot="prompt-location"]').forEach((el) => { el.textContent = FESTIVAL.promptLocation; });
 }
+if (FESTIVAL.infoLocation) document.querySelectorAll('[data-slot="info-location"]').forEach((el) => { el.textContent = FESTIVAL.infoLocation; });
+document.querySelectorAll('.session[data-end]').forEach((el) => { if (Date.now() > Date.parse(el.dataset.end)) el.classList.add('past'); });
 
 if (FESTIVAL.contactEmail || FESTIVAL.instagramUrl) {
   const bits = [];
