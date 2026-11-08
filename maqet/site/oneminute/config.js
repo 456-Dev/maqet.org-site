@@ -29,7 +29,7 @@ window.FESTIVAL = {
 
   // Google Meet link for the info sessions (Mon Nov 9 5PM, Wed Nov 11 8PM, Fri Nov 13 6PM).
   // Blank shows "The join link goes up here before each session."
-  infoMeetUrl: "",
+  infoMeetUrl: "https://meet.google.com/gad-mofy-def",
 
   // US Eastern time. Daylight saving ends Nov 1, so the offset is -05:00.
   promptReveal:  "2026-11-14T11:00:00-05:00",

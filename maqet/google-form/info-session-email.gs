@@ -15,7 +15,7 @@
  * Gmail lets a free account send about 100 of these a day.
  */
 
-const INFO_LOCATION = '';  // optional Google Meet link; blank = point people to maqet.org/oneminute#info
+const INFO_LOCATION = 'https://meet.google.com/gad-mofy-def';  // Google Meet link (same for all 3 sessions)
 
 const INFO_SUBJECT = 'Info sessions this week · The 1 Minute Film Festival';
 
