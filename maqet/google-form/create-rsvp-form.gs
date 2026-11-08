@@ -201,7 +201,7 @@ function onRsvp(e) {
         'Sat Nov 14, 11:00 AM: meet at Tompkins Square Park. Teams are made, the prompt is handed out and the 24-hour clock starts.\n' +
         'Sun Nov 15, 11:00 AM: final cut due.\n' +
         'Sun Nov 15, 7:00 PM: all works submitted on time are screened together at Millennium Film Workshop, 167 Wilson Ave, Brooklyn.\n\n' +
-        'Free info sessions before the weekend: Mon Nov 9 5:00 PM, Wed Nov 11 8:00 PM, Fri Nov 13 6:00 PM. Details at https://maqet.org/oneminute\n\n' +
+        'Info sessions on Google Meet: Mon Nov 9 5:00 PM, Wed Nov 11 8:00 PM, Fri Nov 13 6:00 PM. Join link at https://maqet.org/oneminute#info\n\n' +
         'Prizes for the top 3 films: 3 rolls of Kodak Portra 400 (1st), Ilford HP5 (2nd), Kodak Gold 200 (3rd).\n\n' +
         'The rules: all creative activity happens within the 24 hours, submit by 11:00 AM Sunday (60 seconds or less), and come enjoy everyone\'s work at the screening.\n\n' +
         teamLine + '\n\n' +

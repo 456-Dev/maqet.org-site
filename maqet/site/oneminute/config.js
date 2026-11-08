@@ -27,8 +27,9 @@ window.FESTIVAL = {
   // Where the prompt is revealed on Saturday. Blank shows "Location to be announced."
   promptLocation: "Tompkins Square Park",
 
-  // Where the info sessions (Mon Nov 9 5PM, Wed Nov 11 8PM, Fri Nov 13 6PM) happen. Blank shows "TBA".
-  infoLocation: "Online on Google Meet (the link is emailed to everyone registered)",
+  // Google Meet link for the info sessions (Mon Nov 9 5PM, Wed Nov 11 8PM, Fri Nov 13 6PM).
+  // Blank shows "The join link goes up here before each session."
+  infoMeetUrl: "",
 
   // US Eastern time. Daylight saving ends Nov 1, so the offset is -05:00.
   promptReveal:  "2026-11-14T11:00:00-05:00",

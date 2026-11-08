@@ -271,6 +271,7 @@ h1 { margin: 0; font-family: var(--display); font-weight: 400; font-size: clamp(
 .session.past { opacity: .45; }
 .session.past .s-day { text-decoration: line-through; }
 .sessions-note { margin: .9rem 0 0; max-width: 64ch; }
+.sessions-note [data-meet] { display: block; margin-top: .9rem; }
 /* ── prizes ── */
 .prizes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 3px; background: var(--ink); border: 3px solid var(--ink); margin-top: 1.3rem; }
 .prize { background: var(--paper); padding: 1.2rem 1.3rem 1.4rem; display: grid; align-content: start; gap: .5rem; min-width: 0; }
@@ -604,13 +605,13 @@ span.guest-link { color: inherit; }
   </div>
 
   <section class="block" id="info" aria-labelledby="info-title">
-    <div class="block-head"><h2 id="info-title">Info sessions</h2><p>Free · pick one</p></div>
+    <div class="block-head"><h2 id="info-title">Info sessions</h2><p>Pick one</p></div>
     <div class="sessions">
       <div class="session" data-end="2026-11-09T18:00:00-05:00"><p class="k">Session 1</p><p class="s-day">Monday</p><p class="s-date">Nov 9</p><p class="s-time">5:00 PM</p></div>
       <div class="session" data-end="2026-11-11T21:00:00-05:00"><p class="k">Session 2</p><p class="s-day">Wednesday</p><p class="s-date">Nov 11</p><p class="s-time">8:00 PM</p></div>
       <div class="session" data-end="2026-11-13T19:00:00-05:00"><p class="k">Session 3</p><p class="s-day">Friday</p><p class="s-date">Nov 13</p><p class="s-time">6:00 PM</p></div>
     </div>
-    <p class="sessions-note">Learn how the weekend works, ask questions and meet other filmmakers before crew call. <b>Location: <span data-slot="info-location">TBA</span></b></p>
+    <p class="sessions-note">Come ask questions and learn more about the weekend. <b>Where: Google Meet.</b> <span data-meet-wait>The join link goes up here before each session.</span><span data-meet hidden><a class="btn" href="#" target="_blank" rel="noopener">Join the Google Meet →</a></span></p>
   </section>
 
   <section class="block" id="guests" aria-labelledby="guests-title" hidden>
@@ -735,7 +736,7 @@ function digits(el, text) {
 if (FESTIVAL.promptLocation) {
   document.querySelectorAll('[data-slot="prompt-location"]').forEach((el) => { el.textContent = FESTIVAL.promptLocation; });
 }
-if (FESTIVAL.infoLocation) document.querySelectorAll('[data-slot="info-location"]').forEach((el) => { el.textContent = FESTIVAL.infoLocation; });
+if (FESTIVAL.infoMeetUrl) document.querySelectorAll('[data-meet]').forEach((el) => { el.hidden = false; el.querySelector('a').href = FESTIVAL.infoMeetUrl; document.querySelectorAll('[data-meet-wait]').forEach((w) => w.remove()); });
 document.querySelectorAll('.session[data-end]').forEach((el) => { if (Date.now() > Date.parse(el.dataset.end)) el.classList.add('past'); });
 
 if (FESTIVAL.contactEmail || FESTIVAL.instagramUrl) {

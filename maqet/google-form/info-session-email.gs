@@ -5,7 +5,8 @@
  * (it uses RESPONSES_SHEET_ID from there): Editor → + → Script → name it
  * "info-session-email" → paste → Save.
  *
- * 1. Paste the Google Meet link into INFO_LOCATION below.
+ * 1. Optional: paste the Google Meet link into INFO_LOCATION below
+ *    (blank = the email sends people to the website for the link).
  * 2. Run `testInfoSessionEmail`: sends ONE copy to you only. Check it.
  * 3. Run `sendInfoSessionEmail`: sends to every registered person once
  *    (one email per address). It remembers who already got it, so running it
@@ -14,18 +15,18 @@
  * Gmail lets a free account send about 100 of these a day.
  */
 
-const INFO_LOCATION = '';  // the Google Meet link, e.g. 'https://meet.google.com/abc-defg-hij'
+const INFO_LOCATION = '';  // optional Google Meet link; blank = point people to maqet.org/oneminute#info
 
-const INFO_SUBJECT = 'Free info sessions this week · The 1 Minute Film Festival';
+const INFO_SUBJECT = 'Info sessions this week · The 1 Minute Film Festival';
 
 function infoBody_(name) {
   return (
     `Hi ${name},\n\n` +
-    'Thanks for registering for The 1 Minute Film Festival! Before the weekend we are hosting 3 free info sessions. Come to whichever one works for you:\n\n' +
+    'Thanks for registering for The 1 Minute Film Festival! Before the weekend we are hosting 3 info sessions. Come ask questions and learn more at whichever one works for you:\n\n' +
     '  · Monday, Nov 9 at 5:00 PM\n' +
     '  · Wednesday, Nov 11 at 8:00 PM\n' +
     '  · Friday, Nov 13 at 6:00 PM\n\n' +
-    `Where: online on Google Meet. Join here: ${INFO_LOCATION || '(link coming soon)'}\n\n` +
+    `Where: Google Meet. Join link: ${INFO_LOCATION || 'https://maqet.org/oneminute#info'}\n\n` +
     'We will go over how the 24 hours work, how teams are made, and the prizes, and answer your questions. It is also a good chance to meet other filmmakers and find a crew.\n\n' +
     'Prizes for the top 3 films:\n' +
     '  1st place: 3 rolls of Kodak Portra 400\n' +
@@ -66,7 +67,6 @@ function testInfoSessionEmail() {
 }
 
 function sendInfoSessionEmail() {
-  if (!INFO_LOCATION) throw new Error('Paste the Google Meet link into INFO_LOCATION at the top first.');
   const props = PropertiesService.getScriptProperties();
   const sent = new Set(JSON.parse(props.getProperty('infoSent') || '[]'));
   const me = Session.getEffectiveUser().getEmail();
