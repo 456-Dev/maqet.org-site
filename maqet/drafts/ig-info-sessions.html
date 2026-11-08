@@ -1,0 +1,41 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Momo+Trust+Display&family=Courier+Prime:wght@400;700&family=Permanent+Marker&display=swap">
+<style>
+:root{--frame:#C23A0B;--paper:#fff;--ink:#111;--magenta:#E3157D;--hi:#FFF400;--lime:#1BFF3E;--green:#0F9A6C;--pen:#1A27E0;
+--display:"Momo Trust Display","Arial Black",sans-serif;--mono:"Courier Prime",monospace;--marker:"Permanent Marker",cursive}
+*{box-sizing:border-box}
+html,body{margin:0;width:1080px;height:1350px;background:var(--frame);font-family:var(--mono);color:var(--ink)}
+.sheet{position:absolute;inset:48px;background:var(--paper);padding:56px 60px;display:flex;flex-direction:column}
+.k{margin:0;font-size:22px;font-weight:700;letter-spacing:.22em;text-transform:uppercase}
+.top{display:flex;justify-content:space-between;align-items:baseline;border-bottom:5px solid var(--ink);padding-bottom:18px}
+h1{margin:34px 0 0;font-family:var(--display);font-weight:400;font-size:84px;line-height:.98;text-transform:uppercase;color:var(--green);text-shadow:.045em .04em 0 var(--magenta)}
+.big{margin:22px 0 0;font-family:var(--display);font-size:118px;line-height:.95;text-transform:uppercase}
+.big span{background:linear-gradient(transparent 52%,var(--hi) 52% 94%,transparent 94%)}
+.free{display:inline-block;margin:22px 0 0;font-family:var(--marker);font-size:50px;color:var(--magenta);rotate:-3deg}
+.grid{margin-top:34px;display:grid;grid-template-columns:repeat(3,1fr);gap:5px;background:var(--ink);border:5px solid var(--ink)}
+.s{background:var(--paper);padding:26px 24px 30px}
+.s:first-child{background:var(--hi)}
+.d{margin:8px 0 0;font-family:var(--display);font-size:50px;line-height:1;text-transform:uppercase}
+.dt{margin:8px 0 0;font-family:var(--display);font-size:38px;color:var(--magenta);text-transform:uppercase}
+.t{margin:10px 0 0;font-family:var(--marker);font-size:56px;line-height:1;color:var(--pen)}
+.loc{margin:28px 0 0;font-size:30px;line-height:1.35}
+.foot{margin-top:auto;display:flex;justify-content:space-between;align-items:flex-end;border-top:5px solid var(--ink);padding-top:20px}
+.url{font-family:var(--display);font-size:46px;text-transform:uppercase}
+.fest{font-size:24px;line-height:1.35;text-align:right;font-weight:700}
+</style></head><body>
+<div class="sheet">
+  <div class="top"><p class="k">Call sheet · MAQET</p><p class="k">Nov 14–15</p></div>
+  <h1>The 1 Minute<br>Film Festival</h1>
+  <p class="big"><span>Info</span><br><span>sessions</span></p>
+  <p class="free">free · come to one!</p>
+  <div class="grid">
+    <div class="s"><p class="k">Session 1</p><p class="d">Mon</p><p class="dt">Nov 9</p><p class="t">5PM</p></div>
+    <div class="s"><p class="k">Session 2</p><p class="d">Wed</p><p class="dt">Nov 11</p><p class="t">8PM</p></div>
+    <div class="s"><p class="k">Session 3</p><p class="d">Fri</p><p class="dt">Nov 13</p><p class="t">6PM</p></div>
+  </div>
+  <p class="loc">How the 24 hours work, teams, prizes + Q&amp;A.<br><b>Where: <span id="loc">LOCATION</span></b></p>
+  <div class="foot"><p class="url">maqet.org/oneminute</p><p class="fest">Free<br>all skill levels</p></div>
+</div>
+<script>const q=new URLSearchParams(location.search).get('loc');document.getElementById('loc').textContent=q||'TBA';</script>
+</body></html>
