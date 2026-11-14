@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vote admin · 1 Minute Film Festival</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<style>
+[hidden] { display: none !important; }
+body { margin: 0; padding: 20px; font: 16px/1.4 "Courier New", Courier, monospace; color: #111; background: #fff; max-width: 980px; margin-inline: auto; }
+h1 { font-size: 1.5rem; margin: 0 0 1rem; }
+h2 { font-size: 1.05rem; letter-spacing: .1em; margin: 1.6rem 0 .6rem; border-bottom: 2px solid #111; padding-bottom: .3rem; }
+input, button { font: inherit; }
+input[type=text], input[type=password], input[type=number] { padding: .4rem; border: 1px solid #888; }
+button { padding: .45rem .9rem; border: 2px solid #111; background: #fff; cursor: pointer; font-weight: 700; }
+button.big { background: #E3157D; color: #fff; border-color: #E3157D; font-size: 1.1rem; }
+button.dark { background: #111; color: #fff; }
+.row { display: flex; flex-wrap: wrap; gap: .6rem; align-items: center; }
+.status { font-size: 1.3rem; font-weight: 700; margin: .4rem 0; }
+.film { display: grid; grid-template-columns: 140px 1fr auto; gap: .8rem; align-items: center; padding: .5rem 0; border-bottom: 1px solid #ddd; }
+.film img, .film .ph { width: 140px; aspect-ratio: 16/9; object-fit: cover; background: #eee; display: block; }
+.film .f { display: grid; gap: .3rem; }
+.film .acts { display: flex; flex-wrap: wrap; gap: .3rem; justify-content: end; }
+.film .acts button { padding: .25rem .5rem; font-size: .85rem; }
+table { border-collapse: collapse; width: 100%; }
+td, th { text-align: left; padding: .3rem .4rem; border-bottom: 1px solid #ddd; vertical-align: top; }
+.msg { font-weight: 700; min-height: 1.3em; }
+.err { color: #b00020; }
+small { color: #666; }
+</style>
+</head>
+<body>
+<h1>1 Minute Film Festival · vote admin</h1>
+<div class="row" id="keyrow"><input type="password" id="key" placeholder="Admin key" size="30"><button id="savekey">Use key</button></div>
+<p class="msg" id="msg"></p>
+
+<div id="app" hidden>
+  <h2>VOTING</h2>
+  <p class="status" id="status">—</p>
+  <div class="row">
+    <label>Minutes <input type="number" id="minutes" value="5" min="0.5" max="180" step="0.5" style="width:5em"></label>
+    <button class="big" id="start">START VOTING</button>
+    <button class="dark" id="stop">CLOSE NOW + SHOW RESULTS</button>
+    <button id="reset">RESET (clear votes)</button>
+  </div>
+  <p><small>Public page: <a href="/oneminute/vote/" target="_blank">maqet.org/oneminute/vote</a>. Results appear there for everyone when the clock hits 0. Starting again restarts the clock and keeps existing votes.</small></p>
+
+  <h2>ADD A FILM</h2>
+  <form id="add" class="row">
+    <input type="text" id="fname" placeholder="Film name" required size="28">
+    <input type="text" id="fteam" placeholder="Team / director (optional)" size="26">
+    <input type="file" id="fimg" accept="image/*">
+    <button class="dark" type="submit">ADD</button>
+  </form>
+
+  <h2>FILMS (<span id="nfilms">0</span>)</h2>
+  <div id="films"></div>
+
+  <h2>LIVE TALLY (<span id="nballots">0</span> ballots)</h2>
+  <table id="tally"></table>
+  <h2>BALLOTS</h2>
+  <table id="ballots"></table>
+</div>
+
+<script>
+(function () {
+  const $ = (id) => document.getElementById(id);
+  const el = (tag, text) => { const e = document.createElement(tag); if (text != null) e.textContent = text; return e; };
+  let key = new URLSearchParams(location.search).get("key") || localStorage.getItem("fest-admin-key") || "";
+  $("key").value = key;
+  const msg = (t, err) => { $("msg").textContent = t || ""; $("msg").className = "msg" + (err ? " err" : ""); };
+
+  function api(path, opts = {}) {
+    opts.headers = Object.assign({ "x-admin-key": key }, opts.headers || {});
+    return fetch("/api/fest" + path, Object.assign({ cache: "no-store" }, opts)).then((r) => r.json().then((d) => { if (!r.ok) throw new Error(d.error || r.status); return d; }));
+  }
+  const post = (path, body) => api(path, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body || {}) });
+
+  // Shrink a still to ≤1600px JPEG so it fits a D1 row and loads fast on phones.
+  function shrink(file) {
+    return new Promise((res, rej) => {
+      const img = new Image();
+      img.onload = () => {
+        const s = Math.min(1, 1600 / Math.max(img.width, img.height));
+        const c = document.createElement("canvas");
+        c.width = Math.round(img.width * s); c.height = Math.round(img.height * s);
+        c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+        c.toBlob((b) => b ? res(b) : rej(new Error("Couldn't read that image.")), "image/jpeg", 0.85);
+        URL.revokeObjectURL(img.src);
+      };
+      img.onerror = () => rej(new Error("Couldn't read that image (try a JPG or PNG)."));
+      img.src = URL.createObjectURL(file);
+    });
+  }
+
+  let films = [];
+  function renderFilms() {
+    $("nfilms").textContent = films.length;
+    $("films").replaceChildren(...films.map((f, i) => {
+      const row = el("div"); row.className = "film";
+      const im = f.img ? Object.assign(el("img"), { src: f.img }) : Object.assign(el("div"), { className: "ph" });
+      const box = el("div"); box.className = "f";
+      const n = Object.assign(el("input"), { type: "text", value: f.name });
+      const t = Object.assign(el("input"), { type: "text", value: f.team, placeholder: "team / director" });
+      box.append(n, t);
+      const acts = el("div"); acts.className = "acts";
+      const save = el("button", "save"); save.onclick = () => post("/admin/edit", { id: f.id, name: n.value, team: t.value }).then(() => { msg("Saved " + n.value); refresh(); }).catch((e) => msg(e.message, true));
+      const up = el("button", "↑"); up.disabled = i === 0;
+      const dn = el("button", "↓"); dn.disabled = i === films.length - 1;
+      const swap = (j) => Promise.all([post("/admin/edit", { id: f.id, ord: films[j].ord }), post("/admin/edit", { id: films[j].id, ord: f.ord })]).then(refresh);
+      up.onclick = () => swap(i - 1); dn.onclick = () => swap(i + 1);
+      const pic = el("button", "image");
+      pic.onclick = () => {
+        const inp = Object.assign(el("input"), { type: "file", accept: "image/*" });
+        inp.onchange = () => shrink(inp.files[0]).then((b) => { const fd = new FormData(); fd.append("id", f.id); fd.append("image", b, "still.jpg"); return api("/admin/image", { method: "POST", body: fd }); })
+          .then(() => { msg("Image updated"); refresh(); }).catch((e) => msg(e.message, true));
+        inp.click();
+      };
+      const del = el("button", "delete"); del.onclick = () => { if (confirm("Delete " + f.name + "?")) post("/admin/delete", { id: f.id }).then(refresh).catch((e) => msg(e.message, true)); };
+      acts.append(save, up, dn, pic, del);
+      row.append(im, box, acts);
+      return row;
+    }));
+  }
+
+  let lastFilmsKey = "";
+  function refresh() {
+    return Promise.all([fetch("/api/fest", { cache: "no-store" }).then((r) => r.json()), api("/admin/results")]).then(([pub, res]) => {
+      $("keyrow").hidden = true; $("app").hidden = false;
+      const fk = JSON.stringify(pub.films);
+      if (fk !== lastFilmsKey) { lastFilmsKey = fk; films = pub.films; renderFilms(); }
+      const now = Date.now() + (Date.parse(pub.now) - Date.now());
+      $("status").textContent = res.phase === "open"
+        ? "OPEN · closes " + new Date(res.closes).toLocaleTimeString() + " (" + Math.max(0, Math.round((Date.parse(res.closes) - now) / 1000)) + "s left)"
+        : res.phase === "closed" ? "CLOSED · results are showing" : "NOT OPEN YET";
+      $("nballots").textContent = res.voters;
+      $("tally").replaceChildren(el("tr"), ...res.ranked.map((f) => {
+        const tr = el("tr"); [f.rank, f.name, f.points + " pts", "1st×" + f.places[0] + " 2nd×" + f.places[1] + " 3rd×" + f.places[2]].forEach((v) => tr.append(el("td", String(v)))); return tr;
+      }));
+      const byId = Object.fromEntries(pub.films.map((f) => [f.id, f.name]));
+      $("ballots").replaceChildren(...res.ballots.slice().reverse().map((b) => {
+        const tr = el("tr"); tr.append(el("td", b.name), el("td", b.picks.map((id, i) => (i + 1) + ". " + (byId[id] || "?")).join("   ")), el("td", new Date(b.updated).toLocaleTimeString())); return tr;
+      }));
+    });
+  }
+
+  $("savekey").onclick = () => { key = $("key").value.trim(); refresh().then(() => { localStorage.setItem("fest-admin-key", key); msg(""); }).catch((e) => msg(e.message, true)); };
+  $("start").onclick = () => post("/admin/start", { minutes: +$("minutes").value || 5 }).then(() => { msg("Voting is open."); refresh(); }).catch((e) => msg(e.message, true));
+  $("stop").onclick = () => { if (confirm("Close voting now and show results?")) post("/admin/stop").then(() => { msg("Closed."); refresh(); }).catch((e) => msg(e.message, true)); };
+  $("reset").onclick = () => { if (confirm("Clear ALL votes and go back to 'not open yet'?")) post("/admin/reset", { votes: true }).then(() => { msg("Reset."); refresh(); }).catch((e) => msg(e.message, true)); };
+  $("add").onsubmit = (e) => {
+    e.preventDefault();
+    const fd = new FormData();
+    fd.append("name", $("fname").value); fd.append("team", $("fteam").value);
+    const file = $("fimg").files[0];
+    (file ? shrink(file).then((b) => fd.append("image", b, "still.jpg")) : Promise.resolve())
+      .then(() => api("/admin/film", { method: "POST", body: fd }))
+      .then(() => { msg("Added " + $("fname").value); $("add").reset(); $("fname").focus(); refresh(); })
+      .catch((err) => msg(err.message, true));
+  };
+
+  if (key) refresh().catch((e) => msg(e.message, true));
+  setInterval(() => { if (!$("app").hidden) refresh().catch(() => {}); }, 3000);
+})();
+</script>
+</body>
+</html>
