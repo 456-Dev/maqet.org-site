@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>The 1 Minute Film Festival</title>
-<meta name="description" content="24 hours. 60 seconds. Make a film of 60 seconds or less Nov 14–15 and watch it screen Sunday night. Prizes for the top 3 films. Free info sessions Nov 9, 11 and 13. Free to register. Hosted by MAQET.">
+<meta name="description" content="24 hours. 60 seconds. Make a film of 60 seconds or less Nov 14–15 and watch it screen Sunday night. Prizes for the top 3 films. Winners get free develop and scan from Gowanus Darkroom. Free to register. Hosted by MAQET.">
 <meta property="og:title" content="The 1 Minute Film Festival · hosted by MAQET">
 <meta property="og:description" content="Make it in 24 hours. Keep it to 60 seconds or less. Every film submitted on time screens Sunday Nov 15 at 7PM.">
 <meta name="theme-color" content="#C23A0B">
@@ -287,6 +287,8 @@ h1 { margin: 0; font-family: var(--display); font-weight: 400; font-size: clamp(
 .rolls img:nth-child(1) { rotate: -7deg; }
 .rolls img:nth-child(2) { rotate: 3deg; height: 142px; z-index: 1; }
 .rolls img:nth-child(3) { rotate: 9deg; }
+.sponsor { margin: 1.1rem 0 0; font-size: 1.15rem; }
+.sponsor b { font-family: var(--display); font-size: clamp(1.3rem, 2.5vw, 1.9rem); text-transform: uppercase; color: var(--magenta); }
 .film-credit { margin: .5rem 0 0; font-size: .7rem; color: var(--faint); }
 .prize--main .prize-line { font-size: clamp(1.5rem, 2.8vw, 2.2rem); }
 .prize .doodle path { animation: none; stroke-dasharray: none; }
@@ -613,13 +615,9 @@ span.guest-link { color: inherit; }
   </div>
 
   <section class="block" id="info" aria-labelledby="info-title">
-    <div class="block-head"><h2 id="info-title">Info sessions</h2><p>Pick one</p></div>
-    <div class="sessions">
-      <div class="session" data-end="2026-11-09T18:00:00-05:00"><p class="k">Session 1</p><p class="s-day">Monday</p><p class="s-date">Nov 9</p><p class="s-time">5:00 PM</p></div>
-      <div class="session" data-end="2026-11-11T21:00:00-05:00"><p class="k">Session 2</p><p class="s-day">Wednesday</p><p class="s-date">Nov 11</p><p class="s-time">8:00 PM</p></div>
-      <div class="session" data-end="2026-11-13T19:00:00-05:00"><p class="k">Session 3</p><p class="s-day">Friday</p><p class="s-date">Nov 13</p><p class="s-time">6:00 PM</p></div>
-    </div>
-    <p class="sessions-note">Come ask questions and learn more about the weekend. <b>Where: Google Meet.</b> <span data-meet-wait>The join link goes up here before each session.</span><span data-meet hidden><a class="btn" href="#" target="_blank" rel="noopener">Join the Google Meet →</a></span></p>
+    <div class="block-head"><h2 id="info-title">Info</h2><p>Everything in one deck</p></div>
+    <p class="sessions-note">How the weekend works, the rules, and what to bring, all in the info slides.</p>
+    <p class="sessions-note"><a class="btn" href="https://docs.google.com/presentation/d/1SjldkuAgj3aCE6yHJgQEE2L8s1MvBXkJ/edit?usp=sharing&amp;ouid=107484012357755949193&amp;rtpof=true&amp;sd=true" target="_blank" rel="noopener">View the info slides →</a></p>
   </section>
 
   <section class="block" id="guests" aria-labelledby="guests-title" hidden>
@@ -680,6 +678,7 @@ span.guest-link { color: inherit; }
         <div class="rolls" role="img" aria-label="3 rolls of Kodak Gold 200"><img src="film/gold.webp" alt=""><img src="film/gold.webp" alt=""><img src="film/gold.webp" alt=""></div>
       </div>
     </div>
+    <p class="sponsor"><span class="k">Sponsored by</span> <b>GOWANUS DARKROOM</b>: free develop and scan for the winners.</p>
     <p class="film-credit">Gold 200 photo: DYVER, CC BY-SA 4.0, via Wikimedia Commons.</p>
     <ul class="hints">
       <li class="hint"><b>psst. hint:</b>Only teams of 3 or more can win. Coming solo? Teams are made at Tompkins Square Park, so you won't be alone for long.</li>
