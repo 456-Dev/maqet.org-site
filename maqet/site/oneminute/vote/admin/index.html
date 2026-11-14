@@ -136,11 +136,11 @@ small { color: #666; }
         : res.phase === "closed" ? "CLOSED · results are showing" : "NOT OPEN YET";
       $("nballots").textContent = res.voters;
       $("tally").replaceChildren(el("tr"), ...res.ranked.map((f) => {
-        const tr = el("tr"); [f.rank, f.name, f.points + " pts", "1st×" + f.places[0] + " 2nd×" + f.places[1] + " 3rd×" + f.places[2]].forEach((v) => tr.append(el("td", String(v)))); return tr;
+        const tr = el("tr"); [f.rank, f.name, f.points + " votes"].forEach((v) => tr.append(el("td", String(v)))); return tr;
       }));
       const byId = Object.fromEntries(pub.films.map((f) => [f.id, f.name]));
       $("ballots").replaceChildren(...res.ballots.slice().reverse().map((b) => {
-        const tr = el("tr"); tr.append(el("td", b.name), el("td", b.picks.map((id, i) => (i + 1) + ". " + (byId[id] || "?")).join("   ")), el("td", new Date(b.updated).toLocaleTimeString())); return tr;
+        const tr = el("tr"); tr.append(el("td", b.name), el("td", b.picks.map((id) => byId[id] || "?").join("  ·  ")), el("td", new Date(b.updated).toLocaleTimeString())); return tr;
       }));
     });
   }

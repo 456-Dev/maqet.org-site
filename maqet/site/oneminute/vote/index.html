@@ -13,7 +13,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Momo+Trust+Display&family=Courier+Prime:wght@400;700&family=Permanent+Marker&display=swap">
 <style>
-/* Layout: the call sheet again. Header + timer, a grid of film stills you tap in order (1st, 2nd, 3rd), a sticky ballot strip with your name. When time runs out the grid turns into the results. */
+/* Layout: the call sheet again. Header + timer, a grid of film stills you tap (any 3), a sticky ballot strip with your name. When time runs out the grid turns into the results. */
 :root {
   --frame: #C23A0B; --paper: #FFFFFF; --ink: #111111; --faint: #6E6460; --hairline: #CFC8C4;
   --magenta: #E3157D; --highlight: #FFF400; --pen: #1A27E0; --green: #0F9A6C;
@@ -50,7 +50,7 @@ h1 { margin: .35rem 0 .2rem; font-family: var(--display); font-weight: 400; font
 .film .still .noimg { font-family: var(--display); font-size: 2.6rem; color: var(--hairline); }
 .film .name { font-weight: 700; font-size: 1.05rem; line-height: 1.2; text-transform: uppercase; }
 .film .team { font-size: .85rem; color: var(--faint); margin-top: -.3rem; }
-.film .badge { position: absolute; top: -12px; left: -12px; width: 3.4rem; height: 3.4rem; border-radius: 50%; background: var(--magenta); color: #fff; display: grid; place-items: center; font-family: var(--marker); font-size: 1.35rem; transform: rotate(-8deg) scale(0); transition: transform .15s; z-index: 2; box-shadow: 0 2px 0 var(--ink); }
+.film .badge { position: absolute; top: -12px; left: -12px; width: 3.4rem; height: 3.4rem; border-radius: 50%; background: var(--magenta); color: #fff; display: grid; place-items: center; font-family: var(--marker); font-size: 1.6rem; transform: rotate(-8deg) scale(0); transition: transform .15s; z-index: 2; box-shadow: 0 2px 0 var(--ink); }
 .film.on .badge { transform: rotate(-8deg) scale(1); }
 .film.on .still { border-color: var(--magenta); outline: 4px solid var(--magenta); }
 .film:not(:disabled):hover .still { outline: 4px solid var(--highlight); }
@@ -77,11 +77,12 @@ h1 { margin: .35rem 0 .2rem; font-family: var(--display); font-weight: 400; font
 .pod .still img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .pod .name { font-family: var(--display); font-size: clamp(1.05rem, 2.4vw, 1.9rem); line-height: 1.05; text-transform: uppercase; }
 .pod .pts { font-weight: 700; }
+.podium.ties { grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); align-items: start; }
 .pod.r1 { order: 2; } .pod.r2 { order: 1; } .pod.r3 { order: 3; }
 .pod.r1 .still { border-color: var(--magenta); outline: 5px solid var(--highlight); }
 .pod.r2, .pod.r3 { padding-top: clamp(0px, 4vw, 48px); }
 .table { margin-top: 2rem; border-top: 2px solid var(--ink); }
-.trow { display: grid; grid-template-columns: 2.6rem minmax(0, 1.4fr) minmax(0, 2fr) 4.5rem; gap: .8rem; align-items: center; padding: .5rem 0; border-bottom: 1px solid var(--hairline); }
+.trow { display: grid; grid-template-columns: 2.6rem minmax(0, 1.4fr) minmax(0, 2fr) 5.5rem; gap: .8rem; align-items: center; padding: .5rem 0; border-bottom: 1px solid var(--hairline); }
 .trow .rk { font-family: var(--display); font-size: 1.3rem; }
 .trow .nm { font-weight: 700; text-transform: uppercase; line-height: 1.15; }
 .trow .nm small { display: block; font-weight: 400; text-transform: none; color: var(--faint); }
@@ -94,7 +95,7 @@ h1 { margin: .35rem 0 .2rem; font-family: var(--display); font-weight: 400; font
   .clock { text-align: left; }
   .podium { grid-template-columns: 1fr; }
   .pod.r1, .pod.r2, .pod.r3 { order: 0; padding-top: 0; }
-  .trow { grid-template-columns: 2rem minmax(0, 1fr) 3.6rem; }
+  .trow { grid-template-columns: 2rem minmax(0, 1fr) 4.6rem; }
   .trow .barw { display: none; }
   .ballot { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .slot { font-size: .72rem; }
@@ -107,7 +108,7 @@ h1 { margin: .35rem 0 .2rem; font-family: var(--display); font-weight: 400; font
     <div>
       <a class="back" href="/oneminute/">← THE 1 MINUTE FILM FESTIVAL</a>
       <h1 id="title">Audience vote</h1>
-      <p class="sub" id="sub">Tap your <mark>top 3 films</mark> in order: first tap = 1st place. Write your name and send it.</p>
+      <p class="sub" id="sub">Tap your <mark>top 3 films</mark>. Write your name and send it.</p>
       <p class="voters" id="voters"></p>
     </div>
     <div class="clock">
@@ -122,9 +123,9 @@ h1 { margin: .35rem 0 .2rem; font-family: var(--display); font-weight: 400; font
   <p class="err" id="err" hidden></p>
 
   <form class="ballot" id="ballot" hidden novalidate>
-    <div class="slot" data-i="0"><span class="p">1st</span><span class="v">tap a film</span></div>
-    <div class="slot" data-i="1"><span class="p">2nd</span><span class="v">tap a film</span></div>
-    <div class="slot" data-i="2"><span class="p">3rd</span><span class="v">tap a film</span></div>
+    <div class="slot" data-i="0"><span class="p">★</span><span class="v">tap a film</span></div>
+    <div class="slot" data-i="1"><span class="p">★</span><span class="v">tap a film</span></div>
+    <div class="slot" data-i="2"><span class="p">★</span><span class="v">tap a film</span></div>
     <div class="row">
       <input id="name" name="name" autocomplete="name" maxlength="60" placeholder="Your name" aria-label="Your name">
       <button id="submit" type="submit" disabled>VOTE</button>
@@ -155,7 +156,7 @@ h1 { margin: .35rem 0 .2rem; font-family: var(--display); font-weight: 400; font
     document.querySelectorAll(".film").forEach((b) => {
       const i = picks.indexOf(b.dataset.id);
       b.classList.toggle("on", i >= 0);
-      b.querySelector(".badge").textContent = i >= 0 ? PLACE[i] : "";
+      b.querySelector(".badge").textContent = i >= 0 ? "★" : "";
       b.setAttribute("aria-pressed", i >= 0);
     });
     document.querySelectorAll(".slot").forEach((s) => {
@@ -182,7 +183,7 @@ h1 { margin: .35rem 0 .2rem; font-family: var(--display); font-weight: 400; font
       if (f.team) b.append(el("span", "team", f.team));
       b.onclick = () => {
         const i = picks.indexOf(f.id);
-        if (i >= 0) picks.splice(i, 1); else if (picks.length < need) picks.push(f.id); else picks[need - 1] = f.id;
+        if (i >= 0) picks.splice(i, 1); else if (picks.length < need) picks.push(f.id); else { $("bmsg").className = "bmsg err"; $("bmsg").textContent = "You have 3. Tap one to drop it first."; return; }
         $("bmsg").textContent = ""; syncPicks();
       };
       return b;
@@ -195,12 +196,16 @@ h1 { margin: .35rem 0 .2rem; font-family: var(--display); font-weight: 400; font
     const max = Math.max(1, ...r.map((f) => f.points));
     const sec = $("results");
     const pod = el("div", "podium");
-    r.filter((f) => f.rank <= 3 && f.points > 0).slice(0, 3).forEach((f, i) => {
-      const d = el("div", "pod r" + (i + 1));
-      d.append(el("span", "place", PLACE[f.rank - 1] + " place"));
+    const top = r.filter((f) => f.rank <= 3 && f.points > 0);
+    const clean3 = top.length === 3 && top.every((f, i) => f.rank === i + 1);
+    if (!clean3) pod.classList.add("ties");
+    top.forEach((f, i) => {
+      const tied = r.filter((x) => x.rank === f.rank).length > 1;
+      const d = el("div", "pod" + (clean3 ? " r" + (i + 1) : ""));
+      d.append(el("span", "place", PLACE[f.rank - 1] + (tied ? " (tie)" : " place")));
       const st = el("div", "still"); if (f.img) { const im = el("img"); im.src = f.img; im.alt = f.name; st.append(im); }
       d.append(st, el("span", "name", f.name));
-      d.append(el("span", "pts", f.points + " pts" + (f.team ? " · " + f.team : "")));
+      d.append(el("span", "pts", f.points + (f.points === 1 ? " vote" : " votes") + (f.team ? " · " + f.team : "")));
       pod.append(d);
     });
     const tbl = el("div", "table");
@@ -208,10 +213,10 @@ h1 { margin: .35rem 0 .2rem; font-family: var(--display); font-weight: 400; font
       const row = el("div", "trow");
       const nm = el("span", "nm", f.name); if (f.team) nm.append(el("small", null, f.team));
       const bw = el("span", "barw"); const bar = el("div", "bar"); bar.style.width = (100 * f.points / max) + "%"; bw.append(bar);
-      row.append(el("span", "rk", String(f.rank)), nm, bw, el("span", "pt", f.points + " pts"));
+      row.append(el("span", "rk", String(f.rank)), nm, bw, el("span", "pt", f.points + (f.points === 1 ? " vote" : " votes")));
       tbl.append(row);
     });
-    const sc = el("p", "scoring", "Scoring: 1st pick = 3 pts, 2nd = 2, 3rd = 1. Ties go to more 1st-place picks. " + data.voters.length + " ballots.");
+    const sc = el("p", "scoring", "Every pick counts as 1 vote. " + data.voters.length + " ballots, 3 picks each. Same votes = same rank.");
     sec.replaceChildren(r.length && r[0].points > 0 ? pod : el("p", null, "No votes came in."), tbl, sc);
   }
 
@@ -246,8 +251,8 @@ h1 { margin: .35rem 0 .2rem; font-family: var(--display); font-weight: 400; font
     const closed = d.phase === "closed";
     $("title").textContent = closed ? "The results" : "Audience vote";
     $("sub").innerHTML = closed ? "The audience has spoken." :
-      d.phase === "before" ? "When voting opens, tap your <mark>top 3 films</mark> in order. Results show when time runs out." :
-      "Tap your <mark>top 3 films</mark> in order: first tap = 1st place. Write your name and send it. Vote again with the same name to change it.";
+      d.phase === "before" ? "When voting opens, tap your <mark>top 3 films</mark>. Results show when time runs out." :
+      "Tap your <mark>top 3 films</mark>. Write your name and send it. Vote again with the same name to change it.";
     $("grid").hidden = closed;
     $("results").hidden = !closed;
     $("ballot").hidden = d.phase !== "open";

@@ -3,7 +3,7 @@
 //
 //   GET  /api/fest                 films, voting state, voter names; results once voting has closed
 //   GET  /api/fest/img/<id>        a film's still
-//   POST /api/fest/vote            {name, picks:[1st, 2nd, 3rd]}  (one ballot per name, last one counts)
+//   POST /api/fest/vote            {name, picks:[id, id, id]}  (one ballot per name, last one counts)
 //   Admin (X-Admin-Key or ?key=):
 //   POST /api/fest/admin/film      multipart {name, team, image}         add a film
 //   POST /api/fest/admin/edit      {id, name?, team?, ord?}              rename / reorder
@@ -13,9 +13,9 @@
 //   POST /api/fest/admin/reset     {votes=true}                          back to "not open yet"
 //   GET  /api/fest/admin/results                                         live tally, any time
 //
-// Scoring: 1st pick = 3 points, 2nd = 2, 3rd = 1. Ties go to the film with more 1st-place picks, then 2nd.
+// Scoring: every pick = 1 vote. Films with the same number of votes share a rank.
 
-const POINTS = [3, 2, 1];
+const POINTS = [1, 1, 1];
 const MAX_IMG = 1_800_000;   // D1 rows max out at 2 MB; the admin page resizes stills before upload
 
 const SCHEMA = [
@@ -72,10 +72,10 @@ async function tally(db, list) {
     JSON.parse(v.picks).forEach((id, i) => { if (score[id] && i < 3) { score[id].points += POINTS[i]; score[id].places[i]++; } });
   }
   const ranked = Object.values(score).sort((a, b) =>
-    b.points - a.points || b.places[0] - a.places[0] || b.places[1] - a.places[1] || a.ord - b.ord);
+    b.points - a.points || a.ord - b.ord);
   let rank = 0, prev = null;
   ranked.forEach((f, i) => {
-    const key = f.points + "|" + f.places.join(",");
+    const key = String(f.points);
     if (key !== prev) rank = i + 1;
     f.rank = rank; prev = key;
   });
