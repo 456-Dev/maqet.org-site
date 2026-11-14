@@ -289,6 +289,7 @@ h1 { margin: 0; font-family: var(--display); font-weight: 400; font-size: clamp(
 .rolls img:nth-child(3) { rotate: 9deg; }
 .sponsor { margin: 1.1rem 0 0; font-size: 1.15rem; }
 .sponsor { display: flex; flex-wrap: wrap; align-items: center; gap: .6rem 1rem; }
+.sponsor--top { margin: 0 0 1.1rem; justify-content: flex-end; }
 .sponsor-logo img { display: block; height: 64px; width: auto; border: 3px solid var(--ink); box-shadow: 4px 4px 0 var(--magenta); }
 .sponsor-logo:hover img { translate: -2px -2px; box-shadow: 6px 6px 0 var(--magenta); }
 .film-credit { margin: .5rem 0 0; font-size: .7rem; color: var(--faint); }
@@ -461,6 +462,7 @@ span.guest-link { color: inherit; }
 </head>
 <body>
 <main class="sheet">
+  <p class="sponsor sponsor--top"><span class="k">Sponsored by</span> <a class="sponsor-logo" href="https://www.gowanusdarkroom.com" target="_blank" rel="noopener"><img src="film/gowanus-darkroom.webp" alt="Gowanus Darkroom" width="1200" height="391"></a> <span>Free develop and scan for the winners.</span></p>
 
   <div class="head">
     <div class="cell c-prod">
@@ -616,6 +618,28 @@ span.guest-link { color: inherit; }
     </div>
   </div>
 
+  <section class="block" id="premiere" aria-labelledby="premiere-title">
+    <div class="block-head"><h2 id="premiere-title">Premiere screening</h2><p>Bring everyone</p></div>
+    <div class="ticket">
+      <div class="ticket-main">
+        <p class="k">You're invited</p>
+        <p class="ticket-title">Come to the premiere screening <span class="ticket-date">Nov 15th</span></p>
+        <p class="ticket-text">Every film made this weekend, screened together. Come cheer on the filmmakers, and bring your friends.</p>
+        <p class="ticket-actions">
+          <span class="partiful" data-partiful hidden><a href="#" target="_blank" rel="noopener">RSVP on Partiful →</a></span>
+          <a class="ticket-cal" data-cal="screening" href="#premiere" target="_blank" rel="noopener">Add to Google Calendar</a>
+        </p>
+      </div>
+      <div class="ticket-stub">
+        <p class="k">Admit all</p>
+        <p class="stub-day">Sun</p>
+        <p class="stub-date">Nov 15</p>
+        <p class="stub-time">7PM</p>
+        <p class="stub-place">Millennium Film Workshop<br>167 Wilson Ave, Brooklyn</p>
+      </div>
+    </div>
+  </section>
+
   <section class="block" id="prizes" aria-labelledby="prizes-title">
     <div class="block-head"><h2 id="prizes-title">Prizes</h2><p>Top 3 films</p></div>
     <div class="prizes">
@@ -647,27 +671,6 @@ span.guest-link { color: inherit; }
     </ul>
   </section>
 
-  <section class="block" id="premiere" aria-labelledby="premiere-title">
-    <div class="block-head"><h2 id="premiere-title">Premiere screening</h2><p>Bring everyone</p></div>
-    <div class="ticket">
-      <div class="ticket-main">
-        <p class="k">You're invited</p>
-        <p class="ticket-title">Come to the premiere screening <span class="ticket-date">Nov 15th</span></p>
-        <p class="ticket-text">Every film made this weekend, screened together. Come cheer on the filmmakers, and bring your friends.</p>
-        <p class="ticket-actions">
-          <span class="partiful" data-partiful hidden><a href="#" target="_blank" rel="noopener">RSVP on Partiful →</a></span>
-          <a class="ticket-cal" data-cal="screening" href="#premiere" target="_blank" rel="noopener">Add to Google Calendar</a>
-        </p>
-      </div>
-      <div class="ticket-stub">
-        <p class="k">Admit all</p>
-        <p class="stub-day">Sun</p>
-        <p class="stub-date">Nov 15</p>
-        <p class="stub-time">7PM</p>
-        <p class="stub-place">Millennium Film Workshop<br>167 Wilson Ave, Brooklyn</p>
-      </div>
-    </div>
-  </section>
 
   <section class="block" id="info" aria-labelledby="info-title">
     <div class="block-head"><h2 id="info-title">Info</h2><p>Everything in one deck</p></div>
