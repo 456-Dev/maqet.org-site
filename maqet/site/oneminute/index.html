@@ -288,7 +288,9 @@ h1 { margin: 0; font-family: var(--display); font-weight: 400; font-size: clamp(
 .rolls img:nth-child(2) { rotate: 3deg; height: 142px; z-index: 1; }
 .rolls img:nth-child(3) { rotate: 9deg; }
 .sponsor { margin: 1.1rem 0 0; font-size: 1.15rem; }
-.sponsor b { font-family: var(--display); font-size: clamp(1.3rem, 2.5vw, 1.9rem); text-transform: uppercase; color: var(--magenta); }
+.sponsor { display: flex; flex-wrap: wrap; align-items: center; gap: .6rem 1rem; }
+.sponsor-logo img { display: block; height: 64px; width: auto; border: 3px solid var(--ink); box-shadow: 4px 4px 0 var(--magenta); }
+.sponsor-logo:hover img { translate: -2px -2px; box-shadow: 6px 6px 0 var(--magenta); }
 .film-credit { margin: .5rem 0 0; font-size: .7rem; color: var(--faint); }
 .prize--main .prize-line { font-size: clamp(1.5rem, 2.8vw, 2.2rem); }
 .prize .doodle path { animation: none; stroke-dasharray: none; }
@@ -636,7 +638,7 @@ span.guest-link { color: inherit; }
         <div class="rolls" role="img" aria-label="3 rolls of Kodak Gold 200"><img src="film/gold.webp" alt=""><img src="film/gold.webp" alt=""><img src="film/gold.webp" alt=""></div>
       </div>
     </div>
-    <p class="sponsor"><span class="k">Sponsored by</span> <b>GOWANUS DARKROOM</b>: free develop and scan for the winners.</p>
+    <p class="sponsor"><span class="k">Sponsored by</span> <a class="sponsor-logo" href="https://www.gowanusdarkroom.com" target="_blank" rel="noopener"><img src="film/gowanus-darkroom.webp" alt="Gowanus Darkroom" width="1200" height="391"></a> <span>Free develop and scan for the winners from <a href="https://www.gowanusdarkroom.com" target="_blank" rel="noopener">Gowanus Darkroom</a>.</span></p>
     <p class="film-credit">Gold 200 photo: DYVER, CC BY-SA 4.0, via Wikimedia Commons.</p>
     <ul class="hints">
       <li class="hint"><b>psst. hint:</b>Only teams of 3 or more can win. Coming solo? Teams are made at Tompkins Square Park, so you won't be alone for long.</li>
