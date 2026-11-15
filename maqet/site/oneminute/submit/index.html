@@ -183,7 +183,7 @@ label.file .fn { font-weight: 700; word-break: break-all; }
         while (next < total) {
           const n = next++;
           const blob = f.slice(n * s.chunk, Math.min(f.size, (n + 1) * s.chunk));
-          await req("/api/fest/upload/" + s.id + "/" + n + "?t=" + s.t, { method: "PUT", body: blob }, 6);
+          await req("/api/fest/upload/" + s.id + "/" + n + "?t=" + s.t, { method: "PUT", body: blob }, 8);
           sent++; show();
         }
       };

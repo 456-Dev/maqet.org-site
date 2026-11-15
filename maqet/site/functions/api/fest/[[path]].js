@@ -23,20 +23,21 @@
 
 const POINTS = [1, 1, 1];
 const MAX_IMG = 1_800_000;
-const CHUNK = 1_500_000;          // one D1 row per chunk (rows max out at 2 MB)
+const CHUNK = 512_000;            // one D1 row per chunk; 1.5 MB rows tripped the free-plan Worker limit (1102)
 const MAX_VIDEO = 2 * 1024 ** 3;  // 2 GB per film   // D1 rows max out at 2 MB; the admin page resizes stills before upload
 
 const SCHEMA = [
   `CREATE TABLE IF NOT EXISTS fv_films (id TEXT PRIMARY KEY, name TEXT NOT NULL, team TEXT, ord INTEGER NOT NULL DEFAULT 0, mime TEXT, img BLOB, created TEXT NOT NULL)`,
   `CREATE TABLE IF NOT EXISTS fv_state (k TEXT PRIMARY KEY, v TEXT)`,
   `CREATE TABLE IF NOT EXISTS fv_subs (id TEXT PRIMARY KEY, title TEXT NOT NULL, team TEXT, email TEXT NOT NULL, filename TEXT, size INTEGER NOT NULL, status TEXT NOT NULL DEFAULT 'uploading', created TEXT NOT NULL, done TEXT, ip_hash TEXT)`,
-  `CREATE TABLE IF NOT EXISTS fv_subchunks (id TEXT NOT NULL, n INTEGER NOT NULL, data BLOB NOT NULL, PRIMARY KEY (id, n))`,
+  `CREATE TABLE IF NOT EXISTS fv_subchunks (id TEXT NOT NULL, n INTEGER NOT NULL, data BLOB NOT NULL, len INTEGER, PRIMARY KEY (id, n))`,
   `CREATE TABLE IF NOT EXISTS fv_votes (voter TEXT PRIMARY KEY, name TEXT NOT NULL, picks TEXT NOT NULL, updated TEXT NOT NULL, ip_hash TEXT)`,
 ];
 let schemaReady = false;
 async function ensureSchema(db) {
   if (schemaReady) return;
   for (const sql of SCHEMA) await db.prepare(sql).run();
+  try { await db.prepare("ALTER TABLE fv_subchunks ADD COLUMN len INTEGER").run(); } catch (e) { /* already there */ }
   schemaReady = true;
 }
 
@@ -76,7 +77,7 @@ async function upload(request, env, parts) {
     if (size > MAX_VIDEO) return json({ error: "That file is over 2 GB. " + EMAIL_FALLBACK }, 400);
     const ih = await ipHash(request);
     const recent = await db.prepare("SELECT COUNT(*) AS n FROM fv_subs WHERE ip_hash = ?1 AND created > ?2").bind(ih, new Date(Date.now() - 3600e3).toISOString()).first();
-    if (recent && recent.n >= 15) return json({ error: "Too many uploads from here. " + EMAIL_FALLBACK }, 429);
+    if (recent && recent.n >= 40) return json({ error: "Too many uploads from here. " + EMAIL_FALLBACK }, 429);
     const id = new Date().toISOString().slice(0, 10).replace(/-/g, "") + "-" + crypto.randomUUID().slice(0, 8);
     await db.prepare("INSERT INTO fv_subs (id, title, team, email, filename, size, created, ip_hash) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8)")
       .bind(id, title, team, email, filename, size, new Date().toISOString(), ih).run();
@@ -89,7 +90,7 @@ async function upload(request, env, parts) {
   if (!sub) return json({ error: "Upload not found. Start again." }, 404);
   const total = Math.ceil(sub.size / CHUNK);
   if (parts[2] === "done" && method === "POST") {
-    const c = await db.prepare("SELECT COUNT(*) AS n, COALESCE(SUM(LENGTH(data)), 0) AS bytes FROM fv_subchunks WHERE id = ?1").bind(id).first();
+    const c = await db.prepare("SELECT COUNT(*) AS n, COALESCE(SUM(len), 0) AS bytes FROM fv_subchunks WHERE id = ?1").bind(id).first();
     if (c.n !== total || c.bytes !== sub.size) return json({ error: "Some of the file didn't arrive (" + c.n + "/" + total + " parts).", missing: true }, 409);
     await db.prepare("UPDATE fv_subs SET status = 'done', done = ?2 WHERE id = ?1").bind(id, new Date().toISOString()).run();
     return json({ ok: true });
@@ -104,7 +105,7 @@ async function upload(request, env, parts) {
       const brand = String.fromCharCode(...bytes.slice(4, 12));
       if (!brand.startsWith("ftyp") || brand.slice(4) === "qt  ") return json({ error: "That isn't an MP4 file. Export or convert it to MP4 (H.264) and try again.", fatal: true }, 400);
     }
-    await db.prepare("INSERT INTO fv_subchunks (id, n, data) VALUES (?1, ?2, ?3) ON CONFLICT(id, n) DO UPDATE SET data = ?3").bind(id, n, bytes).run();
+    await db.prepare("INSERT INTO fv_subchunks (id, n, data, len) VALUES (?1, ?2, ?3, ?4) ON CONFLICT(id, n) DO UPDATE SET data = ?3, len = ?4").bind(id, n, bytes, bytes.length).run();
     return json({ ok: true });
   }
   return json({ error: "not found" }, 404);
