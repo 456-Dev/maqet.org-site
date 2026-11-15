@@ -6,7 +6,8 @@ For every finished upload not yet saved:
   2. grab a still at ~40% and add the film to the audience-vote list (name = title, team)
   3. Telegram Michael a one-liner
 State lives in oneminute-films/pull-state.json. Run by fest-pull.timer every 3 min.
-Usage: fest_pull.py [--dry] [--no-vote] [--no-tg]
+Usage: fest_pull.py [--dry] [--no-vote] [--no-tg] [--no-immich]
+Also uploads each film to Michael's Immich album "🎬 1 Minute Fest films".
 """
 import json, os, re, subprocess, sys, tempfile, urllib.request, urllib.error
 from pathlib import Path
@@ -15,6 +16,7 @@ SITE = os.environ.get("MAQET_SITE", "https://maqet.org")
 OUT = Path(os.environ.get("FEST_OUT") or Path.home() / ".openclaw/workspace/projects/oneminute-films")
 STATE = OUT / "pull-state.json"
 FFMPEG = Path.home() / ".openclaw/workspace/timelapse/bin/ffmpeg"
+GIVE = Path.home() / ".openclaw/workspace/tools/immich/give.sh"
 ENV = Path.home() / ".config/v4keys/maqet-cloudflare.env"
 TG_TARGET = "8588336807"
 PURGE_OVER = 3.5 * 1024 ** 3   # drop the D1 copy of saved films only if D1 storage gets near the 5 GB free cap
@@ -57,29 +59,33 @@ def post_film(name, team, jpg):
         return json.load(r)
 
 
+WINDOW = 20 * 512_000   # ~10 MB per request: free-plan Workers allow ~50 D1 queries per request
+
+
 def download(sub, dest):
+    """Fetch in byte-range windows so each request stays under the per-request D1 query cap."""
     tmp = dest.with_suffix(".part")
     have = tmp.stat().st_size if tmp.exists() else 0
-    for attempt in range(5):
-        h = dict(UA)
-        if have:
-            h["range"] = f"bytes={have}-"
+    fails = 0
+    while have < sub["size"] and fails < 12:
+        end = min(sub["size"], have + WINDOW) - 1
         try:
-            with urllib.request.urlopen(urllib.request.Request(f"{SITE}/api/fest/admin/sub/{sub['id']}", headers=h), timeout=120) as r, open(tmp, "ab" if have else "wb") as f:
-                if have and r.status != 206:
-                    f.truncate(0); have = 0
-                while True:
-                    b = r.read(1 << 20)
-                    if not b:
-                        break
-                    f.write(b)
-            have = tmp.stat().st_size
-            if have == sub["size"]:
-                tmp.rename(dest)
-                return True
+            req = urllib.request.Request(f"{SITE}/api/fest/admin/sub/{sub['id']}", headers={**UA, "range": f"bytes={have}-{end}"})
+            with urllib.request.urlopen(req, timeout=120) as r:
+                body = r.read()
+            if r.status != 206 or len(body) != end - have + 1:
+                raise OSError(f"short read {len(body)}")
+            with open(tmp, "ab") as f:
+                f.write(body)
+            have += len(body)
+            fails = 0
         except (urllib.error.URLError, OSError, TimeoutError) as e:
-            print("  retry", attempt, e)
-            have = tmp.stat().st_size if tmp.exists() else 0
+            fails += 1
+            print("  retry", fails, e)
+            import time; time.sleep(2 * fails)
+    if have == sub["size"]:
+        tmp.rename(dest)
+        return True
     return False
 
 
@@ -101,7 +107,9 @@ def still(path, dur):
 def tg(text):
     if "--no-tg" in args or DRY:
         print("TG:", text); return
-    subprocess.run(["openclaw", "message", "send", "--channel", "telegram", "--target", TG_TARGET, "--message", text],
+    import datetime
+    h = datetime.datetime.now().hour
+    subprocess.run(["openclaw", "message", "send", *(["--silent"] if 2 <= h < 8 else []), "--channel", "telegram", "--target", TG_TARGET, "--message", text],
                    capture_output=True, timeout=60)
 
 
@@ -129,13 +137,21 @@ def main():
                 rec["vote_id"] = post_film(s["title"], s["team"] or "", jpg)["id"] if jpg else None
             except Exception as e:
                 print("  vote add failed", e)
+        if "--no-immich" not in args:
+            try:
+                note = f"{s['title']}" + (f" / {s['team']}" if s["team"] else "") + f" · {s['email']}"
+                p = subprocess.run([str(GIVE), str(dest), note, "--quiet"], capture_output=True, text=True, timeout=1800,
+                                   env={**os.environ, "IMMICH_ALBUM": "🎬 1 Minute Fest films"})
+                rec["immich"] = p.stdout.strip().splitlines()[-1] if p.returncode == 0 and p.stdout.strip() else None
+            except Exception as e:
+                print("  immich failed", e)
         state["saved"][s["id"]] = rec
         STATE.write_text(json.dumps(state, indent=1));
         n = len(state["saved"])
         dtxt = f"{dur:.0f}s" if dur else "?s"
         flag = " ⚠️ over 60s" if dur and dur > 61 else ""
         late = " · LATE" if (s["done"] or "") > "2026-11-15T16:00:00" else ""
-        tg(f"🎬 Film #{n} in: “{s['title']}”{' / ' + s['team'] if s['team'] else ''} · {dtxt}{flag}{late} · {s['size'] / 1048576:.0f} MB · added to the vote list")
+        tg(f"🎬 Film #{n} in: “{s['title']}”{' / ' + s['team'] if s['team'] else ''} · {dtxt}{flag}{late} · {s['size'] / 1048576:.0f} MB · added to the vote list" + (f"\n{rec['immich']}" if rec.get("immich") else ""))
     # keep D1 under the free cap: only purge saved files when storage gets big
     stored = sum(x["size"] for x in subs if x["status"] == "done")
     if stored > PURGE_OVER and not DRY:

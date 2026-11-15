@@ -37,7 +37,7 @@ small { color: #666; }
 
 <div id="app" hidden>
   <h2>FILM UPLOADS (<span id="nsubs">0</span>)</h2>
-  <p><small>From <a href="/oneminute/submit/" target="_blank">maqet.org/oneminute/submit</a>. The box also pulls these down automatically.</small></p>
+  <p><small>From <a href="/oneminute/submit/" target="_blank">maqet.org/oneminute/submit</a>. The box pulls every upload within ~3 min, adds it to the vote list with a still, and puts it in Immich album "🎬 1 Minute Fest films".</small></p>
   <table id="subs"></table>
 
   <h2>VOTING</h2>
@@ -137,7 +137,7 @@ small { color: #666; }
         const st = x.status === "uploading" ? "uploading " + x.parts + "/" + x.total : x.status === "saved" ? "saved to box" : "received";
         const late = Date.parse(x.done || x.created) > DUE ? " · LATE" : "";
         const dl = el("td");
-        if (x.status === "done") { const a = el("a", "download"); a.href = "/api/fest/admin/sub/" + x.id + "?key=" + encodeURIComponent(key); dl.append(a); }
+        if (x.status === "done" && x.size < 24e6) { const a = el("a", "download"); a.href = "/api/fest/admin/sub/" + x.id + "?key=" + encodeURIComponent(key); dl.append(a); }
         tr.append(el("td", x.title + (x.team ? " / " + x.team : "")), el("td", x.email), el("td", (x.size / 1048576).toFixed(0) + " MB"), el("td", st + late), el("td", new Date(x.done || x.created).toLocaleTimeString()), dl);
         return tr;
       }));
