@@ -337,7 +337,7 @@ h1 { margin: .35rem 0 .2rem; font-family: var(--display); font-weight: 400; font
     const closed = d.phase === "closed";
     $("title").textContent = closed ? "The results" : "Audience vote";
     $("sub").innerHTML = closed ? "The audience has spoken." :
-      d.phase === "before" ? "When voting opens, tap your <mark>1st, 2nd and 3rd</mark> (5, 3 and 1 points), then pick the fun awards. No voting for your own film." :
+      d.phase === "before" ? "When voting opens, tap your <mark>1st, 2nd and 3rd</mark> (5, 3 and 1 points), then pick the special awards. No voting for your own film." :
       "Top 3 = <mark>5, 3 and 1 points</mark>, plus 10 special awards. Vote again with the same name to change it.";
     $("grid").hidden = closed;
     $("results").hidden = !closed;
