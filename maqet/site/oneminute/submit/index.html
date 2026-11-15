@@ -156,7 +156,7 @@ details p { margin: 0; padding: .6rem .7rem .8rem; }
   const MAX = 2 * 1024 ** 3;
   function clock() {
     const left = DUE - Date.now();
-    if (left <= 0) { $("tm").textContent = "deadline passed, upload anyway"; return; }
+    if (left <= 0) { $("tm").textContent = "deadline passed, late films: email maqetcollective@gmail.com"; return; }
     const s = Math.floor(left / 1000), h = Math.floor(s / 3600), m = Math.floor(s / 60) % 60;
     $("tm").textContent = h + "h " + String(m).padStart(2, "0") + "m left";
   }
