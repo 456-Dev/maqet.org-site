@@ -182,7 +182,7 @@ async function overview(env) {
   const list = await films(db);
   const state = await getState(db);
   const { results: votes } = await db.prepare("SELECT name FROM fv_votes ORDER BY updated ASC").all();
-  const out = { ...state, now: new Date().toISOString(), films: list, voters: votes.map((v) => v.name), awards: AWARDS.map(([key, label]) => ({ key, label })), points: POINTS };
+  const out = { ...state, now: new Date().toISOString(), films: list, voters: votes.length, awards: AWARDS.map(([key, label]) => ({ key, label })), points: POINTS };
   if (state.phase === "closed") { const t = await tally(db, list); out.results = t.ranked; out.awardResults = t.awards; }
   return json(out);
 }
@@ -218,7 +218,7 @@ async function vote(request, env) {
                     ON CONFLICT(voter) DO UPDATE SET name = ?2, picks = ?3, updated = ?4, ip_hash = ?5, own = ?6, awards = ?7`)
     .bind(voter, name, JSON.stringify(picks), new Date().toISOString(), await ipHash(request), own, JSON.stringify(awards)).run();
   const { results: votes } = await db.prepare("SELECT name FROM fv_votes ORDER BY updated ASC").all();
-  return json({ ok: true, voters: votes.map((v) => v.name) });
+  return json({ ok: true, voters: votes.length });
 }
 
 async function admin(request, env, action) {

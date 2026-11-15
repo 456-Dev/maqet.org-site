@@ -209,10 +209,9 @@ h1 { margin: .35rem 0 .2rem; font-family: var(--display); font-weight: 400; font
   try { awards = JSON.parse(localStorage.getItem("fest-awards") || "{}"); } catch (e) {}
   $("name").value = localStorage.getItem("fest-name") || "";
 
-  function voters(list) {
-    const n = list.length;
+  function voters(n) {
+    n = Array.isArray(n) ? n.length : +n || 0;
     $("voters").replaceChildren(el("b", null, String(n)), document.createTextNode(n === 1 ? " person has voted" : " people have voted"));
-    if (n) $("voters").append(document.createTextNode(": " + list.join(", ")));
   }
 
   function syncPicks() {
@@ -301,7 +300,7 @@ h1 { margin: .35rem 0 .2rem; font-family: var(--display); font-weight: 400; font
       row.append(el("span", "rk", String(f.rank)), nm, bw, el("span", "pt", f.points + (f.points === 1 ? " pt" : " pts")));
       tbl.append(row);
     });
-    const sc = el("p", "scoring", "1st pick = 5 pts, 2nd = 3, 3rd = 1. " + data.voters.length + " ballots. Ties on points go to more 1st-place picks; still tied = same rank.");
+    const sc = el("p", "scoring", "1st pick = 5 pts, 2nd = 3, 3rd = 1. " + (Array.isArray(data.voters) ? data.voters.length : data.voters) + " ballots. Ties on points go to more 1st-place picks; still tied = same rank.");
     const ar = el("div", "aresults"); ar.append(el("h2", null, "Special Awards"));
     const ag = el("div", "agrid");
     (data.awardResults || []).forEach((a) => {
