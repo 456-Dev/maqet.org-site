@@ -56,6 +56,21 @@ label.file .fn { font-weight: 700; word-break: break-all; }
 .fail p { margin: 0 0 .5rem; }
 .fail .m { font-weight: 700; color: #B00020; }
 .fail a.wt { display: inline-block; margin-top: .3rem; font-family: var(--display); text-transform: uppercase; text-decoration: none; background: var(--ink); color: #fff; padding: .45em 1em; }
+.step { display: grid; grid-template-columns: 3rem minmax(0, 1fr); gap: 1rem; margin-top: 1.8rem; padding-top: 1.2rem; border-top: 2px solid var(--ink); }
+.step-n { margin: 0; font-family: var(--display); font-size: 3rem; line-height: .9; color: var(--magenta); }
+.step h2 { margin: 0 0 .5rem; font-family: var(--display); font-weight: 400; font-size: clamp(1.4rem, 4vw, 2rem); text-transform: uppercase; line-height: 1; }
+.step p { margin: 0 0 .7rem; }
+.spec { width: 100%; border-collapse: collapse; margin: .4rem 0 1rem; font-size: .95rem; }
+.spec th, .spec td { text-align: left; vertical-align: top; padding: .35rem .4rem; border-bottom: 1px solid var(--hairline); }
+.spec th { width: 7.5rem; font-size: .72rem; letter-spacing: .12em; text-transform: uppercase; color: var(--faint); }
+code { font: inherit; font-weight: 700; background: #F2EEEC; padding: 0 .3em; word-break: break-all; }
+details { border: 2px solid var(--ink); margin: 0 0 .5rem; }
+details summary { cursor: pointer; padding: .5rem .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; }
+details[open] summary { background: var(--highlight); }
+details p { margin: 0; padding: .6rem .7rem .8rem; }
+.wt-steps { margin: 0 0 1.2rem; padding-left: 1.3rem; display: grid; gap: .35rem; }
+.wt-go { display: inline-block; text-decoration: none; margin: 0 0 1rem; }
+.note { font-size: .92rem; color: var(--faint); }
 .help { margin-top: 1.6rem; font-size: .9rem; color: var(--faint); }
 </style>
 </head>
@@ -65,12 +80,51 @@ label.file .fn { font-weight: 700; word-break: break-all; }
   <h1>Submit your film</h1>
   <p class="due">Due Sun Nov 15 · 11:00 AM · <span class="tm" id="tm"></span></p>
   <ul class="rules">
-    <li><mark>MP4 only.</mark> Export as MP4 (H.264), 1080p is plenty.</li>
+    <li><mark>MP4 only</mark> (H.264), full quality.</li>
     <li>60 seconds or less.</li>
-    <li>One upload per film. Keep this page open until it says <b>RECEIVED</b>.</li>
+    <li>Send it with <b>WeTransfer</b> to <b>maqetcollective@gmail.com</b>.</li>
   </ul>
 
-  <form id="form" novalidate>
+  <section class="step">
+    <p class="step-n">1</p>
+    <div>
+      <h2>Export a high-quality MP4</h2>
+      <p>Same resolution and frame rate you shot and edited in. These settings look great on the big screen:</p>
+      <table class="spec">
+        <tr><th>Container</th><td>.mp4</td></tr>
+        <tr><th>Video</th><td>H.264, match source resolution (1080p or 4K) and frame rate</td></tr>
+        <tr><th>Bitrate</th><td>1080p: 20–40 Mbps · 4K: 50–80 Mbps</td></tr>
+        <tr><th>Audio</th><td>AAC, 48 kHz, 320 kbps, stereo</td></tr>
+        <tr><th>File name</th><td><code>FILMTITLE_TEAMNAME.mp4</code></td></tr>
+      </table>
+      <details><summary>Premiere Pro</summary><p>File → Export → Media (Ctrl/Cmd+M). Format: <b>H.264</b>. Preset: <b>Match Source – High Bitrate</b>. Under Video, bitrate encoding VBR 2-pass, target 30 Mbps (60 for 4K). Export.</p></details>
+      <details><summary>DaVinci Resolve</summary><p>Deliver page → Custom Export. Format: <b>MP4</b>. Codec: <b>H.264</b>. Resolution and frame rate: same as timeline. Quality: Restrict to <b>40,000 Kb/s</b> (80,000 for 4K). Audio: AAC, 320 kbps. Add to Render Queue → Render All.</p></details>
+      <details><summary>Final Cut Pro</summary><p>File → Share → <b>Export File</b>. Format: <b>Computer</b>. Video codec: <b>H.264 Better Quality</b>. Resolution: same as project. This saves an .mp4.</p></details>
+      <details><summary>CapCut</summary><p>Export (top right). Resolution: <b>1080p</b> or <b>4K</b>. Bitrate: <b>Higher</b>. Codec: <b>H.264</b>. Format: <b>MP4</b>. Frame rate: what you shot at.</p></details>
+      <details><summary>iMovie</summary><p>Share (top right) → <b>Export File</b>. Resolution: <b>1080p</b> or <b>4K</b>. Quality: <b>High</b>. Compress: <b>Better Quality</b>. Saves an .mp4.</p></details>
+      <details><summary>Phone camera, no editing</summary><p>iPhone clips save as .mov. Open it in CapCut or iMovie and export as above so it's an MP4. On iPhone use Settings → Camera → Formats → <b>Most Compatible</b> for future clips.</p></details>
+      <p class="note">Before you send it: watch the exported file once start to finish. Check the sound and that it's 60 seconds or less.</p>
+    </div>
+  </section>
+
+  <section class="step">
+    <p class="step-n">2</p>
+    <div>
+      <h2>Send it with WeTransfer</h2>
+      <ol class="wt-steps">
+        <li>Go to <a href="https://wetransfer.com/" target="_blank" rel="noopener">wetransfer.com</a> and add your MP4 (free, up to 3 GB).</li>
+        <li>Choose <b>Send email</b> (not "get a link").</li>
+        <li><b>Email to:</b> <code>maqetcollective@gmail.com</code></li>
+        <li><b>Title:</b> your film title + team name.</li>
+        <li><b>Message:</b> everyone on your team, plus the runtime.</li>
+        <li>Hit <b>Transfer</b> and keep the tab open until it says it's done. You'll get a confirmation email.</li>
+      </ol>
+      <a class="go wt-go" href="https://wetransfer.com/" target="_blank" rel="noopener">Open WeTransfer →</a>
+      <p class="note">Due <b>Sunday 11:00 AM</b>. Every film that's on time screens at 7PM at Millennium Film Workshop, 167 Wilson Ave.</p>
+    </div>
+  </section>
+
+  <form id="form" novalidate hidden>
     <label class="f"><span class="k">Film title</span><input id="title" maxlength="120" required autocomplete="off"></label>
     <label class="f"><span class="k">Team / director</span><input id="team" maxlength="120" autocomplete="off"></label>
     <label class="f"><span class="k">Email</span><input id="email" type="email" maxlength="200" required autocomplete="email"></label>
@@ -107,6 +161,7 @@ label.file .fn { font-weight: 700; word-break: break-all; }
     $("tm").textContent = h + "h " + String(m).padStart(2, "0") + "m left";
   }
   clock(); setInterval(clock, 15000);
+  if (new URLSearchParams(location.search).has("upload")) $("form").hidden = false;
 
   $("title").value = localStorage.getItem("fest-sub-title") || "";
   $("team").value = localStorage.getItem("fest-sub-team") || "";
