@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Submit your film · The 1 Minute Film Festival</title>
+<meta name="description" content="Upload your 60-second film (MP4) for the 1 Minute Film Festival. Due Sunday Nov 15, 11AM.">
+<meta name="theme-color" content="#C23A0B">
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Momo+Trust+Display&family=Courier+Prime:wght@400;700&family=Permanent+Marker&display=swap">
+<style>
+/* Layout: call-sheet card. Title + deadline clock, a short form (title, team, email, MP4), one big upload button, a progress bar, and the WeTransfer fallback if anything fails. */
+:root {
+  --frame: #C23A0B; --paper: #FFFFFF; --ink: #111111; --faint: #6E6460; --hairline: #CFC8C4;
+  --magenta: #E3157D; --highlight: #FFF400; --pen: #1A27E0; --green: #0F9A6C;
+  --display: "Momo Trust Display", "Arial Black", "Helvetica Neue", Arial, sans-serif;
+  --mono: "Courier Prime", "Courier New", Courier, monospace;
+  --marker: "Permanent Marker", "Marker Felt", "Comic Sans MS", cursive;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { margin: 0; background: var(--frame); color: var(--ink); font-family: var(--mono); font-size: 1.05rem; line-height: 1.45; padding: clamp(10px, 2.4vw, 36px); }
+.sheet { background: var(--paper); max-width: 760px; margin: 0 auto; padding: clamp(18px, 3vw, 36px) clamp(16px, 4vw, 52px) 40px; }
+a { color: inherit; }
+input:focus-visible, button:focus-visible, label.file:focus-within { outline: 3px dashed var(--pen); outline-offset: 3px; }
+mark { background: linear-gradient(transparent 12%, var(--highlight) 12% 88%, transparent 88%); color: inherit; padding-inline: .15em; }
+.k { margin: 0; font-size: .72rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--faint); }
+a.back { font-size: .8rem; font-weight: 700; letter-spacing: .1em; text-decoration: none; }
+h1 { margin: .35rem 0 .3rem; font-family: var(--display); font-weight: 400; font-size: clamp(2.2rem, 8vw, 4.2rem); line-height: .95; text-transform: uppercase; }
+.due { margin: .6rem 0 0; font-weight: 700; }
+.due .tm { font-family: var(--display); font-weight: 400; font-size: 1.3em; color: var(--magenta); font-variant-numeric: tabular-nums; }
+.rules { margin: 1rem 0 0; padding: 0; list-style: none; display: grid; gap: .25rem; border-top: 2px solid var(--ink); padding-top: .9rem; }
+.rules li::before { content: "★ "; color: var(--magenta); }
+form { display: grid; gap: 1rem; margin-top: 1.6rem; }
+label.f { display: grid; gap: .2rem; }
+label.f input { font: inherit; font-size: 1.1rem; padding: .5rem .2rem; border: 0; border-bottom: 2px solid var(--ink); background: none; min-width: 0; }
+label.file { display: grid; place-items: center; gap: .3rem; min-height: 9rem; padding: 1.2rem; border: 3px dashed var(--ink); text-align: center; cursor: pointer; background: #FAF7F5; }
+label.file input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+label.file .big { font-family: var(--marker); font-size: clamp(1.5rem, 5vw, 2.1rem); color: var(--magenta); transform: rotate(-2deg); }
+label.file.has { border-style: solid; border-color: var(--green); }
+label.file .fn { font-weight: 700; word-break: break-all; }
+.warn { margin: 0; font-weight: 700; color: #B00020; }
+.go { justify-self: stretch; font-family: var(--display); font-size: clamp(1.3rem, 4vw, 1.8rem); text-transform: uppercase; padding: .55em 1em; border: 0; background: var(--ink); color: #fff; box-shadow: 6px 6px 0 var(--magenta); cursor: pointer; }
+.go:disabled { opacity: .45; cursor: progress; box-shadow: none; }
+.bar { height: 22px; border: 2px solid var(--ink); background: #fff; overflow: hidden; }
+.bar div { height: 100%; width: 0; background: var(--magenta); transition: width .3s; }
+.pmsg { margin: .3rem 0 0; font-weight: 700; }
+.done { margin-top: 1.6rem; padding: 1.2rem; border: 3px solid var(--green); }
+.done h2 { margin: 0 0 .4rem; font-family: var(--display); font-weight: 400; font-size: 2rem; text-transform: uppercase; color: var(--green); }
+.fail { margin-top: 1.2rem; padding: 1rem 1.1rem; border: 3px solid #B00020; background: #FFF4F4; }
+.fail p { margin: 0 0 .5rem; }
+.fail .m { font-weight: 700; color: #B00020; }
+.fail a.wt { display: inline-block; margin-top: .3rem; font-family: var(--display); text-transform: uppercase; text-decoration: none; background: var(--ink); color: #fff; padding: .45em 1em; }
+.help { margin-top: 1.6rem; font-size: .9rem; color: var(--faint); }
+</style>
+</head>
+<body>
+<main class="sheet">
+  <a class="back" href="/oneminute/">← THE 1 MINUTE FILM FESTIVAL</a>
+  <h1>Submit your film</h1>
+  <p class="due">Due Sun Nov 15 · 11:00 AM · <span class="tm" id="tm"></span></p>
+  <ul class="rules">
+    <li><mark>MP4 only.</mark> Export as MP4 (H.264), 1080p is plenty.</li>
+    <li>60 seconds or less.</li>
+    <li>One upload per film. Keep this page open until it says <b>RECEIVED</b>.</li>
+  </ul>
+
+  <form id="form" novalidate>
+    <label class="f"><span class="k">Film title</span><input id="title" maxlength="120" required autocomplete="off"></label>
+    <label class="f"><span class="k">Team / director</span><input id="team" maxlength="120" autocomplete="off"></label>
+    <label class="f"><span class="k">Email</span><input id="email" type="email" maxlength="200" required autocomplete="email"></label>
+    <label class="file" id="drop"><input id="file" type="file" accept="video/mp4,.mp4"><span class="big" id="fbig">tap to choose your MP4</span><span class="fn" id="fn"></span></label>
+    <p class="warn" id="warn" hidden></p>
+    <button class="go" id="go" type="submit">Upload film</button>
+    <div id="prog" hidden><div class="bar"><div id="barfill"></div></div><p class="pmsg" id="pmsg"></p></div>
+  </form>
+
+  <section class="done" id="done" hidden>
+    <h2>Received ★</h2>
+    <p id="donemsg"></p>
+    <p>See you Sunday 7PM at Millennium Film Workshop, 167 Wilson Ave.</p>
+  </section>
+
+  <section class="fail" id="fail" hidden>
+    <p class="m" id="failmsg"></p>
+    <p><b>Plan B:</b> send your MP4 with WeTransfer to <b>maqetcollective@gmail.com</b>. Put your film title and team name in the message.</p>
+    <a class="wt" href="https://wetransfer.com/" target="_blank" rel="noopener">Open WeTransfer →</a>
+  </section>
+
+  <p class="help">Trouble? Email <a href="mailto:maqetcollective@gmail.com">maqetcollective@gmail.com</a>.</p>
+</main>
+
+<script>
+(function () {
+  const $ = (id) => document.getElementById(id);
+  const DUE = Date.parse("2026-11-15T11:00:00-05:00");
+  const MAX = 2 * 1024 ** 3;
+  function clock() {
+    const left = DUE - Date.now();
+    if (left <= 0) { $("tm").textContent = "deadline passed, upload anyway"; return; }
+    const s = Math.floor(left / 1000), h = Math.floor(s / 3600), m = Math.floor(s / 60) % 60;
+    $("tm").textContent = h + "h " + String(m).padStart(2, "0") + "m left";
+  }
+  clock(); setInterval(clock, 15000);
+
+  $("title").value = localStorage.getItem("fest-sub-title") || "";
+  $("team").value = localStorage.getItem("fest-sub-team") || "";
+  $("email").value = localStorage.getItem("fest-sub-email") || "";
+
+  const warn = (t) => { $("warn").textContent = t || ""; $("warn").hidden = !t; };
+  function fail(t) {
+    $("failmsg").textContent = t || "The upload didn't work.";
+    $("fail").hidden = false; $("prog").hidden = true;
+    $("go").disabled = false; $("go").textContent = "Try again";
+    $("fail").scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+  const mb = (n) => (n / 1048576).toFixed(n > 100 * 1048576 ? 0 : 1) + " MB";
+
+  $("file").addEventListener("change", () => {
+    const f = $("file").files[0];
+    warn(""); $("fail").hidden = true;
+    $("drop").classList.toggle("has", !!f);
+    $("fbig").textContent = f ? "got it" : "tap to choose your MP4";
+    $("fn").textContent = f ? f.name + " · " + mb(f.size) : "";
+    if (!f) return;
+    if (!/\.mp4$/i.test(f.name)) { warn("That's not an MP4. Export your film as .mp4 and choose it again."); return; }
+    if (f.size > MAX) { warn("That file is over 2 GB. Export it smaller, or use WeTransfer below."); fail("File is over 2 GB."); return; }
+    const v = document.createElement("video");
+    v.preload = "metadata"; v.muted = true;
+    v.onloadedmetadata = () => { if (isFinite(v.duration) && v.duration > 61) warn("Heads up: this runs " + Math.round(v.duration) + " seconds. The limit is 60."); URL.revokeObjectURL(v.src); };
+    v.onerror = () => URL.revokeObjectURL(v.src);
+    v.src = URL.createObjectURL(f);
+  });
+
+  async function req(url, opts, tries = 4) {
+    let last;
+    for (let i = 0; i < tries; i++) {
+      try {
+        const r = await fetch(url, opts);
+        const d = await r.json().catch(() => ({}));
+        if (r.ok) return d;
+        last = new Error(d.error || ("Server said " + r.status));
+        if (d.fatal || r.status === 400 || r.status === 403 || r.status === 404 || r.status === 429) throw Object.assign(last, { stop: true });
+      } catch (e) { if (e.stop) throw e; last = e; }
+      await new Promise((ok) => setTimeout(ok, 800 * (i + 1) ** 2));
+    }
+    throw last;
+  }
+
+  $("form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    $("fail").hidden = true;
+    const title = $("title").value.trim(), team = $("team").value.trim(), email = $("email").value.trim(), f = $("file").files[0];
+    if (!title) { warn("Add your film's title."); $("title").focus(); return; }
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { warn("Add an email so we can reach you."); $("email").focus(); return; }
+    if (!f) { warn("Choose your MP4 file."); return; }
+    if (!/\.mp4$/i.test(f.name)) { warn("MP4 required. Export your film as .mp4."); return; }
+    warn("");
+    localStorage.setItem("fest-sub-title", title); localStorage.setItem("fest-sub-team", team); localStorage.setItem("fest-sub-email", email);
+    $("go").disabled = true; $("go").textContent = "Uploading…";
+    $("prog").hidden = false; $("barfill").style.width = "0";
+    $("pmsg").textContent = "Starting…";
+    let unload = (ev) => { ev.preventDefault(); ev.returnValue = ""; };
+    addEventListener("beforeunload", unload);
+    try {
+      const s = await req("/api/fest/upload/start", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ title, team, email, size: f.size, filename: f.name }) }, 3);
+      const total = Math.ceil(f.size / s.chunk);
+      let next = 0, sent = 0;
+      const t0 = Date.now();
+      const show = () => {
+        const pct = Math.round(100 * sent / total);
+        $("barfill").style.width = pct + "%";
+        const el = (Date.now() - t0) / 1000, rate = sent / Math.max(el, 1);
+        const eta = rate > 0 ? Math.ceil((total - sent) / rate) : 0;
+        $("pmsg").textContent = pct + "% · " + mb(Math.min(f.size, sent * s.chunk)) + " of " + mb(f.size) + (sent > 2 && eta > 5 ? " · about " + (eta > 90 ? Math.ceil(eta / 60) + " min" : eta + " s") + " left" : "");
+      };
+      const worker = async () => {
+        while (next < total) {
+          const n = next++;
+          const blob = f.slice(n * s.chunk, Math.min(f.size, (n + 1) * s.chunk));
+          await req("/api/fest/upload/" + s.id + "/" + n + "?t=" + s.t, { method: "PUT", body: blob }, 6);
+          sent++; show();
+        }
+      };
+      await Promise.all([worker(), worker(), worker(), worker()]);
+      $("pmsg").textContent = "Checking…";
+      await req("/api/fest/upload/" + s.id + "/done?t=" + s.t, { method: "POST" }, 3);
+      $("barfill").style.width = "100%";
+      $("form").hidden = true;
+      $("done").hidden = false;
+      $("donemsg").textContent = "“" + title + "”" + (team ? " by " + team : "") + " is in (" + mb(f.size) + "). Confirmation code: " + s.id + ".";
+      $("done").scrollIntoView({ behavior: "smooth" });
+    } catch (err) {
+      $("pmsg").textContent = "";
+      fail((err && err.message ? err.message : "The upload didn't work.").replace(/^Failed to fetch$/, "Lost connection during the upload."));
+    } finally {
+      removeEventListener("beforeunload", unload);
+    }
+  });
+})();
+</script>
+</body>
+</html>

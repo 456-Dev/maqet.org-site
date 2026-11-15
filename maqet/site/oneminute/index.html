@@ -458,10 +458,19 @@ span.guest-link { color: inherit; }
   .doodle path, .hl, .rec.on::before, .ch-big span, .ch-worm, .done-stamp { animation: none; }
   .btn, .box::after, .ch-box, .hint, .q-frames span, .guest-drop summary::after { transition: none; }
 }
+
+/* ── big SUBMIT banner at the very top ── */
+.submit-banner { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: .6rem 1.4rem; margin: 0 0 1.4rem; padding: clamp(14px, 2.4vw, 24px) clamp(16px, 3vw, 30px); background: var(--magenta); color: #fff; text-decoration: none; box-shadow: 7px 7px 0 var(--ink); transition: translate .15s ease, box-shadow .15s ease; }
+.submit-banner:hover { translate: -2px -2px; box-shadow: 9px 9px 0 var(--ink); }
+.submit-banner .sb-big { display: block; font-family: var(--display); font-size: clamp(1.9rem, 6.4vw, 3.6rem); line-height: .95; text-transform: uppercase; }
+.submit-banner .sb-sub { display: block; margin-top: .35rem; font-weight: 700; font-size: clamp(.9rem, 2vw, 1.05rem); }
+.submit-banner .sb-go { font-family: var(--marker); font-size: clamp(1.4rem, 4vw, 2.2rem); background: var(--highlight); color: var(--ink); padding: .15em .55em; rotate: -4deg; white-space: nowrap; }
+@media (max-width: 560px) { .submit-banner { grid-template-columns: 1fr; } .submit-banner .sb-go { justify-self: start; } }
 </style>
 </head>
 <body>
 <main class="sheet">
+  <a class="submit-banner" href="/oneminute/submit/"><span><span class="sb-big">Submit your film</span><span class="sb-sub">MP4 only · 60 seconds or less · due Sun Nov 15, 11AM</span></span><span class="sb-go">upload →</span></a>
   <p class="sponsor sponsor--top"><span class="k">Sponsored by</span> <a class="sponsor-logo" href="https://www.gowanusdarkroom.com" target="_blank" rel="noopener"><img src="film/gowanus-darkroom.webp" alt="Gowanus Darkroom" width="1200" height="391"></a> <span>Free develop and scan for the winners.</span></p>
 
   <div class="head">
