@@ -90,7 +90,8 @@ h1 { margin: .35rem 0 .2rem; font-family: var(--display); font-weight: 400; font
 .trow .pt { text-align: right; font-weight: 700; }
 .scoring { margin-top: 1rem; font-size: .85rem; color: var(--faint); }
 .err { padding: 2rem 0; font-weight: 700; }
-.film.own { opacity: .38; }
+.film.own, .film.np { opacity: .38; }
+.film .npn { font-size: .78rem; font-weight: 700; color: var(--magenta); margin-top: -.3rem; }
 .film.own .team::after { content: " · your film"; font-weight: 700; color: var(--ink); }
 .awards { border-top: 2px solid var(--ink); padding: 1.2rem 0 1.8rem; }
 .awards h2, .aresults h2 { margin: 0 0 .2rem; font-family: var(--display); font-weight: 400; font-size: clamp(1.6rem, 4.4vw, 2.6rem); text-transform: uppercase; line-height: 1; }
@@ -197,15 +198,16 @@ h1 { margin: .35rem 0 .2rem; font-family: var(--display); font-weight: 400; font
     const all = data ? data.films.map((f) => f.id) : [];
     if (own !== "none" && !all.includes(own)) own = "";
     const ids = all.filter((id) => id !== own);
-    need = Math.min(3, ids.length);
-    picks = picks.filter((id) => ids.includes(id)).slice(0, need);
+    const prize = data.films.filter((f) => !f.noprize && f.id !== own).map((f) => f.id);
+    need = Math.min(3, prize.length);
+    picks = picks.filter((id) => prize.includes(id)).slice(0, need);
     for (const k of Object.keys(awards)) if (!ids.includes(awards[k])) delete awards[k];
     document.querySelectorAll(".film").forEach((b) => {
       const i = picks.indexOf(b.dataset.id);
-      const mine = b.dataset.id === own;
+      const mine = b.dataset.id === own, np = b.classList.contains("np");
       b.classList.toggle("on", i >= 0);
       b.classList.toggle("own", mine);
-      b.disabled = mine || data.phase !== "open";
+      b.disabled = mine || np || data.phase !== "open";
       b.querySelector(".badge").textContent = i >= 0 ? String(i + 1) : "";
       b.setAttribute("aria-pressed", i >= 0);
     });
@@ -232,7 +234,7 @@ h1 { margin: .35rem 0 .2rem; font-family: var(--display); font-weight: 400; font
 
   function renderGrid() {
     const open = data.phase === "open";
-    const key = data.films.map((f) => f.id + f.name + f.team + f.img).join("|") + open;
+    const key = data.films.map((f) => f.id + f.name + f.team + f.img + f.noprize).join("|") + open;
     if (key === rendered) return;
     rendered = key;
     const chip = (f, onTap, cls) => {
@@ -257,6 +259,7 @@ h1 { margin: .35rem 0 .2rem; font-family: var(--display); font-weight: 400; font
       else st.append(el("span", "noimg", String(n + 1)));
       b.append(el("span", "badge"), st, el("span", "name", f.name));
       if (f.team) b.append(el("span", "team", f.team));
+      if (f.noprize) { b.classList.add("np"); b.append(el("span", "npn", "Special awards only · " + f.noprize)); }
       b.onclick = () => {
         const i = picks.indexOf(f.id);
         if (i >= 0) picks.splice(i, 1); else if (picks.length < need) picks.push(f.id); else { $("bmsg").className = "bmsg err"; $("bmsg").textContent = "You have all 3. Tap one to drop it first."; return; }

@@ -12,7 +12,7 @@
 //   GET  /api/fest/admin/sub/<id>                                        download one (range ok)
 //   POST /api/fest/admin/sub-purge {id}                                  drop the file bytes (keeps the record)
 //   POST /api/fest/admin/film      multipart {name, team, image}         add a film
-//   POST /api/fest/admin/edit      {id, name?, team?, ord?}              rename / reorder
+//   POST /api/fest/admin/edit      {id, name?, team?, ord?, noprize?}    rename / reorder; noprize = reason text (awards only, not in the 5/3/1 prize), "" clears
 //   POST /api/fest/admin/delete    {id}
 //   POST /api/fest/admin/start     {minutes=5}                           open voting now for N minutes
 //   POST /api/fest/admin/stop                                            close voting now (shows results)
@@ -44,6 +44,7 @@ async function ensureSchema(db) {
   for (const sql of SCHEMA) await db.prepare(sql).run();
   try { await db.prepare("ALTER TABLE fv_subchunks ADD COLUMN len INTEGER").run(); } catch (e) { /* already there */ }
   try { await db.prepare("ALTER TABLE fv_votes ADD COLUMN own TEXT").run(); } catch (e) { /* already there */ }
+  try { await db.prepare("ALTER TABLE fv_films ADD COLUMN noprize TEXT").run(); } catch (e) { /* already there */ }
   try { await db.prepare("ALTER TABLE fv_votes ADD COLUMN awards TEXT").run(); } catch (e) { /* already there */ }
   schemaReady = true;
 }
@@ -150,13 +151,13 @@ async function setState(db, obj) {
 }
 
 async function films(db) {
-  const { results } = await db.prepare("SELECT id, name, team, ord, mime, created FROM fv_films ORDER BY ord ASC, created ASC").all();
-  return results.map((r) => ({ id: r.id, name: r.name, team: r.team || "", ord: r.ord, img: r.mime ? `/api/fest/img/${r.id}?v=${encodeURIComponent(r.created)}` : null }));
+  const { results } = await db.prepare("SELECT id, name, team, ord, mime, created, noprize FROM fv_films ORDER BY ord ASC, created ASC").all();
+  return results.map((r) => ({ id: r.id, name: r.name, team: r.team || "", ord: r.ord, noprize: r.noprize || "", img: r.mime ? `/api/fest/img/${r.id}?v=${encodeURIComponent(r.created)}` : null }));
 }
 
 async function tally(db, list) {
   const { results: votes } = await db.prepare("SELECT name, picks, awards FROM fv_votes ORDER BY updated ASC").all();
-  const score = Object.fromEntries(list.map((f) => [f.id, { ...f, points: 0, places: [0, 0, 0] }]));
+  const score = Object.fromEntries(list.filter((f) => !f.noprize).map((f) => [f.id, { ...f, points: 0, places: [0, 0, 0] }]));
   for (const v of votes) {
     JSON.parse(v.picks).forEach((id, i) => { if (score[id] && i < 3) { score[id].points += POINTS[i]; score[id].places[i]++; } });
   }
@@ -196,13 +197,15 @@ async function vote(request, env) {
   const b = await request.json().catch(() => ({}));
   const name = clean(b.name, 60);
   if (name.length < 2) return json({ error: "Write your name so we know who voted." }, 400);
-  const all = (await films(db)).map((f) => f.id);
+  const list = await films(db);
+  const all = list.map((f) => f.id);
   const own = String(b.own || "");
   if (own !== "none" && !all.includes(own)) return json({ error: "Tell us which film is yours (or pick \"I'm just watching\")." }, 400);
   const ids = all.filter((id) => id !== own);
-  const need = Math.min(3, ids.length);
+  const prizeIds = list.filter((f) => !f.noprize && f.id !== own).map((f) => f.id);
+  const need = Math.min(3, prizeIds.length);
   if ((Array.isArray(b.picks) ? b.picks : []).map(String).includes(own)) return json({ error: "No voting for your own film." }, 400);
-  const picks = [...new Set((Array.isArray(b.picks) ? b.picks : []).map(String))].filter((id) => ids.includes(id));
+  const picks = [...new Set((Array.isArray(b.picks) ? b.picks : []).map(String))].filter((id) => prizeIds.includes(id));
   if (picks.length !== need) return json({ error: `Pick your 1st, 2nd and 3rd.` }, 400);
   const awards = {};
   const ba = b.awards && typeof b.awards === "object" ? b.awards : {};
@@ -276,8 +279,9 @@ async function admin(request, env, action) {
   if (action === "edit") {
     const row = await db.prepare("SELECT * FROM fv_films WHERE id = ?1").bind(String(b.id)).first();
     if (!row) return json({ error: "No such film." }, 404);
-    await db.prepare("UPDATE fv_films SET name = ?2, team = ?3, ord = ?4 WHERE id = ?1")
-      .bind(row.id, b.name != null ? clean(b.name, 100) || row.name : row.name, b.team != null ? clean(b.team, 100) : row.team, Number.isFinite(+b.ord) && b.ord !== null ? +b.ord : row.ord).run();
+    await db.prepare("UPDATE fv_films SET name = ?2, team = ?3, ord = ?4, noprize = ?5 WHERE id = ?1")
+      .bind(row.id, b.name != null ? clean(b.name, 100) || row.name : row.name, b.team != null ? clean(b.team, 200) : row.team, Number.isFinite(+b.ord) && b.ord !== null ? +b.ord : row.ord,
+        b.noprize != null ? clean(b.noprize, 60) || null : row.noprize).run();
     return json({ ok: true });
   }
   if (action === "sub-delete") {
