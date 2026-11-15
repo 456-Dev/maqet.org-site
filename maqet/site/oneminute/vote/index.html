@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Audience Vote · The 1 Minute Film Festival</title>
-<meta name="description" content="Rank your top 3 films of the night and vote the fun awards. Results show when voting closes.">
+<meta name="description" content="Rank your top 3 films of the night and vote the special awards. Results show when voting closes.">
 <meta name="theme-color" content="#C23A0B">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
@@ -156,8 +156,8 @@ h1 { margin: .35rem 0 .2rem; font-family: var(--display); font-weight: 400; font
   </section>
   <h2 class="step" id="step2" hidden>2. Tap your 1st, 2nd, 3rd</h2>
   <main id="grid" class="grid" aria-label="Films"></main>
-  <section id="awards" class="awards" hidden aria-label="Fun awards">
-    <h2>3. Fun awards</h2>
+  <section id="awards" class="awards" hidden aria-label="Special Awards">
+    <h2>3. Special Awards</h2>
     <p class="hint">Optional. Tap a film under any award (tap again to clear). Swipe for more films.</p>
     <div class="alist" id="alist"></div>
   </section>
@@ -293,7 +293,7 @@ h1 { margin: .35rem 0 .2rem; font-family: var(--display); font-weight: 400; font
       tbl.append(row);
     });
     const sc = el("p", "scoring", "1st pick = 5 pts, 2nd = 3, 3rd = 1. Nobody could vote for their own film. " + data.voters.length + " ballots. Ties on points go to more 1st-place picks; still tied = same rank.");
-    const ar = el("div", "aresults"); ar.append(el("h2", null, "Fun awards"));
+    const ar = el("div", "aresults"); ar.append(el("h2", null, "Special Awards"));
     const ag = el("div", "agrid");
     (data.awardResults || []).forEach((a) => {
       const d = el("div", "aw"); d.append(el("span", "al", a.label));
@@ -338,7 +338,7 @@ h1 { margin: .35rem 0 .2rem; font-family: var(--display); font-weight: 400; font
     $("title").textContent = closed ? "The results" : "Audience vote";
     $("sub").innerHTML = closed ? "The audience has spoken." :
       d.phase === "before" ? "When voting opens, tap your <mark>1st, 2nd and 3rd</mark> (5, 3 and 1 points), then pick the fun awards. No voting for your own film." :
-      "Top 3 = <mark>5, 3 and 1 points</mark>, plus 10 fun awards. Vote again with the same name to change it.";
+      "Top 3 = <mark>5, 3 and 1 points</mark>, plus 10 special awards. Vote again with the same name to change it.";
     $("grid").hidden = closed;
     $("results").hidden = !closed;
     $("ballot").hidden = d.phase !== "open";

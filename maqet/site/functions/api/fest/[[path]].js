@@ -19,7 +19,7 @@
 //   POST /api/fest/admin/reset     {votes=true}                          back to "not open yet"
 //   GET  /api/fest/admin/results                                         live tally, any time
 //
-// Scoring: 1st pick = 5 points, 2nd = 3, 3rd = 1. Same points = same rank. Fun awards: most votes wins, ties share.
+// Scoring: 1st pick = 5 points, 2nd = 3, 3rd = 1. Same points = same rank. Special awards: most votes wins, ties share.
 
 const POINTS = [5, 3, 1];
 const AWARDS = [
