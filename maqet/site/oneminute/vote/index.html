@@ -42,7 +42,7 @@ h1 { margin: .35rem 0 .2rem; font-family: var(--display); font-weight: 400; font
 .voters { margin: .9rem 0 0; font-size: .9rem; color: var(--faint); }
 .voters b { color: var(--ink); }
 
-.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr)); gap: clamp(14px, 2vw, 24px); padding: 1.4rem 0 1.6rem; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(46%, 220px), 1fr)); gap: clamp(14px, 2vw, 24px); padding: 1.4rem 0 1.6rem; }
 .film { position: relative; display: grid; gap: .45rem; align-content: start; padding: 0; border: 0; background: none; text-align: left; font: inherit; color: inherit; cursor: pointer; }
 .film:disabled { cursor: default; }
 .film .still { position: relative; aspect-ratio: 16 / 9; background: #EEE9E6; border: 2px solid var(--ink); overflow: hidden; display: grid; place-items: center; }
@@ -98,6 +98,18 @@ h1 { margin: .35rem 0 .2rem; font-family: var(--display); font-weight: 400; font
 .alist { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: .7rem 1.4rem; }
 .arow { display: grid; gap: .2rem; }
 .arow label { font-weight: 700; font-size: .85rem; text-transform: uppercase; line-height: 1.2; }
+.step { margin: 0; padding-top: 1.2rem; font-family: var(--display); font-weight: 400; font-size: clamp(1.3rem, 3.6vw, 2rem); text-transform: uppercase; line-height: 1; }
+.step small { font-family: var(--mono); font-size: .8rem; text-transform: none; color: var(--faint); margin-left: .4rem; }
+.mine { padding-bottom: .4rem; }
+.strip { display: flex; gap: 10px; overflow-x: auto; padding: 10px 4px 12px; scroll-snap-type: x proximity; -webkit-overflow-scrolling: touch; }
+.chip { flex: 0 0 auto; width: 118px; scroll-snap-align: start; display: grid; gap: 4px; padding: 0; border: 0; background: none; font: inherit; color: inherit; text-align: left; cursor: pointer; }
+.chip .ci { aspect-ratio: 16 / 9; border: 2px solid var(--ink); background: #EEE9E6 center / cover no-repeat; display: grid; place-items: center; font-family: var(--display); color: var(--faint); font-size: .9rem; }
+.chip .cn { font-size: .72rem; font-weight: 700; text-transform: uppercase; line-height: 1.15; max-height: 2.3em; overflow: hidden; }
+.chip.on .ci { border-color: var(--magenta); outline: 3px solid var(--magenta); }
+.chip.on .cn { color: var(--magenta); }
+.chip.watch .ci { background: var(--ink); color: #fff; font-size: .8rem; text-align: center; padding: 4px; }
+.mine.need .chip .ci { border-style: dashed; }
+.arow .strip { padding-top: 6px; }
 .arow select, .ballot select { font: inherit; font-size: .95rem; padding: .45rem .3rem; border: 2px solid var(--ink); background: #fff; color: var(--ink); border-radius: 0; min-width: 0; }
 .arow select.set { border-color: var(--magenta); outline: 2px solid var(--magenta); }
 .ballot select { flex: 1 1 12rem; }
@@ -138,10 +150,15 @@ h1 { margin: .35rem 0 .2rem; font-family: var(--display); font-weight: 400; font
     </div>
   </header>
 
+  <section id="mine" class="mine" hidden aria-label="Your film">
+    <h2 class="step">1. Which film is yours? <small>so you can't vote for it</small></h2>
+    <div class="strip" id="ownstrip"></div>
+  </section>
+  <h2 class="step" id="step2" hidden>2. Tap your 1st, 2nd, 3rd</h2>
   <main id="grid" class="grid" aria-label="Films"></main>
   <section id="awards" class="awards" hidden aria-label="Fun awards">
-    <h2>10 Fun awards</h2>
-    <p class="hint">Optional. Pick a film for any award you want. Not your own.</p>
+    <h2>3. Fun awards</h2>
+    <p class="hint">Optional. Tap a film under any award (tap again to clear). Swipe for more films.</p>
     <div class="alist" id="alist"></div>
   </section>
   <section id="results" class="results" hidden aria-label="Results"></section>
@@ -151,9 +168,6 @@ h1 { margin: .35rem 0 .2rem; font-family: var(--display); font-weight: 400; font
     <div class="slot" data-i="0"><span class="p">1st · 5 pts</span><span class="v">tap a film</span></div>
     <div class="slot" data-i="1"><span class="p">2nd · 3 pts</span><span class="v">tap a film</span></div>
     <div class="slot" data-i="2"><span class="p">3rd · 1 pt</span><span class="v">tap a film</span></div>
-    <div class="row">
-      <select id="own" aria-label="Your film"></select>
-    </div>
     <div class="row">
       <input id="name" name="name" autocomplete="name" maxlength="60" placeholder="Your name" aria-label="Your name">
       <button id="submit" type="submit" disabled>VOTE</button>
@@ -195,15 +209,14 @@ h1 { margin: .35rem 0 .2rem; font-family: var(--display); font-weight: 400; font
       b.querySelector(".badge").textContent = i >= 0 ? String(i + 1) : "";
       b.setAttribute("aria-pressed", i >= 0);
     });
-    const o = $("own");
-    o.replaceChildren(el("option", null, "Which film is yours? (required)"), el("option", null, "I'm just watching (no film)"), ...data.films.map((f) => { const x = el("option", null, "Mine: " + f.name); x.value = f.id; return x; }));
-    o.options[0].value = ""; o.options[0].disabled = true; o.options[1].value = "none";
-    o.value = own; o.classList.toggle("need", !own);
-    document.querySelectorAll(".arow select").forEach((s) => {
-      const k = s.dataset.k;
-      s.replaceChildren(el("option", null, "—"), ...data.films.filter((f) => f.id !== own).map((f) => { const x = el("option", null, f.name); x.value = f.id; return x; }));
-      s.options[0].value = "";
-      s.value = awards[k] || ""; s.classList.toggle("set", !!awards[k]);
+    $("mine").classList.toggle("need", !own);
+    $("ownstrip").querySelectorAll(".chip").forEach((c) => { c.classList.toggle("on", c.dataset.id === own); c.setAttribute("aria-pressed", c.dataset.id === own); });
+    document.querySelectorAll(".arow").forEach((r) => {
+      const k = r.dataset.k;
+      r.querySelectorAll(".chip").forEach((c) => {
+        c.hidden = c.dataset.id === own;
+        c.classList.toggle("on", awards[k] === c.dataset.id); c.setAttribute("aria-pressed", awards[k] === c.dataset.id);
+      });
     });
     document.querySelectorAll(".slot").forEach((s) => {
       const i = +s.dataset.i, f = data && data.films.find((x) => x.id === picks[i]);
@@ -211,7 +224,7 @@ h1 { margin: .35rem 0 .2rem; font-family: var(--display); font-weight: 400; font
       s.classList.toggle("full", !!f);
       s.querySelector(".v").textContent = f ? f.name : "tap a film";
     });
-    $("submit").disabled = picks.length !== need || !own || data.phase !== "open";
+    $("submit").disabled = data.phase !== "open";
     localStorage.setItem("fest-picks", JSON.stringify(picks));
     localStorage.setItem("fest-awards", JSON.stringify(awards));
     localStorage.setItem("fest-own", own);
@@ -222,11 +235,20 @@ h1 { margin: .35rem 0 .2rem; font-family: var(--display); font-weight: 400; font
     const key = data.films.map((f) => f.id + f.name + f.team + f.img).join("|") + open;
     if (key === rendered) return;
     rendered = key;
+    const chip = (f, onTap, cls) => {
+      const c = el("button", "chip" + (cls ? " " + cls : "")); c.type = "button"; c.dataset.id = f.id;
+      const ci = el("span", "ci", f.img ? null : (f.label || ""));
+      if (f.img) ci.style.backgroundImage = "url('" + f.img + "')";
+      c.append(ci, el("span", "cn", f.name)); c.onclick = onTap; return c;
+    };
+    $("ownstrip").replaceChildren(
+      chip({ id: "none", name: "No film", label: "I'm just watching" }, () => { own = "none"; $("bmsg").textContent = ""; syncPicks(); }, "watch"),
+      ...data.films.map((f) => chip(f, () => { own = f.id; $("bmsg").textContent = ""; syncPicks(); })));
     $("alist").replaceChildren(...(data.awards || []).map((a) => {
-      const d = el("div", "arow"), lb = el("label", null, a.label), s = el("select");
-      s.id = "aw-" + a.key; s.dataset.k = a.key; lb.htmlFor = s.id;
-      s.onchange = () => { if (s.value) awards[a.key] = s.value; else delete awards[a.key]; syncPicks(); };
-      d.append(lb, s); return d;
+      const d = el("div", "arow"); d.dataset.k = a.key;
+      const st = el("div", "strip");
+      st.append(...data.films.map((f) => chip(f, () => { if (awards[a.key] === f.id) delete awards[a.key]; else awards[a.key] = f.id; syncPicks(); })));
+      d.append(el("label", null, a.label), st); return d;
     }));
     $("grid").replaceChildren(...data.films.map((f, n) => {
       const b = el("button", "film"); b.type = "button"; b.dataset.id = f.id; b.disabled = !open;
@@ -316,11 +338,13 @@ h1 { margin: .35rem 0 .2rem; font-family: var(--display); font-weight: 400; font
     $("title").textContent = closed ? "The results" : "Audience vote";
     $("sub").innerHTML = closed ? "The audience has spoken." :
       d.phase === "before" ? "When voting opens, tap your <mark>1st, 2nd and 3rd</mark> (5, 3 and 1 points), then pick the fun awards. No voting for your own film." :
-      "Tap your <mark>1st, 2nd and 3rd</mark> in order (5, 3 and 1 points). Fun awards are below. No voting for your own film. Vote again with the same name to change it.";
+      "Top 3 = <mark>5, 3 and 1 points</mark>, plus 10 fun awards. Vote again with the same name to change it.";
     $("grid").hidden = closed;
     $("results").hidden = !closed;
     $("ballot").hidden = d.phase !== "open";
     $("awards").hidden = d.phase !== "open";
+    $("mine").hidden = d.phase !== "open";
+    $("step2").hidden = d.phase !== "open";
     if (closed) renderResults(); else renderGrid();
     if (!d.films.length && !closed) { $("grid").replaceChildren(el("p", null, "Films go up here once they're in.")); rendered = ""; }
     tick();
@@ -338,7 +362,7 @@ h1 { margin: .35rem 0 .2rem; font-family: var(--display); font-weight: 400; font
     e.preventDefault();
     const name = $("name").value.trim(), msg = $("bmsg");
     msg.className = "bmsg err";
-    if (!own) { msg.textContent = "Pick which film is yours first (or \"just watching\")."; $("own").focus(); return; }
+    if (!own) { msg.textContent = "Step 1: tap which film is yours (or \"just watching\")."; $("mine").scrollIntoView({ behavior: "smooth" }); return; }
     if (picks.length !== need) { msg.textContent = "Tap your 1st, 2nd and 3rd first."; return; }
     if (name.length < 2) { msg.textContent = "Write your name so we know who voted."; $("name").focus(); return; }
     $("submit").disabled = true; msg.className = "bmsg"; msg.textContent = "Sending…";
@@ -354,7 +378,6 @@ h1 { margin: .35rem 0 .2rem; font-family: var(--display); font-weight: 400; font
       .catch(() => { syncPicks(); msg.className = "bmsg err"; msg.textContent = "No connection. Try again."; });
   });
 
-  $("own").onchange = () => { own = $("own").value; syncPicks(); };
   load();
   setInterval(tick, 250);
   setInterval(() => { if (!data || data.phase !== "closed" || !data.results) load(); }, 4000);
