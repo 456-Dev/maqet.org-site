@@ -22,7 +22,7 @@ window.FESTIVAL = {
   guestListUrl: "https://script.google.com/macros/s/AKfycbyp3PGtstP0HFCf2YhibYZLEdGB8BkkdS4uqUvp2qq0S0gTRFEvIsKimsIMH0c4MWNYJw/exec",
 
   contactEmail: "maqetcollective@gmail.com",   // shown at the bottom: "Any questions? Email ..."
-  instagramUrl: "",   // e.g. "https://instagram.com/maqet"
+  instagramUrl: "https://instagram.com/maqet.art",   // e.g. "https://instagram.com/maqet"
 
   // Where the prompt is revealed on Saturday. Blank shows "Location to be announced."
   promptLocation: "Tompkins Square Park",

@@ -76,7 +76,7 @@ hr { height: 1px; margin: 1.6rem 0 0; border: 0; background: var(--rule); }
 <div class="how">
   <p id="count"></p>
   <p id="howto">Tap <b>VOTE</b> on your 7 favorites, add your name at the bottom and submit.</p>
-  <p class="meta" id="rules">Vote again with the same name to change it; your last vote counts. The top 7 post to @_maqet_, one a day.</p>
+  <p class="meta" id="rules">Vote again with the same name to change it; your last vote counts. The top 7 post to @maqet.art, one a day.</p>
   <p class="voters" id="voters"></p>
 </div>
 <nav class="jump" id="jump"></nav>
@@ -184,7 +184,7 @@ hr { height: 1px; margin: 1.6rem 0 0; border: 0; background: var(--rule); }
       showVoters(d.voters);
       const closes = new Date(d.closes);
       const when = closes.toLocaleString("en-US", { timeZone: "America/New_York", weekday: "short", hour: "numeric", minute: "2-digit" });
-      $("rules").textContent = (d.open ? "Voting closes " + when + ". " : "Voting closed " + when + ". ") + "Vote again with the same name to change it; your last vote counts. The top 7 post to @_maqet_, one a day.";
+      $("rules").textContent = (d.open ? "Voting closes " + when + ". " : "Voting closed " + when + ". ") + "Vote again with the same name to change it; your last vote counts. The top 7 post to @maqet.art, one a day.";
       open = d.open;
       $("name").value = localStorage.getItem("maqet-voter") || "";
       const saved = JSON.parse(localStorage.getItem("maqet-picks-" + week) || "[]");
