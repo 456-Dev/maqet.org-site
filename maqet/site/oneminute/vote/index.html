@@ -315,13 +315,9 @@ h1 { margin: .35rem 0 .2rem; font-family: var(--display); font-weight: 400; font
     const now = Date.now() + skew;
     const c = $("clock"), note = $("clocknote");
     if (data.phase === "open") {
-      const left = Math.max(0, Date.parse(data.closes) - now);
-      const s = Math.ceil(left / 1000);
-      c.textContent = Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0");
-      c.classList.toggle("hot", s <= 30);
-      $("clockk").textContent = "Time left to vote";
-      note.textContent = s <= 30 ? "hurry!" : "";
-      if (left <= 0) load();
+      c.textContent = "OPEN"; c.classList.remove("hot");
+      $("clockk").textContent = "Voting is";
+      note.textContent = "change your vote any time";
     } else if (data.phase === "before") {
       c.textContent = "SOON"; c.classList.remove("hot");
       $("clockk").textContent = "Voting opens";
@@ -376,7 +372,7 @@ h1 { margin: .35rem 0 .2rem; font-family: var(--display); font-weight: 400; font
         if (!ok) { msg.className = "bmsg err"; msg.textContent = d.error || "That didn't go through. Try again."; return; }
         localStorage.setItem("fest-name", name);
         voters(d.voters);
-        msg.className = "bmsg ok"; msg.textContent = "Got it, " + name + ". Change your picks and vote again any time before the clock hits 0.";
+        msg.className = "bmsg ok"; msg.textContent = "Got it, " + name + ". Change your picks and vote again with the same name any time.";
       })
       .catch(() => { syncPicks(); msg.className = "bmsg err"; msg.textContent = "No connection. Try again."; });
   });

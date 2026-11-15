@@ -14,9 +14,8 @@
 //   POST /api/fest/admin/film      multipart {name, team, image}         add a film
 //   POST /api/fest/admin/edit      {id, name?, team?, ord?, noprize?}    rename / reorder; noprize = reason text (awards only, not in the 5/3/1 prize), "" clears
 //   POST /api/fest/admin/delete    {id}
-//   POST /api/fest/admin/start     {minutes=5}                           open voting now for N minutes
-//   POST /api/fest/admin/stop                                            close voting now (shows results)
-//   POST /api/fest/admin/reset     {votes=true}                          back to "not open yet"
+//   Voting is always open. POST /api/fest/admin/stop closes it and shows results; /admin/start reopens;
+//   POST /api/fest/admin/reset     {votes=true}                          wipe all votes (voting stays open)
 //   GET  /api/fest/admin/results                                         live tally, any time
 //
 // Scoring: 1st pick = 5 points, 2nd = 3, 3rd = 1. Same points = same rank. Special awards: most votes wins, ties share.
@@ -138,10 +137,9 @@ function subStream(env, id, start, end) {
 async function getState(db) {
   const { results } = await db.prepare("SELECT k, v FROM fv_state").all();
   const s = Object.fromEntries(results.map((r) => [r.k, r.v]));
-  const now = Date.now();
-  let phase = "before";
-  if (s.closes) phase = now < Date.parse(s.closes) ? "open" : "closed";
-  return { phase, opens: s.opens || null, closes: s.closes || null };
+  // Voting is always open unless an admin closed it to show results.
+  const phase = s.closed ? "closed" : "open";
+  return { phase, opens: null, closes: null, closed: s.closed || null };
 }
 async function setState(db, obj) {
   for (const [k, v] of Object.entries(obj)) {
@@ -299,17 +297,15 @@ async function admin(request, env, action) {
     return json({ ok: true });
   }
   if (action === "start") {
-    const minutes = Math.max(0.5, Math.min(180, +b.minutes || 5));
-    const now = Date.now();
-    await setState(db, { opens: new Date(now).toISOString(), closes: new Date(now + minutes * 60e3).toISOString() });
+    await setState(db, { closed: null, opens: null, closes: null });
     return json({ ok: true, ...(await getState(db)) });
   }
   if (action === "stop") {
-    await setState(db, { closes: new Date().toISOString() });
+    await setState(db, { closed: new Date().toISOString() });
     return json({ ok: true, ...(await getState(db)) });
   }
   if (action === "reset") {
-    await setState(db, { opens: null, closes: null });
+    await setState(db, { closed: null, opens: null, closes: null });
     if (b.votes !== false) await db.prepare("DELETE FROM fv_votes").run();
     return json({ ok: true, ...(await getState(db)) });
   }

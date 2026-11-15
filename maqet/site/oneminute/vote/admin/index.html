@@ -43,12 +43,11 @@ small { color: #666; }
   <h2>VOTING</h2>
   <p class="status" id="status">—</p>
   <div class="row">
-    <label>Minutes <input type="number" id="minutes" value="5" min="0.5" max="180" step="0.5" style="width:5em"></label>
-    <button class="big" id="start">START VOTING</button>
-    <button class="dark" id="stop">CLOSE NOW + SHOW RESULTS</button>
-    <button id="reset">RESET (clear votes)</button>
+    <button class="dark" id="stop">CLOSE + SHOW RESULTS</button>
+    <button class="big" id="start">REOPEN VOTING</button>
+    <button id="reset">WIPE RESULTS (delete all votes)</button>
   </div>
-  <p><small>Public page: <a href="/oneminute/vote/" target="_blank">maqet.org/oneminute/vote</a>. Results appear there for everyone when the clock hits 0. Starting again restarts the clock and keeps existing votes.</small></p>
+  <p><small>Public page: <a href="/oneminute/vote/" target="_blank">maqet.org/oneminute/vote</a>. Voting is always open. CLOSE shows the results to everyone; REOPEN hides them again and keeps the votes. WIPE deletes every vote and leaves voting open.</small></p>
 
   <h2>ADD A FILM</h2>
   <form id="add" class="row">
@@ -154,9 +153,7 @@ small { color: #666; }
       const fk = JSON.stringify(pub.films);
       if (fk !== lastFilmsKey) { lastFilmsKey = fk; films = pub.films; renderFilms(); }
       const now = Date.now() + (Date.parse(pub.now) - Date.now());
-      $("status").textContent = res.phase === "open"
-        ? "OPEN · closes " + new Date(res.closes).toLocaleTimeString() + " (" + Math.max(0, Math.round((Date.parse(res.closes) - now) / 1000)) + "s left)"
-        : res.phase === "closed" ? "CLOSED · results are showing" : "NOT OPEN YET";
+      $("status").textContent = res.phase === "closed" ? "CLOSED · results are showing" : "OPEN · taking votes";
       $("nballots").textContent = res.voters;
       $("tally").replaceChildren(el("tr"), ...res.ranked.map((f) => {
         const tr = el("tr"); [f.rank, f.name, f.points + " pts", f.places.join(" / ") + " (1st/2nd/3rd)"].forEach((v) => tr.append(el("td", String(v)))); return tr;
@@ -172,9 +169,9 @@ small { color: #666; }
   }
 
   $("savekey").onclick = () => { key = $("key").value.trim(); refresh().then(() => { localStorage.setItem("fest-admin-key", key); msg(""); }).catch((e) => msg(e.message, true)); };
-  $("start").onclick = () => post("/admin/start", { minutes: +$("minutes").value || 5 }).then(() => { msg("Voting is open."); refresh(); }).catch((e) => msg(e.message, true));
+  $("start").onclick = () => post("/admin/start").then(() => { msg("Voting is open."); refresh(); }).catch((e) => msg(e.message, true));
   $("stop").onclick = () => { if (confirm("Close voting now and show results?")) post("/admin/stop").then(() => { msg("Closed."); refresh(); }).catch((e) => msg(e.message, true)); };
-  $("reset").onclick = () => { if (confirm("Clear ALL votes and go back to 'not open yet'?")) post("/admin/reset", { votes: true }).then(() => { msg("Reset."); refresh(); }).catch((e) => msg(e.message, true)); };
+  $("reset").onclick = () => { if (confirm("Delete ALL votes? This can't be undone.")) post("/admin/reset", { votes: true }).then(() => { msg("All votes wiped."); refresh(); }).catch((e) => msg(e.message, true)); };
   $("add").onsubmit = (e) => {
     e.preventDefault();
     const fd = new FormData();
