@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Audience Vote · The 1 Minute Film Festival</title>
-<meta name="description" content="Pick your top 3 films of the night. Results show when voting closes.">
+<meta name="description" content="Rank your top 3 films of the night and vote the fun awards. Results show when voting closes.">
 <meta name="theme-color" content="#C23A0B">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
@@ -90,6 +90,26 @@ h1 { margin: .35rem 0 .2rem; font-family: var(--display); font-weight: 400; font
 .trow .pt { text-align: right; font-weight: 700; }
 .scoring { margin-top: 1rem; font-size: .85rem; color: var(--faint); }
 .err { padding: 2rem 0; font-weight: 700; }
+.film.own { opacity: .38; }
+.film.own .team::after { content: " · your film"; font-weight: 700; color: var(--ink); }
+.awards { border-top: 2px solid var(--ink); padding: 1.2rem 0 1.8rem; }
+.awards h2, .aresults h2 { margin: 0 0 .2rem; font-family: var(--display); font-weight: 400; font-size: clamp(1.6rem, 4.4vw, 2.6rem); text-transform: uppercase; line-height: 1; }
+.awards .hint { margin: 0 0 1rem; color: var(--faint); font-size: .9rem; }
+.alist { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: .7rem 1.4rem; }
+.arow { display: grid; gap: .2rem; }
+.arow label { font-weight: 700; font-size: .85rem; text-transform: uppercase; line-height: 1.2; }
+.arow select, .ballot select { font: inherit; font-size: .95rem; padding: .45rem .3rem; border: 2px solid var(--ink); background: #fff; color: var(--ink); border-radius: 0; min-width: 0; }
+.arow select.set { border-color: var(--magenta); outline: 2px solid var(--magenta); }
+.ballot select { flex: 1 1 12rem; }
+.ballot select.need { border-color: var(--magenta); }
+.aresults { margin-top: 2.2rem; border-top: 2px solid var(--ink); padding-top: 1.2rem; }
+.agrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 230px), 1fr)); gap: 1.2rem; margin-top: 1rem; }
+.aw { display: grid; gap: .3rem; align-content: start; }
+.aw .al { font-family: var(--marker); color: var(--magenta); font-size: 1.05rem; line-height: 1.15; }
+.aw .still { aspect-ratio: 16 / 9; border: 2px solid var(--ink); background: #EEE9E6; overflow: hidden; }
+.aw .still img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.aw .an { font-weight: 700; text-transform: uppercase; line-height: 1.15; }
+.aw .av { font-size: .82rem; color: var(--faint); }
 @media (max-width: 640px) {
   header { grid-template-columns: 1fr; }
   .clock { text-align: left; }
@@ -108,7 +128,7 @@ h1 { margin: .35rem 0 .2rem; font-family: var(--display); font-weight: 400; font
     <div>
       <a class="back" href="/oneminute/">← THE 1 MINUTE FILM FESTIVAL</a>
       <h1 id="title">Audience vote</h1>
-      <p class="sub" id="sub">Tap your <mark>top 3 films</mark>. Write your name and send it.</p>
+      <p class="sub" id="sub">Tap your <mark>1st, 2nd and 3rd</mark>. Write your name and send it.</p>
       <p class="voters" id="voters"></p>
     </div>
     <div class="clock">
@@ -119,13 +139,21 @@ h1 { margin: .35rem 0 .2rem; font-family: var(--display); font-weight: 400; font
   </header>
 
   <main id="grid" class="grid" aria-label="Films"></main>
+  <section id="awards" class="awards" hidden aria-label="Fun awards">
+    <h2>10 Fun awards</h2>
+    <p class="hint">Optional. Pick a film for any award you want. Not your own.</p>
+    <div class="alist" id="alist"></div>
+  </section>
   <section id="results" class="results" hidden aria-label="Results"></section>
   <p class="err" id="err" hidden></p>
 
   <form class="ballot" id="ballot" hidden novalidate>
-    <div class="slot" data-i="0"><span class="p">★</span><span class="v">tap a film</span></div>
-    <div class="slot" data-i="1"><span class="p">★</span><span class="v">tap a film</span></div>
-    <div class="slot" data-i="2"><span class="p">★</span><span class="v">tap a film</span></div>
+    <div class="slot" data-i="0"><span class="p">1st · 5 pts</span><span class="v">tap a film</span></div>
+    <div class="slot" data-i="1"><span class="p">2nd · 3 pts</span><span class="v">tap a film</span></div>
+    <div class="slot" data-i="2"><span class="p">3rd · 1 pt</span><span class="v">tap a film</span></div>
+    <div class="row">
+      <select id="own" aria-label="Your film"></select>
+    </div>
     <div class="row">
       <input id="name" name="name" autocomplete="name" maxlength="60" placeholder="Your name" aria-label="Your name">
       <button id="submit" type="submit" disabled>VOTE</button>
@@ -140,8 +168,9 @@ h1 { margin: .35rem 0 .2rem; font-family: var(--display); font-weight: 400; font
   const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
   const PLACE = ["1st", "2nd", "3rd"];
 
-  let data = null, skew = 0, picks = [], need = 3, rendered = "";
+  let data = null, skew = 0, picks = [], need = 3, rendered = "", own = localStorage.getItem("fest-own") || "", awards = {};
   try { picks = JSON.parse(localStorage.getItem("fest-picks") || "[]"); } catch (e) {}
+  try { awards = JSON.parse(localStorage.getItem("fest-awards") || "{}"); } catch (e) {}
   $("name").value = localStorage.getItem("fest-name") || "";
 
   function voters(list) {
@@ -151,13 +180,30 @@ h1 { margin: .35rem 0 .2rem; font-family: var(--display); font-weight: 400; font
   }
 
   function syncPicks() {
-    const ids = data ? data.films.map((f) => f.id) : [];
+    const all = data ? data.films.map((f) => f.id) : [];
+    if (own !== "none" && !all.includes(own)) own = "";
+    const ids = all.filter((id) => id !== own);
+    need = Math.min(3, ids.length);
     picks = picks.filter((id) => ids.includes(id)).slice(0, need);
+    for (const k of Object.keys(awards)) if (!ids.includes(awards[k])) delete awards[k];
     document.querySelectorAll(".film").forEach((b) => {
       const i = picks.indexOf(b.dataset.id);
+      const mine = b.dataset.id === own;
       b.classList.toggle("on", i >= 0);
-      b.querySelector(".badge").textContent = i >= 0 ? "★" : "";
+      b.classList.toggle("own", mine);
+      b.disabled = mine || data.phase !== "open";
+      b.querySelector(".badge").textContent = i >= 0 ? String(i + 1) : "";
       b.setAttribute("aria-pressed", i >= 0);
+    });
+    const o = $("own");
+    o.replaceChildren(el("option", null, "Which film is yours? (required)"), el("option", null, "I'm just watching (no film)"), ...data.films.map((f) => { const x = el("option", null, "Mine: " + f.name); x.value = f.id; return x; }));
+    o.options[0].value = ""; o.options[0].disabled = true; o.options[1].value = "none";
+    o.value = own; o.classList.toggle("need", !own);
+    document.querySelectorAll(".arow select").forEach((s) => {
+      const k = s.dataset.k;
+      s.replaceChildren(el("option", null, "—"), ...data.films.filter((f) => f.id !== own).map((f) => { const x = el("option", null, f.name); x.value = f.id; return x; }));
+      s.options[0].value = "";
+      s.value = awards[k] || ""; s.classList.toggle("set", !!awards[k]);
     });
     document.querySelectorAll(".slot").forEach((s) => {
       const i = +s.dataset.i, f = data && data.films.find((x) => x.id === picks[i]);
@@ -165,8 +211,10 @@ h1 { margin: .35rem 0 .2rem; font-family: var(--display); font-weight: 400; font
       s.classList.toggle("full", !!f);
       s.querySelector(".v").textContent = f ? f.name : "tap a film";
     });
-    $("submit").disabled = picks.length !== need || data.phase !== "open";
+    $("submit").disabled = picks.length !== need || !own || data.phase !== "open";
     localStorage.setItem("fest-picks", JSON.stringify(picks));
+    localStorage.setItem("fest-awards", JSON.stringify(awards));
+    localStorage.setItem("fest-own", own);
   }
 
   function renderGrid() {
@@ -174,6 +222,12 @@ h1 { margin: .35rem 0 .2rem; font-family: var(--display); font-weight: 400; font
     const key = data.films.map((f) => f.id + f.name + f.team + f.img).join("|") + open;
     if (key === rendered) return;
     rendered = key;
+    $("alist").replaceChildren(...(data.awards || []).map((a) => {
+      const d = el("div", "arow"), lb = el("label", null, a.label), s = el("select");
+      s.id = "aw-" + a.key; s.dataset.k = a.key; lb.htmlFor = s.id;
+      s.onchange = () => { if (s.value) awards[a.key] = s.value; else delete awards[a.key]; syncPicks(); };
+      d.append(lb, s); return d;
+    }));
     $("grid").replaceChildren(...data.films.map((f, n) => {
       const b = el("button", "film"); b.type = "button"; b.dataset.id = f.id; b.disabled = !open;
       const st = el("div", "still");
@@ -183,7 +237,7 @@ h1 { margin: .35rem 0 .2rem; font-family: var(--display); font-weight: 400; font
       if (f.team) b.append(el("span", "team", f.team));
       b.onclick = () => {
         const i = picks.indexOf(f.id);
-        if (i >= 0) picks.splice(i, 1); else if (picks.length < need) picks.push(f.id); else { $("bmsg").className = "bmsg err"; $("bmsg").textContent = "You have 3. Tap one to drop it first."; return; }
+        if (i >= 0) picks.splice(i, 1); else if (picks.length < need) picks.push(f.id); else { $("bmsg").className = "bmsg err"; $("bmsg").textContent = "You have all 3. Tap one to drop it first."; return; }
         $("bmsg").textContent = ""; syncPicks();
       };
       return b;
@@ -205,7 +259,7 @@ h1 { margin: .35rem 0 .2rem; font-family: var(--display); font-weight: 400; font
       d.append(el("span", "place", PLACE[f.rank - 1] + (tied ? " (tie)" : " place")));
       const st = el("div", "still"); if (f.img) { const im = el("img"); im.src = f.img; im.alt = f.name; st.append(im); }
       d.append(st, el("span", "name", f.name));
-      d.append(el("span", "pts", f.points + (f.points === 1 ? " vote" : " votes") + (f.team ? " · " + f.team : "")));
+      d.append(el("span", "pts", f.points + (f.points === 1 ? " pt" : " pts") + (f.team ? " · " + f.team : "")));
       pod.append(d);
     });
     const tbl = el("div", "table");
@@ -213,11 +267,22 @@ h1 { margin: .35rem 0 .2rem; font-family: var(--display); font-weight: 400; font
       const row = el("div", "trow");
       const nm = el("span", "nm", f.name); if (f.team) nm.append(el("small", null, f.team));
       const bw = el("span", "barw"); const bar = el("div", "bar"); bar.style.width = (100 * f.points / max) + "%"; bw.append(bar);
-      row.append(el("span", "rk", String(f.rank)), nm, bw, el("span", "pt", f.points + (f.points === 1 ? " vote" : " votes")));
+      row.append(el("span", "rk", String(f.rank)), nm, bw, el("span", "pt", f.points + (f.points === 1 ? " pt" : " pts")));
       tbl.append(row);
     });
-    const sc = el("p", "scoring", "Every pick counts as 1 vote. " + data.voters.length + " ballots, 3 picks each. Same votes = same rank.");
-    sec.replaceChildren(r.length && r[0].points > 0 ? pod : el("p", null, "No votes came in."), tbl, sc);
+    const sc = el("p", "scoring", "1st pick = 5 pts, 2nd = 3, 3rd = 1. Nobody could vote for their own film. " + data.voters.length + " ballots. Ties on points go to more 1st-place picks; still tied = same rank.");
+    const ar = el("div", "aresults"); ar.append(el("h2", null, "Fun awards"));
+    const ag = el("div", "agrid");
+    (data.awardResults || []).forEach((a) => {
+      const d = el("div", "aw"); d.append(el("span", "al", a.label));
+      if (!a.winners.length) { d.append(el("span", "av", "No votes")); ag.append(d); return; }
+      const w = a.winners[0], st = el("div", "still");
+      if (a.winners.length === 1 && w.img) { const im = el("img"); im.src = w.img; im.alt = w.name; st.append(im); d.append(st); }
+      d.append(el("span", "an", a.winners.map((x) => x.name).join(" + ")), el("span", "av", a.votes + (a.votes === 1 ? " vote" : " votes") + (a.winners.length > 1 ? " each (tie)" : "")));
+      ag.append(d);
+    });
+    ar.append(ag);
+    sec.replaceChildren(r.length && r[0].points > 0 ? pod : el("p", null, "No votes came in."), tbl, sc, ar);
   }
 
   function tick() {
@@ -246,16 +311,16 @@ h1 { margin: .35rem 0 .2rem; font-family: var(--display); font-weight: 400; font
   function apply(d) {
     data = d;
     skew = Date.parse(d.now) - Date.now();
-    need = Math.min(3, d.films.length);
     voters(d.voters);
     const closed = d.phase === "closed";
     $("title").textContent = closed ? "The results" : "Audience vote";
     $("sub").innerHTML = closed ? "The audience has spoken." :
-      d.phase === "before" ? "When voting opens, tap your <mark>top 3 films</mark>. Results show when time runs out." :
-      "Tap your <mark>top 3 films</mark>. Write your name and send it. Vote again with the same name to change it.";
+      d.phase === "before" ? "When voting opens, tap your <mark>1st, 2nd and 3rd</mark> (5, 3 and 1 points), then pick the fun awards. No voting for your own film." :
+      "Tap your <mark>1st, 2nd and 3rd</mark> in order (5, 3 and 1 points). Fun awards are below. No voting for your own film. Vote again with the same name to change it.";
     $("grid").hidden = closed;
     $("results").hidden = !closed;
     $("ballot").hidden = d.phase !== "open";
+    $("awards").hidden = d.phase !== "open";
     if (closed) renderResults(); else renderGrid();
     if (!d.films.length && !closed) { $("grid").replaceChildren(el("p", null, "Films go up here once they're in.")); rendered = ""; }
     tick();
@@ -273,10 +338,11 @@ h1 { margin: .35rem 0 .2rem; font-family: var(--display); font-weight: 400; font
     e.preventDefault();
     const name = $("name").value.trim(), msg = $("bmsg");
     msg.className = "bmsg err";
-    if (picks.length !== need) { msg.textContent = "Tap " + need + " films first."; return; }
+    if (!own) { msg.textContent = "Pick which film is yours first (or \"just watching\")."; $("own").focus(); return; }
+    if (picks.length !== need) { msg.textContent = "Tap your 1st, 2nd and 3rd first."; return; }
     if (name.length < 2) { msg.textContent = "Write your name so we know who voted."; $("name").focus(); return; }
     $("submit").disabled = true; msg.className = "bmsg"; msg.textContent = "Sending…";
-    fetch("/api/fest/vote", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ name, picks }) })
+    fetch("/api/fest/vote", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ name, own, picks, awards }) })
       .then((r) => r.json().then((d) => ({ ok: r.ok, d })))
       .then(({ ok, d }) => {
         syncPicks();
@@ -288,6 +354,7 @@ h1 { margin: .35rem 0 .2rem; font-family: var(--display); font-weight: 400; font
       .catch(() => { syncPicks(); msg.className = "bmsg err"; msg.textContent = "No connection. Try again."; });
   });
 
+  $("own").onchange = () => { own = $("own").value; syncPicks(); };
   load();
   setInterval(tick, 250);
   setInterval(() => { if (!data || data.phase !== "closed" || !data.results) load(); }, 4000);

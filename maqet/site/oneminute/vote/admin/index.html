@@ -63,6 +63,8 @@ small { color: #666; }
 
   <h2>LIVE TALLY (<span id="nballots">0</span> ballots)</h2>
   <table id="tally"></table>
+  <h2>FUN AWARDS</h2>
+  <table id="atally"></table>
   <h2>BALLOTS</h2>
   <table id="ballots"></table>
 </div>
@@ -157,11 +159,14 @@ small { color: #666; }
         : res.phase === "closed" ? "CLOSED · results are showing" : "NOT OPEN YET";
       $("nballots").textContent = res.voters;
       $("tally").replaceChildren(el("tr"), ...res.ranked.map((f) => {
-        const tr = el("tr"); [f.rank, f.name, f.points + " votes"].forEach((v) => tr.append(el("td", String(v)))); return tr;
+        const tr = el("tr"); [f.rank, f.name, f.points + " pts", f.places.join(" / ") + " (1st/2nd/3rd)"].forEach((v) => tr.append(el("td", String(v)))); return tr;
+      }));
+      $("atally").replaceChildren(...(res.awards || []).map((a) => {
+        const tr = el("tr"); [a.label, a.winners.map((w) => w.name).join(" + ") || "—", a.votes + " votes"].forEach((v) => tr.append(el("td", v))); return tr;
       }));
       const byId = Object.fromEntries(pub.films.map((f) => [f.id, f.name]));
       $("ballots").replaceChildren(...res.ballots.slice().reverse().map((b) => {
-        const tr = el("tr"); tr.append(el("td", b.name), el("td", b.picks.map((id) => byId[id] || "?").join("  ·  ")), el("td", new Date(b.updated).toLocaleTimeString())); return tr;
+        const tr = el("tr"); tr.append(el("td", b.name), el("td", (b.own && b.own !== "none" ? "[own: " + (byId[b.own] || "?") + "]  " : "") + b.picks.map((id, i) => ["1st", "2nd", "3rd"][i] + " " + (byId[id] || "?")).join("  ·  ") + "  |  awards: " + Object.keys(b.awards || {}).length), el("td", new Date(b.updated).toLocaleTimeString())); return tr;
       }));
     });
   }

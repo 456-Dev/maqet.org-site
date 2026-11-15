@@ -3,7 +3,7 @@
 //
 //   GET  /api/fest                 films, voting state, voter names; results once voting has closed
 //   GET  /api/fest/img/<id>        a film's still
-//   POST /api/fest/vote            {name, picks:[id, id, id]}  (one ballot per name, last one counts)
+//   POST /api/fest/vote            {name, own, picks:[1st, 2nd, 3rd], awards:{key:id}}  (one ballot per name, last one counts; own = your film id or "none", never votable)
 //   POST /api/fest/upload/start    {title, team, email, size, filename}  -> {id, t, chunk}
 //   PUT  /api/fest/upload/<id>/<n>?t=   raw bytes of chunk n (CHUNK bytes, last one shorter)
 //   POST /api/fest/upload/<id>/done?t=  checks every chunk arrived
@@ -19,9 +19,14 @@
 //   POST /api/fest/admin/reset     {votes=true}                          back to "not open yet"
 //   GET  /api/fest/admin/results                                         live tally, any time
 //
-// Scoring: every pick = 1 vote. Films with the same number of votes share a rank.
+// Scoring: 1st pick = 5 points, 2nd = 3, 3rd = 1. Same points = same rank. Fun awards: most votes wins, ties share.
 
-const POINTS = [1, 1, 1];
+const POINTS = [5, 3, 1];
+const AWARDS = [
+  ["time", "Best Use of Time"], ["comedy", "Comedy Award"], ["experimental", "Most Experimental"], ["audio", "Best Audio"],
+  ["editing", "Best Editing/VFX"], ["acting", "Best Acting"], ["blackcat", "Black Cat Award (Most Ominous)"], ["writing", "Best Writing"],
+  ["set", "Best Set Design"], ["mamasback", "Broke Your Mama's Back Award (Most Creative Interpretation of the Prompt)"],
+];
 const MAX_IMG = 1_800_000;
 const CHUNK = 512_000;            // one D1 row per chunk; 1.5 MB rows tripped the free-plan Worker limit (1102)
 const MAX_VIDEO = 2 * 1024 ** 3;  // 2 GB per film   // D1 rows max out at 2 MB; the admin page resizes stills before upload
@@ -38,6 +43,8 @@ async function ensureSchema(db) {
   if (schemaReady) return;
   for (const sql of SCHEMA) await db.prepare(sql).run();
   try { await db.prepare("ALTER TABLE fv_subchunks ADD COLUMN len INTEGER").run(); } catch (e) { /* already there */ }
+  try { await db.prepare("ALTER TABLE fv_votes ADD COLUMN own TEXT").run(); } catch (e) { /* already there */ }
+  try { await db.prepare("ALTER TABLE fv_votes ADD COLUMN awards TEXT").run(); } catch (e) { /* already there */ }
   schemaReady = true;
 }
 
@@ -148,20 +155,27 @@ async function films(db) {
 }
 
 async function tally(db, list) {
-  const { results: votes } = await db.prepare("SELECT name, picks FROM fv_votes ORDER BY updated ASC").all();
+  const { results: votes } = await db.prepare("SELECT name, picks, awards FROM fv_votes ORDER BY updated ASC").all();
   const score = Object.fromEntries(list.map((f) => [f.id, { ...f, points: 0, places: [0, 0, 0] }]));
   for (const v of votes) {
     JSON.parse(v.picks).forEach((id, i) => { if (score[id] && i < 3) { score[id].points += POINTS[i]; score[id].places[i]++; } });
   }
   const ranked = Object.values(score).sort((a, b) =>
-    b.points - a.points || a.ord - b.ord);
+    b.points - a.points || b.places[0] - a.places[0] || a.ord - b.ord);
   let rank = 0, prev = null;
   ranked.forEach((f, i) => {
     const key = String(f.points);
     if (key !== prev) rank = i + 1;
     f.rank = rank; prev = key;
   });
-  return { voters: votes.length, ranked };
+  const byId = Object.fromEntries(list.map((f) => [f.id, f]));
+  const awards = AWARDS.map(([key, label]) => {
+    const n = {};
+    for (const v of votes) { const id = JSON.parse(v.awards || "{}")[key]; if (byId[id]) n[id] = (n[id] || 0) + 1; }
+    const best = Math.max(0, ...Object.values(n));
+    return { key, label, votes: best, winners: best ? Object.keys(n).filter((id) => n[id] === best).map((id) => byId[id]) : [] };
+  });
+  return { voters: votes.length, ranked, awards };
 }
 
 async function overview(env) {
@@ -169,8 +183,8 @@ async function overview(env) {
   const list = await films(db);
   const state = await getState(db);
   const { results: votes } = await db.prepare("SELECT name FROM fv_votes ORDER BY updated ASC").all();
-  const out = { ...state, now: new Date().toISOString(), films: list, voters: votes.map((v) => v.name) };
-  if (state.phase === "closed") out.results = (await tally(db, list)).ranked;
+  const out = { ...state, now: new Date().toISOString(), films: list, voters: votes.map((v) => v.name), awards: AWARDS.map(([key, label]) => ({ key, label })), points: POINTS };
+  if (state.phase === "closed") { const t = await tally(db, list); out.results = t.ranked; out.awardResults = t.awards; }
   return json(out);
 }
 
@@ -182,14 +196,26 @@ async function vote(request, env) {
   const b = await request.json().catch(() => ({}));
   const name = clean(b.name, 60);
   if (name.length < 2) return json({ error: "Write your name so we know who voted." }, 400);
-  const ids = (await films(db)).map((f) => f.id);
+  const all = (await films(db)).map((f) => f.id);
+  const own = String(b.own || "");
+  if (own !== "none" && !all.includes(own)) return json({ error: "Tell us which film is yours (or pick \"I'm just watching\")." }, 400);
+  const ids = all.filter((id) => id !== own);
   const need = Math.min(3, ids.length);
+  if ((Array.isArray(b.picks) ? b.picks : []).map(String).includes(own)) return json({ error: "No voting for your own film." }, 400);
   const picks = [...new Set((Array.isArray(b.picks) ? b.picks : []).map(String))].filter((id) => ids.includes(id));
-  if (picks.length !== need) return json({ error: `Pick your top ${need}.` }, 400);
+  if (picks.length !== need) return json({ error: `Pick your 1st, 2nd and 3rd.` }, 400);
+  const awards = {};
+  const ba = b.awards && typeof b.awards === "object" ? b.awards : {};
+  for (const [key] of AWARDS) {
+    const id = String(ba[key] || "");
+    if (!id) continue;
+    if (id === own) return json({ error: "No voting for your own film." }, 400);
+    if (ids.includes(id)) awards[key] = id;
+  }
   const voter = name.toLowerCase().replace(/\s+/g, " ");
-  await db.prepare(`INSERT INTO fv_votes (voter, name, picks, updated, ip_hash) VALUES (?1, ?2, ?3, ?4, ?5)
-                    ON CONFLICT(voter) DO UPDATE SET name = ?2, picks = ?3, updated = ?4, ip_hash = ?5`)
-    .bind(voter, name, JSON.stringify(picks), new Date().toISOString(), await ipHash(request)).run();
+  await db.prepare(`INSERT INTO fv_votes (voter, name, picks, updated, ip_hash, own, awards) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)
+                    ON CONFLICT(voter) DO UPDATE SET name = ?2, picks = ?3, updated = ?4, ip_hash = ?5, own = ?6, awards = ?7`)
+    .bind(voter, name, JSON.stringify(picks), new Date().toISOString(), await ipHash(request), own, JSON.stringify(awards)).run();
   const { results: votes } = await db.prepare("SELECT name FROM fv_votes ORDER BY updated ASC").all();
   return json({ ok: true, voters: votes.map((v) => v.name) });
 }
@@ -217,8 +243,8 @@ async function admin(request, env, action) {
   }
   if (action === "results" && method === "GET") {
     const list = await films(db);
-    const { results: ballots } = await db.prepare("SELECT name, picks, updated FROM fv_votes ORDER BY updated ASC").all();
-    return json({ ...(await getState(db)), ...(await tally(db, list)), ballots: ballots.map((b) => ({ ...b, picks: JSON.parse(b.picks) })) });
+    const { results: ballots } = await db.prepare("SELECT name, picks, own, awards, updated FROM fv_votes ORDER BY updated ASC").all();
+    return json({ ...(await getState(db)), ...(await tally(db, list)), ballots: ballots.map((b) => ({ ...b, picks: JSON.parse(b.picks), awards: JSON.parse(b.awards || "{}") })) });
   }
   if (method !== "POST") return json({ error: "not found" }, 404);
   if (action === "film") {
