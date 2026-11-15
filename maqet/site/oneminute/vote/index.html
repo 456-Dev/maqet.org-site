@@ -49,8 +49,8 @@ h1 { margin: .35rem 0 .2rem; font-family: var(--display); font-weight: 400; font
 .film .still img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .film .still .noimg { font-family: var(--display); font-size: 2.6rem; color: var(--hairline); }
 .film .name { font-weight: 700; font-size: 1.05rem; line-height: 1.2; text-transform: uppercase; }
-.film .team { font-size: .85rem; color: var(--faint); margin-top: -.3rem; }
-.film .badge { position: absolute; top: -12px; left: -12px; width: 3.4rem; height: 3.4rem; border-radius: 50%; background: var(--magenta); color: #fff; display: grid; place-items: center; font-family: var(--marker); font-size: 1.6rem; transform: rotate(-8deg) scale(0); transition: transform .15s; z-index: 2; box-shadow: 0 2px 0 var(--ink); }
+.film .team { display: grid; font-size: .74rem; line-height: 1.3; color: var(--faint); margin-top: -.2rem; }
+.film .badge { position: absolute; top: -12px; left: -12px; width: 3.6rem; height: 3.6rem; border-radius: 50%; background: var(--magenta); color: #fff; display: flex; align-items: center; justify-content: center; font-family: var(--marker); font-size: 1.6rem; transform: rotate(-8deg) scale(0); transition: transform .15s; z-index: 2; box-shadow: 0 2px 0 var(--ink); }
 .film.on .badge { transform: rotate(-8deg) scale(1); }
 .film.on .still { border-color: var(--magenta); outline: 4px solid var(--magenta); }
 .film:not(:disabled):hover .still { outline: 4px solid var(--highlight); }
@@ -90,33 +90,40 @@ h1 { margin: .35rem 0 .2rem; font-family: var(--display); font-weight: 400; font
 .trow .pt { text-align: right; font-weight: 700; }
 .scoring { margin-top: 1rem; font-size: .85rem; color: var(--faint); }
 .err { padding: 2rem 0; font-weight: 700; }
-.film.own, .film.np { opacity: .38; }
-.npsec { border-top: 2px dashed var(--ink); padding-top: 1rem; }
-.npsec h3 { margin: 0; font-family: var(--display); font-weight: 400; font-size: clamp(1.15rem, 3vw, 1.6rem); text-transform: uppercase; }
-.npsec .hint { margin: .2rem 0 0; color: var(--faint); font-size: .9rem; }
-.npgrid { padding-top: 1rem; }
-.npgrid .film.np { opacity: .75; }
-.film .npn { font-size: .78rem; font-weight: 700; color: var(--magenta); margin-top: -.3rem; }
-.film.own .team::after { content: " · your film"; font-weight: 700; color: var(--ink); }
+.film.np .still { filter: grayscale(.6); }
+.film .npn { display: block; font-size: .85rem; font-weight: 700; color: var(--magenta); text-transform: uppercase; letter-spacing: .04em; }
+.film .npn-old { font-size: .78rem; font-weight: 700; color: var(--magenta); margin-top: -.3rem; }
 .awards { border-top: 2px solid var(--ink); padding: 1.2rem 0 1.8rem; }
 .awards h2, .aresults h2 { margin: 0 0 .2rem; font-family: var(--display); font-weight: 400; font-size: clamp(1.6rem, 4.4vw, 2.6rem); text-transform: uppercase; line-height: 1; }
 .awards .hint { margin: 0 0 1rem; color: var(--faint); font-size: .9rem; }
 .alist { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: .7rem 1.4rem; }
 .arow { display: grid; gap: .2rem; }
 .arow label { font-weight: 700; font-size: .85rem; text-transform: uppercase; line-height: 1.2; }
-.step { margin: 0; padding-top: 1.2rem; font-family: var(--display); font-weight: 400; font-size: clamp(1.3rem, 3.6vw, 2rem); text-transform: uppercase; line-height: 1; }
-.step small { font-family: var(--mono); font-size: .8rem; text-transform: none; color: var(--faint); margin-left: .4rem; }
-.mine { padding-bottom: .4rem; }
-.strip { display: flex; gap: 10px; overflow-x: auto; padding: 10px 4px 12px; scroll-snap-type: x proximity; -webkit-overflow-scrolling: touch; }
-.chip { flex: 0 0 auto; width: 118px; scroll-snap-align: start; display: grid; gap: 4px; padding: 0; border: 0; background: none; font: inherit; color: inherit; text-align: left; cursor: pointer; }
-.chip .ci { aspect-ratio: 16 / 9; border: 2px solid var(--ink); background: #EEE9E6 center / cover no-repeat; display: grid; place-items: center; font-family: var(--display); color: var(--faint); font-size: .9rem; }
-.chip .cn { font-size: .72rem; font-weight: 700; text-transform: uppercase; line-height: 1.15; max-height: 2.3em; overflow: hidden; }
-.chip.on .ci { border-color: var(--magenta); outline: 3px solid var(--magenta); }
-.chip.on .cn { color: var(--magenta); }
-.chip.watch .ci { background: var(--ink); color: #fff; font-size: .8rem; text-align: center; padding: 4px; }
-.mine.need .chip .ci { border-style: dashed; }
-.arow .strip { padding-top: 6px; }
-.arow select, .ballot select { font: inherit; font-size: .95rem; padding: .45rem .3rem; border: 2px solid var(--ink); background: #fff; color: var(--ink); border-radius: 0; min-width: 0; }
+.how { padding: 1.2rem 0 .4rem; border-bottom: 2px solid var(--ink); }
+.how h2, .awards h2 { margin: 0 0 .5rem; font-family: var(--display); font-weight: 400; font-size: clamp(1.5rem, 4vw, 2.3rem); text-transform: uppercase; line-height: 1; }
+.how ol { margin: 0 0 1rem; padding-left: 1.4rem; }
+.how li { margin: .15rem 0; }
+.pts3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(8px, 1.6vw, 16px); margin: .4rem 0 1rem; }
+.pt { border: 3px solid var(--ink); padding: .55rem .5rem .5rem; display: grid; gap: .15rem; justify-items: center; text-align: center; }
+.pt .pl { font-family: var(--marker); font-size: clamp(1.1rem, 3vw, 1.5rem); line-height: 1; }
+.pt .pn { font-family: var(--display); font-size: clamp(2rem, 7vw, 3.4rem); line-height: .9; }
+.pt .pn small { font-size: .38em; letter-spacing: .04em; }
+.pt .rolls { display: flex; justify-content: center; height: clamp(34px, 7vw, 54px); margin-top: .2rem; }
+.pt .rolls img { height: 100%; width: auto; margin-left: -12%; }
+.pt .rolls img:first-child { margin-left: 0; }
+.pt .fl { font-size: .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--faint); }
+.pt.p1 { background: var(--magenta); color: #fff; border-color: var(--magenta); } .pt.p1 .fl { color: #fff; }
+.pt.p2 { background: var(--ink); color: #fff; } .pt.p2 .fl { color: #ddd; }
+.pt.p3 { background: var(--highlight); }
+.spons { display: flex; align-items: center; gap: .8rem; flex-wrap: wrap; margin: 0 0 1rem; font-size: .85rem; }
+.spons img { height: 30px; width: auto; display: block; }
+.film .badge { flex-direction: column; line-height: 1; font-size: 1.05rem; }
+.film .badge small { font-family: var(--mono); font-size: .6rem; font-weight: 700; }
+.film[data-place="0"] .badge { background: var(--magenta); }
+.film[data-place="1"] .badge { background: var(--ink); }
+.film[data-place="2"] .badge { background: var(--highlight); color: var(--ink); }
+.slot[data-i="0"] .p { color: var(--magenta); } .slot[data-i="1"] .p { color: var(--ink); } .slot[data-i="2"] .p { color: #8A7F00; }
+.arow select { font: inherit; font-size: .95rem; padding: .45rem .3rem; border: 2px solid var(--ink); background: #fff; color: var(--ink); border-radius: 0; min-width: 0; }
 .arow select.set { border-color: var(--magenta); outline: 2px solid var(--magenta); }
 .ballot select { flex: 1 1 12rem; }
 .ballot select.need { border-color: var(--magenta); }
@@ -156,20 +163,24 @@ h1 { margin: .35rem 0 .2rem; font-family: var(--display); font-weight: 400; font
     </div>
   </header>
 
-  <section id="mine" class="mine" hidden aria-label="Your film">
-    <h2 class="step">1. Which film is yours? <small>so you can't vote for it</small></h2>
-    <div class="strip" id="ownstrip"></div>
+  <section id="how" class="how" hidden aria-label="How to vote">
+    <h2>How to vote</h2>
+    <ol>
+      <li>Tap your <b>top 3 films</b> in order: 1st, 2nd, 3rd.</li>
+      <li>Under the films, pick a film for any <b>Special Award</b> you want.</li>
+      <li>Write your name and hit <b>VOTE</b>. No voting for your own film. Vote again with the same name to change it.</li>
+    </ol>
+    <div class="pts3" aria-label="Points">
+      <div class="pt p1"><span class="pl">1st pick</span><span class="pn">5 <small>PTS</small></span><div class="rolls"><img src="/oneminute/film/portra.webp" alt=""><img src="/oneminute/film/portra.webp" alt=""><img src="/oneminute/film/portra.webp" alt=""></div><span class="fl">1st place: 3× Portra 400</span></div>
+      <div class="pt p2"><span class="pl">2nd pick</span><span class="pn">3 <small>PTS</small></span><div class="rolls"><img src="/oneminute/film/hp5.webp" alt=""><img src="/oneminute/film/hp5.webp" alt=""><img src="/oneminute/film/hp5.webp" alt=""></div><span class="fl">2nd place: 3× HP5</span></div>
+      <div class="pt p3"><span class="pl">3rd pick</span><span class="pn">1 <small>PT</small></span><div class="rolls"><img src="/oneminute/film/gold.webp" alt=""><img src="/oneminute/film/gold.webp" alt=""><img src="/oneminute/film/gold.webp" alt=""></div><span class="fl">3rd place: 3× Gold 200</span></div>
+    </div>
+    <p class="spons"><span class="k">Sponsored by</span> <a href="https://www.gowanusdarkroom.com" target="_blank" rel="noopener"><img src="/oneminute/film/gowanus-darkroom.webp" alt="Gowanus Darkroom" width="1200" height="391"></a> <span>Free develop and scan for the winners.</span></p>
   </section>
-  <h2 class="step" id="step2" hidden>2. Tap your 1st, 2nd, 3rd</h2>
   <main id="grid" class="grid" aria-label="Films"></main>
-  <section id="npsec" class="npsec" hidden aria-label="Not eligible for the Film Prize">
-    <h3>Not eligible for the Film Prize</h3>
-    <p class="hint">These two can't get 1st, 2nd or 3rd, but you can still vote for them in the Special Awards below.</p>
-    <div id="npgrid" class="grid npgrid"></div>
-  </section>
   <section id="awards" class="awards" hidden aria-label="Special Awards">
-    <h2>3. Special Awards</h2>
-    <p class="hint">Optional. Tap a film under any award (tap again to clear). Swipe for more films.</p>
+    <h2>Special Awards</h2>
+    <p class="hint">Optional. Pick one film per award.</p>
     <div class="alist" id="alist"></div>
   </section>
   <section id="results" class="results" hidden aria-label="Results"></section>
@@ -193,7 +204,7 @@ h1 { margin: .35rem 0 .2rem; font-family: var(--display); font-weight: 400; font
   const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
   const PLACE = ["1st", "2nd", "3rd"];
 
-  let data = null, skew = 0, picks = [], need = 3, rendered = "", own = localStorage.getItem("fest-own") || "", awards = {};
+  let data = null, skew = 0, picks = [], need = 3, rendered = "", awards = {};
   try { picks = JSON.parse(localStorage.getItem("fest-picks") || "[]"); } catch (e) {}
   try { awards = JSON.parse(localStorage.getItem("fest-awards") || "{}"); } catch (e) {}
   $("name").value = localStorage.getItem("fest-name") || "";
@@ -205,33 +216,24 @@ h1 { margin: .35rem 0 .2rem; font-family: var(--display); font-weight: 400; font
   }
 
   function syncPicks() {
-    const all = data ? data.films.map((f) => f.id) : [];
-    if (own !== "none" && !all.includes(own)) own = "";
-    const ids = all.filter((id) => id !== own);
-    const prize = data.films.filter((f) => !f.noprize && f.id !== own).map((f) => f.id);
+    if (!data) return;
+    const ids = data.films.map((f) => f.id);
+    const prize = data.films.filter((f) => !f.noprize).map((f) => f.id);
     need = Math.min(3, prize.length);
     picks = picks.filter((id) => prize.includes(id)).slice(0, need);
     for (const k of Object.keys(awards)) if (!ids.includes(awards[k])) delete awards[k];
     document.querySelectorAll(".film").forEach((b) => {
       const i = picks.indexOf(b.dataset.id);
-      const mine = b.dataset.id === own, np = b.classList.contains("np");
       b.classList.toggle("on", i >= 0);
-      b.classList.toggle("own", mine);
-      b.disabled = mine || np || data.phase !== "open";
-      b.querySelector(".badge").textContent = i >= 0 ? String(i + 1) : "";
+      if (i >= 0) b.dataset.place = i; else delete b.dataset.place;
+      b.disabled = data.phase !== "open";
+      const bd = b.querySelector(".badge");
+      bd.replaceChildren(...(i >= 0 ? [el("span", null, PLACE[i]), el("small", null, ["5 PTS", "3 PTS", "1 PT"][i])] : []));
       b.setAttribute("aria-pressed", i >= 0);
     });
-    $("mine").classList.toggle("need", !own);
-    $("ownstrip").querySelectorAll(".chip").forEach((c) => { c.classList.toggle("on", c.dataset.id === own); c.setAttribute("aria-pressed", c.dataset.id === own); });
-    document.querySelectorAll(".arow").forEach((r) => {
-      const k = r.dataset.k;
-      r.querySelectorAll(".chip").forEach((c) => {
-        c.hidden = c.dataset.id === own;
-        c.classList.toggle("on", awards[k] === c.dataset.id); c.setAttribute("aria-pressed", awards[k] === c.dataset.id);
-      });
-    });
+    document.querySelectorAll(".arow select").forEach((s) => { s.value = awards[s.dataset.k] || ""; s.classList.toggle("set", !!awards[s.dataset.k]); });
     document.querySelectorAll(".slot").forEach((s) => {
-      const i = +s.dataset.i, f = data && data.films.find((x) => x.id === picks[i]);
+      const i = +s.dataset.i, f = data.films.find((x) => x.id === picks[i]);
       s.hidden = i >= need;
       s.classList.toggle("full", !!f);
       s.querySelector(".v").textContent = f ? f.name : "tap a film";
@@ -239,7 +241,6 @@ h1 { margin: .35rem 0 .2rem; font-family: var(--display); font-weight: 400; font
     $("submit").disabled = data.phase !== "open";
     localStorage.setItem("fest-picks", JSON.stringify(picks));
     localStorage.setItem("fest-awards", JSON.stringify(awards));
-    localStorage.setItem("fest-own", own);
   }
 
   function renderGrid() {
@@ -247,40 +248,31 @@ h1 { margin: .35rem 0 .2rem; font-family: var(--display); font-weight: 400; font
     const key = data.films.map((f) => f.id + f.name + f.team + f.img + f.noprize).join("|") + open;
     if (key === rendered) return;
     rendered = key;
-    const chip = (f, onTap, cls) => {
-      const c = el("button", "chip" + (cls ? " " + cls : "")); c.type = "button"; c.dataset.id = f.id;
-      const ci = el("span", "ci", f.img ? null : (f.label || ""));
-      if (f.img) ci.style.backgroundImage = "url('" + f.img + "')";
-      c.append(ci, el("span", "cn", f.name)); c.onclick = onTap; return c;
-    };
-    $("ownstrip").replaceChildren(
-      chip({ id: "none", name: "No film", label: "I'm just watching" }, () => { own = "none"; $("bmsg").textContent = ""; syncPicks(); }, "watch"),
-      ...data.films.map((f) => chip(f, () => { own = f.id; $("bmsg").textContent = ""; syncPicks(); })));
     $("alist").replaceChildren(...(data.awards || []).map((a) => {
-      const d = el("div", "arow"); d.dataset.k = a.key;
-      const st = el("div", "strip");
-      st.append(...data.films.map((f) => chip(f, () => { if (awards[a.key] === f.id) delete awards[a.key]; else awards[a.key] = f.id; syncPicks(); })));
-      d.append(el("label", null, a.label), st); return d;
+      const d = el("div", "arow"), lb = el("label", null, a.label), s = el("select");
+      s.id = "aw-" + a.key; s.dataset.k = a.key; lb.htmlFor = s.id;
+      s.append(el("option", null, "—"), ...data.films.map((f) => { const o = el("option", null, f.name); o.value = f.id; return o; }));
+      s.options[0].value = "";
+      s.onchange = () => { if (s.value) awards[a.key] = s.value; else delete awards[a.key]; syncPicks(); };
+      d.append(lb, s); return d;
     }));
-    const cards = data.films.map((f, n) => {
+    $("grid").replaceChildren(...data.films.map((f, n) => {
       const b = el("button", "film"); b.type = "button"; b.dataset.id = f.id; b.disabled = !open;
       const st = el("div", "still");
       if (f.img) { const im = el("img"); im.src = f.img; im.alt = f.name; im.loading = "lazy"; st.append(im); }
       else st.append(el("span", "noimg", String(n + 1)));
       b.append(el("span", "badge"), st, el("span", "name", f.name));
-      if (f.team) b.append(el("span", "team", f.team));
       if (f.noprize) { b.classList.add("np"); b.append(el("span", "npn", f.noprize)); }
+      if (f.team) { const t = el("span", "team"); f.team.split(/\s*,\s*/).filter(Boolean).forEach((p) => t.append(el("span", null, p))); b.append(t); }
       b.onclick = () => {
+        const msg = $("bmsg");
+        if (f.noprize) { msg.className = "bmsg err"; msg.textContent = f.name + " can't win the Film Prize (" + f.noprize.toLowerCase() + "). You can still pick it for a Special Award."; return; }
         const i = picks.indexOf(f.id);
-        if (i >= 0) picks.splice(i, 1); else if (picks.length < need) picks.push(f.id); else { $("bmsg").className = "bmsg err"; $("bmsg").textContent = "You have all 3. Tap one to drop it first."; return; }
-        $("bmsg").textContent = ""; syncPicks();
+        if (i >= 0) picks.splice(i, 1); else if (picks.length < need) picks.push(f.id); else { msg.className = "bmsg err"; msg.textContent = "You have all 3. Tap one to drop it first."; return; }
+        msg.textContent = ""; syncPicks();
       };
       return b;
-    });
-    $("grid").replaceChildren(...cards.filter((b) => !b.classList.contains("np")));
-    const np = cards.filter((b) => b.classList.contains("np"));
-    $("npgrid").replaceChildren(...np);
-    $("npsec").hidden = !np.length || data.phase === "closed";
+    }));
     syncPicks();
   }
 
@@ -309,7 +301,7 @@ h1 { margin: .35rem 0 .2rem; font-family: var(--display); font-weight: 400; font
       row.append(el("span", "rk", String(f.rank)), nm, bw, el("span", "pt", f.points + (f.points === 1 ? " pt" : " pts")));
       tbl.append(row);
     });
-    const sc = el("p", "scoring", "1st pick = 5 pts, 2nd = 3, 3rd = 1. Nobody could vote for their own film. " + data.voters.length + " ballots. Ties on points go to more 1st-place picks; still tied = same rank.");
+    const sc = el("p", "scoring", "1st pick = 5 pts, 2nd = 3, 3rd = 1. " + data.voters.length + " ballots. Ties on points go to more 1st-place picks; still tied = same rank.");
     const ar = el("div", "aresults"); ar.append(el("h2", null, "Special Awards"));
     const ag = el("div", "agrid");
     (data.awardResults || []).forEach((a) => {
@@ -351,14 +343,12 @@ h1 { margin: .35rem 0 .2rem; font-family: var(--display); font-weight: 400; font
     $("title").textContent = closed ? "The results" : "Audience vote";
     $("sub").innerHTML = closed ? "The audience has spoken." :
       d.phase === "before" ? "When voting opens, tap your <mark>1st, 2nd and 3rd</mark> (5, 3 and 1 points), then pick the special awards. No voting for your own film." :
-      "Top 3 = <mark>5, 3 and 1 points</mark>, plus 10 special awards. Vote again with the same name to change it.";
+      "Pick your <mark>top 3</mark> and the <mark>Special Awards</mark>.";
     $("grid").hidden = closed;
     $("results").hidden = !closed;
     $("ballot").hidden = d.phase !== "open";
     $("awards").hidden = d.phase !== "open";
-    $("mine").hidden = d.phase !== "open";
-    if (closed) $("npsec").hidden = true;
-    $("step2").hidden = d.phase !== "open";
+    $("how").hidden = d.phase !== "open";
     if (closed) renderResults(); else renderGrid();
     if (!d.films.length && !closed) { $("grid").replaceChildren(el("p", null, "Films go up here once they're in.")); rendered = ""; }
     tick();
@@ -376,11 +366,10 @@ h1 { margin: .35rem 0 .2rem; font-family: var(--display); font-weight: 400; font
     e.preventDefault();
     const name = $("name").value.trim(), msg = $("bmsg");
     msg.className = "bmsg err";
-    if (!own) { msg.textContent = "Step 1: tap which film is yours (or \"just watching\")."; $("mine").scrollIntoView({ behavior: "smooth" }); return; }
     if (picks.length !== need) { msg.textContent = "Tap your 1st, 2nd and 3rd first."; return; }
     if (name.length < 2) { msg.textContent = "Write your name so we know who voted."; $("name").focus(); return; }
     $("submit").disabled = true; msg.className = "bmsg"; msg.textContent = "Sending…";
-    fetch("/api/fest/vote", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ name, own, picks, awards }) })
+    fetch("/api/fest/vote", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ name, own: "none", picks, awards }) })
       .then((r) => r.json().then((d) => ({ ok: r.ok, d })))
       .then(({ ok, d }) => {
         syncPicks();
