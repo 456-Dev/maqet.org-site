@@ -57,7 +57,9 @@ hr { height: 1px; margin: 0; border: 0; background: var(--rule); }
   margin-top: clamp(40px, 4.5vw, 56px);
 }
 .row > * { min-width: 0; }
-.title { grid-column: 1 / span 3; margin: 0; font-size: 1.35em; font-weight: 900; letter-spacing: .13em; line-height: 1.15; }
+.title { margin: 0; font-size: 1.35em; font-weight: 900; letter-spacing: .13em; line-height: 1.15; }
+.title-col { grid-column: 1 / span 3; display: grid; gap: clamp(16px, 2vw, 28px); justify-items: start; }
+.big-star { display: block; color: var(--star); font-size: clamp(120px, 14vw, 220px); line-height: .8; animation: maqet-star 1.2s ease-in-out infinite; transform-origin: center; }
 .text { grid-column: 4 / span 4; display: grid; gap: 1.2em; }
 .text b { font-weight: 900; letter-spacing: .08em; }
 .pic { grid-column: 9 / span 4; }
@@ -67,12 +69,13 @@ hr { height: 1px; margin: 0; border: 0; background: var(--rule); }
 @media (max-width: 700px) {
   :root { --text: clamp(17px, 4.6vw, 22px); }
   .row { grid-template-columns: minmax(0, 1fr); }
-  .title, .text, .pic { grid-column: 1 / -1; }
+  .title-col, .text, .pic { grid-column: 1 / -1; }
+  .big-star { font-size: 38vw; }
   .foot { grid-template-columns: 7.5em minmax(0, 1fr); }
   .foot dt { grid-column: 1; }
   .foot dd { grid-column: 2; }
 }
-@media (prefers-reduced-motion: reduce) { .star { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .star, .big-star { animation: none; } }
 </style>
 </head>
 <body>
@@ -88,7 +91,10 @@ hr { height: 1px; margin: 0; border: 0; background: var(--rule); }
 <main>
   <hr>
   <section class="row">
-    <h2 class="title">ABOUT US</h2>
+    <div class="title-col">
+      <h2 class="title">ABOUT US</h2>
+      <span class="big-star" aria-hidden="true">☆</span>
+    </div>
     <div class="text">
       <p><b>MAQET</b> is a community-based artist collective in NYC that creates third spaces for artists. Our collective is founded on the belief that a strong and supportive artistic community uplifts all its members. We believe in the power of group advocacy to create the change that we want to see in the art world and beyond.</p>
       <p><b>MAQUETTE</b> is a model or preliminary sketch of a bigger dream. Our collective is the foundation from which artists present their works and develop an audience. We believe that creative expression is valid and valuable in and of itself, and respect artwork that shows creative vision, intention, and ambition. Our goal is to empower artists through the active cultivation of community, placing control of artistic work back in the hands of creators. Artists do not have to pay or prove their commercial worth to enter our spaces.</p>
