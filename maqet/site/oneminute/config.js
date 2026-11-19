@@ -35,4 +35,7 @@ window.FESTIVAL = {
   promptReveal:  "2026-11-14T11:00:00-05:00",
   submissionDue: "2026-11-15T11:00:00-05:00",
   screening:     "2026-11-15T19:00:00-05:00",
+
+  // Next festival (No. 2). The countdown and calendar link use this. Midnight is before the 2AM DST switch, so -05:00.
+  nextFest:      "2027-03-14T00:00:00-05:00",
 };
