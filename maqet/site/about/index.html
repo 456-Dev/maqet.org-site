@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>About · MAQET Collective</title>
+<meta name="description" content="MAQET is a community-based artist collective in NYC that creates third spaces for artists.">
+<link rel="canonical" href="https://maqet.org/about/">
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta property="og:title" content="About · MAQET Collective">
+<meta property="og:description" content="A community-based artist collective in NYC that creates third spaces for artists.">
+<meta property="og:url" content="https://maqet.org/about/">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;700;900&display=swap">
+<style>
+:root {
+  --paper: #FFFFFF;
+  --ink: rgba(0, 0, 0, 0.85);
+  --grey: rgba(106, 106, 106, 0.85);
+  --rule: rgba(0, 0, 0, 0.75);
+  --star: rgba(228, 24, 180, 0.85);
+  --sans: "Hanken Grotesk", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --pad: clamp(16px, 4.4vw, 64px);
+  --gap: clamp(8px, 0.95vw, 14px);
+  --text: clamp(16px, 1.45vw, 19px);
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--paper); color: var(--ink);
+  font-family: var(--sans); font-size: var(--text); line-height: 1.22;
+  padding-inline: var(--pad); padding-block: clamp(150px, 18vw, 240px) 56px;
+}
+a { color: inherit; text-decoration: none; }
+a:hover { opacity: .6; }
+a:focus-visible { outline: 2px solid var(--star); outline-offset: 4px; }
+p { margin: 0; }
+img { display: block; width: 100%; height: auto; }
+.mast {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 10;
+  display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem;
+  padding: clamp(18px, 4.4vw, 56px) var(--pad) 0; pointer-events: none;
+}
+.mast a { pointer-events: auto; }
+.logo { margin: 0; font-size: clamp(24px, 3.2vw, 42px); font-weight: 500; line-height: 1; letter-spacing: .3em; }
+.star { display: inline-block; color: var(--star); animation: maqet-star 1.2s ease-in-out infinite; }
+@keyframes maqet-star { 50% { transform: scale(1.5); } }
+.nav { display: grid; gap: .5em; justify-items: start; line-height: 1.2; }
+hr { height: 1px; margin: 0; border: 0; background: var(--rule); }
+.row {
+  display: grid; grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--gap); row-gap: 1.6rem; align-items: start;
+  margin-top: clamp(40px, 4.5vw, 56px);
+}
+.row > * { min-width: 0; }
+.title { grid-column: 1 / span 3; margin: 0; font-size: 1.35em; font-weight: 900; letter-spacing: .13em; line-height: 1.15; }
+.text { grid-column: 4 / span 4; display: grid; gap: 1.2em; }
+.text b { font-weight: 900; letter-spacing: .08em; }
+.pic { grid-column: 9 / span 4; }
+.foot { margin-top: clamp(80px, 11vw, 140px); display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gap); row-gap: .2rem; }
+.foot dt { grid-column: 1 / span 2; }
+.foot dd { grid-column: 3 / span 6; margin: 0; overflow-wrap: anywhere; }
+@media (max-width: 700px) {
+  :root { --text: clamp(17px, 4.6vw, 22px); }
+  .row { grid-template-columns: minmax(0, 1fr); }
+  .title, .text, .pic { grid-column: 1 / -1; }
+  .foot { grid-template-columns: 7.5em minmax(0, 1fr); }
+  .foot dt { grid-column: 1; }
+  .foot dd { grid-column: 2; }
+}
+@media (prefers-reduced-motion: reduce) { .star { animation: none; } }
+</style>
+</head>
+<body>
+
+<header class="mast">
+  <h1 class="logo" id="logo"><a href="/">M<span class="star">☆</span>QET COLLECTIVE<br>NYC</a></h1>
+  <nav class="nav">
+    <a href="/showcase/">SHOWCASE</a>
+    <a href="/">HOME</a>
+  </nav>
+</header>
+
+<main>
+  <hr>
+  <section class="row">
+    <h2 class="title">ABOUT US</h2>
+    <div class="text">
+      <p><b>MAQET</b> is a community-based artist collective in NYC that creates third spaces for artists. Our collective is founded on the belief that a strong and supportive artistic community uplifts all its members. We believe in the power of group advocacy to create the change that we want to see in the art world and beyond.</p>
+      <p><b>MAQUETTE</b> is a model or preliminary sketch of a bigger dream. Our collective is the foundation from which artists present their works and develop an audience. We believe that creative expression is valid and valuable in and of itself, and respect artwork that shows creative vision, intention, and ambition. Our goal is to empower artists through the active cultivation of community, placing control of artistic work back in the hands of creators. Artists do not have to pay or prove their commercial worth to enter our spaces.</p>
+      <p><b>MAKE IT.</b> We create together. Our group began as a student-driven initiative to give graduating seniors at Parsons an opportunity to present their thesis work in a gallery space. Now we continue that mission by building space for artists who seek to push boundaries, and step beyond convention.</p>
+    </div>
+    <img class="pic" src="/about/collective.webp" width="1200" height="960" alt="MAQET Collective members together outdoors at sunset">
+  </section>
+
+  <dl class="foot">
+    <dt>Instagram</dt>
+    <dd><a href="https://instagram.com/maqet.art" target="_blank" rel="noopener">@maqet.art</a></dd>
+    <dt>Email</dt>
+    <dd><a href="mailto:maqetcollective@gmail.com">maqetcollective@gmail.com</a></dd>
+  </dl>
+</main>
+
+<script>
+(function () {
+  const logo = document.getElementById("logo");
+  function fade() {
+    const o = Math.max(0, 1 - window.scrollY / 200);
+    logo.style.opacity = o;
+    logo.style.visibility = o === 0 ? "hidden" : "";
+  }
+  window.addEventListener("scroll", fade, { passive: true });
+  fade();
+})();
+</script>
+</body>
+</html>
